@@ -1,5 +1,9 @@
 import { Query } from "mongoose";
-import { AbstractQueryBuilder, QueryParams } from "src/AbstractQueryBuilder.js";
+
+import {
+  AbstractQueryBuilder,
+  QueryParams,
+} from "./../AbstractQueryBuilder.js";
 
 export interface Meta {
   page: number; // Current page number
