@@ -28,6 +28,22 @@
       "dependsOn": ["^check-types"],
       "inputs": ["$TURBO_DEFAULT$", ".env*", "!node_modules/**"]
     },
+    "vercel-build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!node_modules/**"],
+      "outputs": [
+        "dist/**",
+        ".vercel/output/**"
+      ],
+      "env": [
+        "PORT",
+        "HOST",
+        "NODE_ENV",
+        "DB_URI",
+        "JWT_ACCESS_SECRET",
+        "JWT_REFRESH_SECRET"
+      ]
+    },
     "dev": {
       "cache": false,
       "persistent": true
