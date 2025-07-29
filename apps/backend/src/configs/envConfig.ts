@@ -1,23 +1,29 @@
 import dotenv from "dotenv";
 import { z } from "zod";
 
-// Load env variables from .env with error handling
+// Load env variables from .env with error handling (optional for production)
 try {
   const result = dotenv.config();
 
-  if (result.error) {
+  if (result.error && process.env.NODE_ENV !== "production") {
     console.warn(
       "Warning: .env file not found or could not be loaded.\n",
       result.error.message,
     );
-    process.exit(1);
+    // Don't exit in production as env vars are injected by the platform
+    if (process.env.NODE_ENV === "development") {
+      process.exit(1);
+    }
   }
 } catch (error) {
   console.error(
     "Error loading environment configuration:",
     error instanceof Error ? error.message : String(error),
   );
-  process.exit(1);
+  // Don't exit in production as env vars might be injected by the platform
+  if (process.env.NODE_ENV !== "production") {
+    process.exit(1);
+  }
 }
 
 // Define Zod schema for validation and transformation
