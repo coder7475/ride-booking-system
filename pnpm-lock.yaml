@@ -18,7 +18,7 @@ importers:
         specifier: 5.8.2
         version: 5.8.2
 
-  apps/express:
+  apps/backend:
     dependencies:
       '@repo/db':
         specifier: workspace:*
@@ -77,15 +77,15 @@ importers:
         version: 4.1.8
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(postcss@8.4.31)(tsx@4.20.3)(typescript@5.8.2)
+        version: 8.5.0(postcss@8.4.31)(tsx@4.20.3)(typescript@5.8.3)
       tsx:
         specifier: ^4.20.2
         version: 4.20.3
       typescript:
         specifier: ^5.2.2
-        version: 5.8.2
+        version: 5.8.3
 
-  apps/nextjs:
+  apps/frontend:
     dependencies:
       '@repo/math':
         specifier: workspace:*
@@ -124,24 +124,6 @@ importers:
       typescript:
         specifier: 5.8.2
         version: 5.8.2
-
-  apps/node-framework:
-    devDependencies:
-      '@repo/framework':
-        specifier: workspace:*
-        version: link:../../packages/framework
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../../configs/typescript-config
-      '@types/node':
-        specifier: ^20.4.2
-        version: 20.19.5
-      tsx:
-        specifier: ^4.20.2
-        version: 4.20.3
-      typescript:
-        specifier: ^5.2.2
-        version: 5.8.3
 
   configs/eslint-config:
     devDependencies:
@@ -218,30 +200,6 @@ importers:
       '@types/node':
         specifier: ^20.4.2
         version: 20.19.5
-      typescript:
-        specifier: ^5.2.2
-        version: 5.8.3
-
-  packages/ds:
-    devDependencies:
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../../configs/typescript-config
-      typescript:
-        specifier: latest
-        version: 5.8.3
-
-  packages/framework:
-    devDependencies:
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../../configs/typescript-config
-      '@types/node':
-        specifier: ^20.4.2
-        version: 20.19.5
-      tsx:
-        specifier: ^4.20.2
-        version: 4.20.3
       typescript:
         specifier: ^5.2.2
         version: 5.8.3
@@ -6687,7 +6645,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@8.5.0(postcss@8.4.31)(tsx@4.20.3)(typescript@5.8.2):
+  tsup@8.5.0(postcss@8.4.31)(tsx@4.20.3)(typescript@5.8.3):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.6)
       cac: 6.7.14
@@ -6708,7 +6666,7 @@ snapshots:
       tree-kill: 1.2.2
     optionalDependencies:
       postcss: 8.4.31
-      typescript: 5.8.2
+      typescript: 5.8.3
     transitivePeerDependencies:
       - jiti
       - supports-color
