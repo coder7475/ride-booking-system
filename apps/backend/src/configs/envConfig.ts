@@ -40,7 +40,7 @@ const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
-  DB_URI: z.string().url("DB_URI must be a valid URL"),
+  DB_URI: z.string(),
   JWT_ACCESS_SECRET: z.string().default("secret"),
   JWT_REFRESH_SECRET: z.string().default("secret"),
 });
