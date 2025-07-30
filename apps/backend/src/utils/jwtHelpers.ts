@@ -2,6 +2,7 @@ import { env } from "@/configs/envConfig";
 import { parseExpiry } from "@repo/math";
 import { JWT } from "@repo/utils";
 import { TokenType } from "@repo/utils/src/jwt/types";
+import { JwtPayload } from "jsonwebtoken";
 
 const jwtInstance = new JWT({
   access: {
@@ -18,7 +19,7 @@ export function generateToken(payload: object, type: TokenType = "access") {
   return jwtInstance.signToken(payload, {}, type);
 }
 
-export function verifyToken<T = object>(
+export function verifyToken<T = JwtPayload>(
   token: string,
   type: TokenType = "access",
 ): T {

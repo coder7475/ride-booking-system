@@ -1,6 +1,6 @@
 import AppError from "@/configs/AppError";
 import { AccountStatus } from "@/types/types";
-import { generateToken } from "@/utils/jwtHelpers";
+import { generateToken, verifyToken } from "@/utils/jwtHelpers";
 import { verifyPassword } from "@repo/utils";
 
 import { IUser } from "../user/user.interface";
@@ -37,13 +37,44 @@ export const login = async (credentials: Partial<IUser>) => {
     role: isUser.role,
   };
 
-  const access_token = generateToken(payload, "access");
-  const refresh_token = generateToken(payload, "refresh");
+  const accessToken = generateToken(payload, "access");
+  const refreshToken = generateToken(payload, "refresh");
 
   return {
-    access_token,
-    refresh_token,
+    accessToken,
+    refreshToken,
   };
+};
+
+const reissueAccessToken = async (refreshToken: string) => {
+  const verifiedPayload = verifyToken(refreshToken, "refresh");
+  const isUser = await UserModel.findOne({ email: verifiedPayload.email });
+  if (!isUser) {
+    throw new AppError(404, "User does not Exits!");
+  }
+
+  if (!isUser) {
+    throw new AppError(400, "User does not exits!");
+  }
+  if (isUser.account_status === AccountStatus.BLOCKED) {
+    throw new AppError(403, "User is blocked!");
+  }
+  if (isUser.account_status === AccountStatus.SUSPENDED) {
+    throw new AppError(403, "User is suspended!");
+  }
+  if (isUser.account_status === AccountStatus.DEACTIVATED) {
+    throw new AppError(403, "User is deleted!");
+  }
+
+  const payload = {
+    email: isUser.email,
+    password: isUser.password,
+    role: isUser.role,
+  };
+
+  const accessToken = generateToken(payload, "access");
+
+  return accessToken;
 };
 
 export const AuthServices = {
