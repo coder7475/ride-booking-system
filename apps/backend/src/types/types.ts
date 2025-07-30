@@ -23,11 +23,6 @@ export interface IAuthProvider {
 }
 
 // Driver
-export interface IDriverLocation {
-  latitude: number;
-  longitude: number;
-}
-
 export enum DriverOnlineStatus {
   ONLINE = "ONLINE",
   OFFLINE = "OFFLINE",
@@ -39,3 +34,22 @@ export enum DriverApprovalStatus {
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
 }
+
+// Ride
+export interface ILocation {
+  latitude: number;
+  longitude: number;
+}
+
+export enum RideStatus {
+  REQUESTED = "REQUESTED",
+  ACCEPTED = "ACCEPTED",
+  PICKED_UP = "PICKED_UP",
+  IN_TRANSIT = "IN_TRANSIT",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+}
+
+export type RideStatusTimestamps = {
+  [status in RideStatus]?: Date;
+};

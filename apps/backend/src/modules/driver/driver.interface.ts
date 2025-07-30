@@ -1,7 +1,7 @@
 import {
   DriverApprovalStatus,
   DriverOnlineStatus,
-  IDriverLocation,
+  ILocation,
 } from "@/types/types";
 
 export interface IDriver {
@@ -9,6 +9,6 @@ export interface IDriver {
   user_id: string;
   approval_status: DriverApprovalStatus;
   online_status: DriverOnlineStatus;
-  driver_location: IDriverLocation;
+  driver_location: ILocation;
   vehicle_info: string;
 }
