@@ -19,7 +19,7 @@ authRoutes.post("/refresh-token", AuthController.reissueAccessToken);
 
 authRoutes.post("/logout", (_req, res) => {
   return res.status(200).json({
-    message: "/api/v1/auth/refresh-token",
+    message: "/api/v1/auth/logout",
   });
 });
 

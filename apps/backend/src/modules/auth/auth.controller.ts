@@ -34,19 +34,27 @@ const login = catchAsync(
 const reissueAccessToken = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
+
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(401).json({ message: "Refresh token missing or invalid" });
+      sendResponse(res, {
+        success: false,
+        statusCode: 401,
+        message: "Refresh token missing or invalid",
+        data: null,
+      });
     }
 
     const refreshToken = authHeader?.split(" ")[1];
-    const newAccessToken = AuthServices.reissueAccessToken(refreshToken!);
+
+    const newAccessToken = await AuthServices.reissueAccessToken(refreshToken!);
 
     sendResponse(res, {
       success: true,
       statusCode: 200,
       message: "New Access Token Issued!",
       data: {
-        newAccessToken,
+        accessToken: newAccessToken,
+        refreshToken,
       },
     });
   },
