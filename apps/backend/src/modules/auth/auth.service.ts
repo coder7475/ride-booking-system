@@ -79,4 +79,5 @@ const reissueAccessToken = async (refreshToken: string) => {
 
 export const AuthServices = {
   login,
+  reissueAccessToken,
 };
