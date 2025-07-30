@@ -10,6 +10,7 @@ export enum AccountStatus {
   PENDING = "pending",
   SUSPENDED = "suspended",
   BLOCKED = "blocked",
+  DEACTIVATED = "deactivated",
 }
 
 export enum AuthProviderNames {

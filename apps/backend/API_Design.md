@@ -13,12 +13,11 @@
 
 ### 👤 **User APIs**
 
-| Method | Endpoint     | Description                      |
-| ------ | ------------ | -------------------------------- |
-| GET    | `/users/me`  | Get current user info (self)     |
-| PATCH  | `/users/me`  | Update profile info              |
-| DELETE | `/users/me`  | Deactivate or delete own account |
-| GET    | `/users/:id` | Get public profile of a user     |
+| Method | Endpoint | Description                  |
+| ------ | -------- | ---------------------------- |
+| GET    | `/user`  | Get current user info (self) |
+| PATCH  | `/user`  | Update profile info          |
+| DELETE | `/user`  | Deactivate own account       |
 
 ---
 
