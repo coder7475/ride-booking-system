@@ -21,7 +21,7 @@ app.use(helmet());
 app.use("/api/v1", indexRouter);
 app.use("/", (_req, res) => {
   return res.status(200).json({
-    message: "Welcome to ____ System!",
+    message: "Welcome to Ride Sharing System!",
   });
 });
 
