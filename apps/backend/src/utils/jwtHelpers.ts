@@ -6,11 +6,11 @@ import { TokenType } from "@repo/utils/src/jwt/types";
 const jwtInstance = new JWT({
   access: {
     secret: env.JWT_ACCESS_SECRET,
-    expiresIn: parseExpiry("15m"), // can take it from env
+    expiresIn: parseExpiry(env.JWT_ACCESS_EXPIRES),
   },
   refresh: {
     secret: env.JWT_REFRESH_SECRET,
-    expiresIn: parseExpiry("7d"), // can take it from env
+    expiresIn: parseExpiry(env.JWT_REFRESH_EXPIRES),
   },
 });
 

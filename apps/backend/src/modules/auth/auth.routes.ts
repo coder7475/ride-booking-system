@@ -3,6 +3,7 @@ import { Router } from "express";
 
 import { CreateUserSchema } from "../user/user.schema";
 import { AuthController } from "./auth.controller";
+import { LoginSchema } from "./auth.schema";
 
 const authRoutes: Router = Router();
 
@@ -12,11 +13,7 @@ authRoutes.post(
   AuthController.registerUser,
 );
 
-authRoutes.post("/login", (_req, res) => {
-  return res.status(200).json({
-    message: "/api/v1/auth/login",
-  });
-});
+authRoutes.post("/login", validateZod(LoginSchema), AuthController.login);
 
 authRoutes.post("/refresh-token", (_req, res) => {
   return res.status(200).json({

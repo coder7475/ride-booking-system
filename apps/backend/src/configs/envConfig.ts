@@ -37,12 +37,12 @@ const envSchema = z.object({
       return parsed;
     }),
   HOST: z.string().default("localhost"),
-  NODE_ENV: z
-    .enum(["development", "production", "test"])
-    .default("development"),
+  NODE_ENV: z.enum(["development", "production"]).default("development"),
   DB_URI: z.string(),
-  JWT_ACCESS_SECRET: z.string().default("secret"),
-  JWT_REFRESH_SECRET: z.string().default("secret"),
+  JWT_ACCESS_SECRET: z.string(),
+  JWT_ACCESS_EXPIRES: z.string(),
+  JWT_REFRESH_SECRET: z.string(),
+  JWT_REFRESH_EXPIRES: z.string(),
 });
 
 // Validate process.env and infer typed env object
