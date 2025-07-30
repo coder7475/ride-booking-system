@@ -22,11 +22,23 @@ const login = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const generatedTokens = await AuthServices.login(req.body);
 
+    // Set the tokens in cookies
+    res.cookie("accessToken", generatedTokens.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+    });
+    res.cookie("refreshToken", generatedTokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+    });
+
     sendResponse(res, {
       success: true,
       statusCode: 200,
       message: "Login Successfully",
-      data: generatedTokens,
+      data: null,
     });
   },
 );
@@ -60,8 +72,33 @@ const reissueAccessToken = catchAsync(
   },
 );
 
+const logout = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Clear the refresh token cookie (if set)
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+    });
+    // Clear the refresh token cookie (if set)
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+    });
+
+    sendResponse(res, {
+      success: true,
+      statusCode: 200,
+      message: "Logged out successfully",
+      data: null,
+    });
+  },
+);
+
 export const AuthController = {
   registerUser,
   login,
   reissueAccessToken,
+  logout,
 };

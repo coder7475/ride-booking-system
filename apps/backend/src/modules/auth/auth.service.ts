@@ -73,7 +73,7 @@ const reissueAccessToken = async (refreshToken: string) => {
   };
 
   const accessToken = generateToken(payload, "access");
-  console.log(accessToken);
+
   return accessToken;
 };
 
