@@ -53,3 +53,18 @@ export enum RideStatus {
 export type RideStatusTimestamps = {
   [status in RideStatus]?: Date;
 };
+
+// transactions
+export enum PaymentStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+  REFUNDED = "REFUNDED",
+}
+
+export enum PaymentGateway {
+  STRIPE = "STRIPE",
+  PAYPAL = "PAYPAL",
+  BKASH = "BKASH",
+  SSLCOMMERZ = "SSLCOMMERZ",
+}
