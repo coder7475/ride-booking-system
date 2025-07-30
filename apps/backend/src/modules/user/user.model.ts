@@ -1,5 +1,5 @@
 import { AccountStatus, AuthProviderNames, Role } from "@/types/types";
-import mongoose, { Document, Model, Schema } from "mongoose";
+import { Document, Model, model, Schema } from "mongoose";
 
 import { IUser } from "./user.interface";
 
@@ -31,7 +31,4 @@ const UserMongooseSchema = new Schema<IUserDoc>(
   { timestamps: true },
 );
 
-export const UserModel: Model<IUserDoc> = mongoose.model(
-  "User",
-  UserMongooseSchema,
-);
+export const UserModel: Model<IUserDoc> = model("User", UserMongooseSchema);
