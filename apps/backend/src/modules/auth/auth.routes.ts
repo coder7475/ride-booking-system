@@ -1,10 +1,16 @@
+import { validateZod } from "@/middlewares/ValidateRequest";
 import { Router } from "express";
 
+import { CreateUserSchema } from "../user/user.schema";
 import { AuthController } from "./auth.controller";
 
 const authRoutes: Router = Router();
 
-authRoutes.post("/register", AuthController.registerUser);
+authRoutes.post(
+  "/register",
+  validateZod(CreateUserSchema),
+  AuthController.registerUser,
+);
 
 authRoutes.post("/login", (_req, res) => {
   return res.status(200).json({
