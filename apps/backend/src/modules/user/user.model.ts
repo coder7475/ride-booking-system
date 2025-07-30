@@ -1,19 +1,37 @@
-import { Document, model, Schema } from "mongoose";
+import { AccountStatus, AuthProviderNames, Role } from "@/types/types";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
 import { IUser } from "./user.interface";
 
-interface IUserDocument extends IUser, Document {}
+interface IUserDoc extends IUser, Document {}
 
-const userSchema = new Schema<IUserDocument>(
+const UserMongooseSchema = new Schema<IUserDoc>(
   {
-    name: { type: String, required: true },
+    user_id: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String }, // Optional, as per interface
-    role: { type: String, required: true },
+    user_name: { type: String, required: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: Object.values(Role), required: true },
+    account_status: {
+      type: String,
+      enum: Object.values(AccountStatus),
+      default: AccountStatus.ACTIVE,
+    },
+    auth_providers: [
+      {
+        provider: {
+          type: String,
+          enum: Object.values(AuthProviderNames),
+          required: true,
+        },
+        providerId: { type: String, required: true },
+      },
+    ],
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true },
 );
 
-export const User = model<IUserDocument>("User", userSchema);
+export const UserModel: Model<IUserDoc> = mongoose.model(
+  "User",
+  UserMongooseSchema,
+);

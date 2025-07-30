@@ -1,6 +1,13 @@
+import { AccountStatus, IAuthProvider, Role } from "@/types/types";
+
 export interface IUser {
-  name: string;
+  user_id: string;
+  user_name: string;
   email: string;
-  password?: string;
-  role: string;
+  password: string;
+  role: Role;
+  account_status: AccountStatus;
+  auth_providers: IAuthProvider[];
+  createdAt: Date;
+  updatedAt: Date;
 }
