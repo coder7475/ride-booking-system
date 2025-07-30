@@ -7,7 +7,6 @@ export const AuthProviderSchema = z.object({
 });
 
 export const UserSchema = z.object({
-  user_id: z.string().uuid(),
   user_name: z
     .string({ invalid_type_error: "Name must be string" })
     .min(2, { message: "Name must be at least 2 characters long." })

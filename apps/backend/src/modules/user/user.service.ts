@@ -5,7 +5,7 @@ import { hashPassword } from "@repo/utils";
 import { IUser } from "./user.interface";
 import { UserModel } from "./user.model";
 
-const createUser = async (userData: Partial<IUser>): Promise<any> => {
+const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
   const { email, password, ...data } = userData;
   const isUser = await UserModel.findOne({ email });
 
@@ -13,21 +13,21 @@ const createUser = async (userData: Partial<IUser>): Promise<any> => {
     throw new AppError(400, "User Already Exist");
   }
 
-  // hash the password before creating user
   const hashedPassword = hashPassword(password!, 12);
+
   const authProvider: IAuthProvider = {
     provider: AuthProviderNames.LOCAL,
-    providerId: email as string,
+    providerId: email!,
   };
 
-  const user = await UserModel.create({
+  const user: Partial<IUser> = {
     email,
     password: hashedPassword,
-    auths: [authProvider],
+    auth_providers: [authProvider],
     ...data,
-  });
+  };
 
-  return user;
+  return await UserModel.create(user);
 };
 
 export const userService = {

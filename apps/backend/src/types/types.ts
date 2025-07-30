@@ -2,7 +2,7 @@
 export enum Role {
   ADMIN = "ADMIN",
   USER = "USER",
-  GUIDE = "GUIDE",
+  DRIVER = "DRIVER",
 }
 
 export enum AccountStatus {

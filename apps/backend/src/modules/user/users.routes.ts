@@ -4,6 +4,8 @@ import { userController } from "./user.controller";
 
 const userRoutes: Router = Router();
 
-userRoutes.post("/", userController.createUser);
+userRoutes.patch("/me", userController.createUser);
+userRoutes.delete("/me", userController.createUser);
+userRoutes.get("/:id", userController.createUser);
 
 export default userRoutes;
