@@ -36,6 +36,14 @@ export enum DriverApprovalStatus {
   REJECTED = "REJECTED",
 }
 
+export interface IVehicleInfo {
+  vehicleType: string;
+  brand: string;
+  model: string;
+  year: number;
+  plateNumber: string;
+}
+
 // Ride
 export interface ILocation {
   latitude: number;

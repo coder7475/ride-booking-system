@@ -2,13 +2,26 @@ import { DriverApprovalStatus, DriverOnlineStatus } from "@/types/types";
 import { LocationSchema } from "@/types/zod/schemas";
 import { z } from "zod";
 
-export const DriverSchema = z.object({
-  driver_id: z.string(),
-  user_id: z.string(),
-  approval_status: z.nativeEnum(DriverApprovalStatus),
-  online_status: z.nativeEnum(DriverOnlineStatus),
-  driver_location: LocationSchema,
-  vehicle_info: z.string(),
+export const VehicleInfoSchema = z.object({
+  vehicleType: z.string().min(1),
+  brand: z.string().min(1),
+  model: z.string().min(1),
+  year: z.number().int().gte(1900).lte(new Date().getFullYear()),
+  plateNumber: z.string().min(1),
 });
 
-export type DriverZodType = z.infer<typeof DriverSchema>;
+export const CreateDriverSchema = z.object({
+  userId: z.string().min(1),
+  driverLocation: LocationSchema,
+  vehicleInfo: VehicleInfoSchema,
+});
+
+export const UpdateDriverSchema = z.object({
+  approvalStatus: z.nativeEnum(DriverApprovalStatus).optional(),
+  onlineStatus: z.nativeEnum(DriverOnlineStatus).optional(),
+  driverLocation: LocationSchema.optional(),
+  vehicleInfo: VehicleInfoSchema.partial().optional(),
+});
+
+export type DriverZodType = z.infer<typeof CreateDriverSchema>;
+export type UpdateDriverZodType = z.infer<typeof UpdateDriverSchema>;

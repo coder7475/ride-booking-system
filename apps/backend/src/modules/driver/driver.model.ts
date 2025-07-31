@@ -1,34 +1,56 @@
-import { DriverApprovalStatus, DriverOnlineStatus } from "@/types/types";
-import { Document, model, Schema } from "mongoose";
+import {
+  DriverApprovalStatus,
+  DriverOnlineStatus,
+  ILocation,
+  IVehicleInfo,
+} from "@/types/types";
+import { Document, model, Model, Schema } from "mongoose";
 
 import { IDriver } from "./driver.interface";
 
-export interface IDriverDocument extends Document, IDriver {}
+interface IDriverDoc extends IDriver, Document {}
 
-const DriverSchemaMongoose = new Schema<IDriverDocument>(
+const LocationSchema = new Schema<ILocation>(
   {
-    driver_id: { type: String, required: true, unique: true },
-    user_id: { type: String, required: true, ref: "User" },
-    approval_status: {
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true },
+  },
+  { _id: false, versionKey: false },
+);
+
+const VehicleInfoSchema = new Schema<IVehicleInfo>(
+  {
+    vehicleType: { type: String, required: true },
+    brand: { type: String, required: true },
+    model: { type: String, required: true },
+    year: { type: Number, required: true },
+    plateNumber: { type: String, required: true },
+  },
+  { _id: false, versionKey: false },
+);
+
+const DriverSchema = new Schema<IDriverDoc>(
+  {
+    userId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      unique: true,
+      ref: "User",
+    },
+    approvalStatus: {
       type: String,
       enum: Object.values(DriverApprovalStatus),
       default: DriverApprovalStatus.PENDING,
     },
-    online_status: {
+    onlineStatus: {
       type: String,
       enum: Object.values(DriverOnlineStatus),
       default: DriverOnlineStatus.OFFLINE,
     },
-    driver_location: {
-      latitude: { type: Number, required: true },
-      longitude: { type: Number, required: true },
-    },
-    vehicle_info: { type: String, required: true },
+    driverLocation: { type: LocationSchema, required: true },
+    vehicleInfo: { type: VehicleInfoSchema, required: true },
   },
-  { timestamps: true },
+  { timestamps: true, versionKey: false },
 );
 
-export const DriverModel = model<IDriverDocument>(
-  "Driver",
-  DriverSchemaMongoose,
-);
+export const DriverModel: Model<IDriverDoc> = model("Driver", DriverSchema);

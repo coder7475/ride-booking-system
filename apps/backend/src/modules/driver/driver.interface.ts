@@ -2,13 +2,14 @@ import {
   DriverApprovalStatus,
   DriverOnlineStatus,
   ILocation,
+  IVehicleInfo,
 } from "@/types/types";
+import { Types } from "mongoose";
 
 export interface IDriver {
-  driver_id: string;
-  user_id: string;
-  approval_status: DriverApprovalStatus;
-  online_status: DriverOnlineStatus;
-  driver_location: ILocation;
-  vehicle_info: string;
+  userId: Types.ObjectId;
+  approvalStatus: DriverApprovalStatus;
+  onlineStatus: DriverOnlineStatus;
+  driverLocation: ILocation;
+  vehicleInfo: IVehicleInfo;
 }
