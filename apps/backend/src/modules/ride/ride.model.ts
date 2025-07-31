@@ -9,18 +9,18 @@ export interface IRideDocument extends Document, IRide {}
 
 const RideSchemaMongoose = new Schema<IRideDocument>(
   {
-    rider_id: { type: String, required: true, ref: "User" },
-    driver_id: { type: String, required: false, ref: "Driver", default: null },
-    ride_status: {
+    riderId: { type: String, required: true, ref: "User" },
+    driverId: { type: String, required: false, ref: "Driver", default: null },
+    rideStatus: {
       type: String,
       enum: Object.values(RideStatus),
       default: RideStatus.REQUESTED,
     },
-    pickup_location: LocationSchema,
-    destination_location: LocationSchema,
-    transaction_id: { type: String, required: true, ref: "Transaction" },
-    fare_estimated: { type: Number, required: true },
-    fare_final: { type: Number, required: true },
+    pickupLocation: LocationSchema,
+    destinationLocation: LocationSchema,
+    transactionId: { type: String, required: true, ref: "Transaction" },
+    fareEstimated: { type: Number, required: true },
+    fareFinal: { type: Number, required: true, default: 0 },
     timestamps: { type: RideTimestampsSchema, default: {} },
   },
   { versionKey: false, timestamps: true },

@@ -6,14 +6,14 @@ import {
 import { z } from "zod";
 
 export const RideSchema = z.object({
-  rider_id: z.string(),
-  driver_id: z.string().optional(),
-  ride_status: z.nativeEnum(RideStatus),
-  pickup_location: LocationSchema,
-  destination_location: LocationSchema,
-  transaction_id: z.string().optional(),
-  fare_estimated: z.number(),
-  fare_final: z.number().optional(),
+  riderId: z.string(),
+  driverId: z.string().optional(),
+  rideStatus: z.nativeEnum(RideStatus),
+  pickupLocation: LocationSchema,
+  destinationLocation: LocationSchema,
+  transactionId: z.string().optional(),
+  fareEstimated: z.number(),
+  fareFinal: z.number().optional(),
   timestamps: rideStatusTimestampsSchema,
 });
 
