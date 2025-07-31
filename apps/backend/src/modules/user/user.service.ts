@@ -1,5 +1,5 @@
 import AppError from "@/configs/AppError";
-import { AuthProviderNames, IAuthProvider } from "@/types/types";
+import { AccountStatus, AuthProviderNames, IAuthProvider } from "@/types/types";
 import { hashPassword } from "@repo/utils";
 
 import { IUser } from "./user.interface";
@@ -44,8 +44,22 @@ const findUserById = async (userId: string) => {
   return await UserModel.findById(userId).select("-password");
 };
 
+const deleteUser = async (userId: string) => {
+  const updateData = {
+    account_status: AccountStatus.DEACTIVATED,
+  };
+  const deletedUser = await UserModel.findByIdAndUpdate(
+    userId,
+    { $set: updateData },
+    { new: true, runValidators: true, select: "-password" },
+  );
+
+  return deletedUser;
+};
+
 export const UserServices = {
   createUser,
   findUserById,
   updateUserById,
+  deleteUser,
 };

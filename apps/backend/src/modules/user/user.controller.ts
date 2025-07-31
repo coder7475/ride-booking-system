@@ -77,9 +77,25 @@ const getPublicProfile = catchAsync(
   },
 );
 
+const deleteUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user.id;
+
+    const deletedUser = await UserServices.deleteUser(userId);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: 200,
+      message: "User deleted (deactivated) successfully",
+      data: deletedUser,
+    });
+  },
+);
+
 export const userController = {
   createUser,
   updateUser,
   getMe,
   getPublicProfile,
+  deleteUser,
 };

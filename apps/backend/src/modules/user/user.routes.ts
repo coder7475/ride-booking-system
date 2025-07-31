@@ -14,7 +14,11 @@ userRoutes.patch(
   userController.updateUser,
 );
 
-userRoutes.delete("/me", userController.createUser);
+userRoutes.delete(
+  "/me",
+  checkAuth(...Object.values(Role)),
+  userController.deleteUser,
+);
 
 userRoutes.get("/:id", userController.getPublicProfile);
 
