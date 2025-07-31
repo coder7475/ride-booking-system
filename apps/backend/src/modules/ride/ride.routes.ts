@@ -2,7 +2,7 @@ import { checkAuth } from "@/middlewares/CheckAuth";
 import { Role } from "@/types/types";
 import { Router } from "express";
 
-import { RidesController } from "./ride.controllers";
+import { RidesController } from "./ride.controller";
 
 const RidesRouter: Router = Router();
 
@@ -14,9 +14,11 @@ RidesRouter.post(
 );
 
 // Cancel ride before pickup - user
-RidesRouter.post("/:id/cancel", checkAuth(Role.USER), (req, res) => {
-  // Handler to be implemented
-});
+RidesRouter.post(
+  "/:id/cancel",
+  checkAuth(Role.USER),
+  RidesController.handleCancelRide,
+);
 
 // Get ride details
 RidesRouter.get("/:id", checkAuth(...Object.values(Role)), (req, res) => {

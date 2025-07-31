@@ -60,11 +60,11 @@ export enum RideStatus {
 }
 
 export interface IRideStatusTimestamps {
-  requested?: Date;
-  accepted?: Date;
-  started?: Date;
-  completed?: Date;
-  canceled?: Date;
+  requested?: string;
+  accepted?: string;
+  started?: string;
+  completed?: string;
+  canceled?: string;
 }
 // transactions
 export enum PaymentStatus {

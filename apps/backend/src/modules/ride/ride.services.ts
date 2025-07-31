@@ -1,3 +1,5 @@
+import AppError from "@/configs/AppError";
+import { RideStatus } from "@/types/types";
 import { generateTransactionId } from "@repo/utils";
 
 import { IRide } from "./ride.interface";
@@ -6,16 +8,16 @@ import { RideModel } from "./ride.model";
 export const createRideRequest = async (rideData: Partial<IRide>) => {
   // Validate required fields
   if (!rideData.riderId) {
-    throw new Error('riderId is required');
+    throw new Error("riderId is required");
   }
   if (!rideData.fareEstimated) {
-    throw new Error('fareEstimated is required');
+    throw new Error("fareEstimated is required");
   }
   if (!rideData.pickupLocation) {
-    throw new Error('pickupLocation is required');
+    throw new Error("pickupLocation is required");
   }
   if (!rideData.destinationLocation) {
-    throw new Error('destinationLocation is required');
+    throw new Error("destinationLocation is required");
   }
 
   const transactionId = generateTransactionId();
@@ -27,6 +29,33 @@ export const createRideRequest = async (rideData: Partial<IRide>) => {
   return await RideModel.create(newRideRequest);
 };
 
+export const cancelRide = async (riderId: string, rideId: string) => {
+  // Find the ride by id and riderId to ensure the user owns the ride
+  const ride = await RideModel.findOne({ _id: rideId, riderId });
+
+  if (!ride) {
+    throw new AppError(
+      404,
+      "Ride not found or you do not have permission to cancel this ride.",
+    );
+  }
+
+  // Only allow cancellation if ride is still in REQUESTED status
+  if (ride.rideStatus !== RideStatus.REQUESTED) {
+    throw new AppError(400, "Ride cannot be cancelled at this stage.");
+  }
+
+  ride.rideStatus = RideStatus.CANCELLED;
+  ride.timestamps = {
+    ...ride.timestamps,
+    canceled: new Date().toISOString(),
+  };
+
+  await ride.save();
+  return ride;
+};
+
 export const RideServices = {
   createRideRequest,
+  cancelRide,
 };
