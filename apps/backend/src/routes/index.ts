@@ -1,4 +1,5 @@
 import authRoutes from "@/modules/auth/auth.routes";
+import driverRoutes from "@/modules/driver/driver.routes";
 import userRoutes from "@/modules/user/user.routes";
 import { Router } from "express";
 
@@ -12,6 +13,10 @@ const moduleRoutes = [
   {
     path: "/user",
     routes: userRoutes,
+  },
+  {
+    path: "/drivers",
+    routes: driverRoutes,
   },
 ];
 

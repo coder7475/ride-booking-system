@@ -1,13 +1,22 @@
+import { checkAuth } from "@/middlewares/CheckAuth";
 import { validateZod } from "@/middlewares/ValidateRequest";
+import { Role } from "@/types/types";
 import { Router } from "express";
 
+import { DriversControllers } from "./driver.controller";
 import { CreateDriverSchema, UpdateDriverSchema } from "./driver.schema";
 
-const router: Router = Router();
+const driverRoutes: Router = Router();
 
-router.post("/", validateZod(CreateDriverSchema));
+driverRoutes.post(
+  "/apply",
+  validateZod(CreateDriverSchema),
+  checkAuth(...Object.values(Role)),
+  DriversControllers.applyForDriver,
+);
+
 // router.get("/:id", getDriverById);
 // router.put("/:id", validate(UpdateDriverSchema), updateDriver);
 // router.delete("/:id", deleteDriver);
 
-export default router;
+export default driverRoutes;

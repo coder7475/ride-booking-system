@@ -11,7 +11,6 @@ export const VehicleInfoSchema = z.object({
 });
 
 export const CreateDriverSchema = z.object({
-  userId: z.string().min(1),
   driverLocation: LocationSchema,
   vehicleInfo: VehicleInfoSchema,
 });

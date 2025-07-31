@@ -8,7 +8,7 @@ import { Document, model, Model, Schema } from "mongoose";
 
 import { IDriver } from "./driver.interface";
 
-interface IDriverDoc extends IDriver, Document {}
+export interface IDriverDoc extends IDriver, Document {}
 
 const LocationSchema = new Schema<ILocation>(
   {
