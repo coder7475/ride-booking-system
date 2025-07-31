@@ -10,7 +10,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc -p tsconfig.json && tsup && cp openapi.json dist/",
+    "build": "tsc -p tsconfig.json && tsup",
     "vercel-build": "pnpm build",
     "start": "node dist/server.js",
     "lint": "biome lint --fix",
