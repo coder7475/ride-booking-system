@@ -24,9 +24,11 @@ RidesRouter.post(
 );
 
 // Get ride details
-RidesRouter.get("/:id", checkAuth(...Object.values(Role)), (req, res) => {
-  // Handler to be implemented
-});
+RidesRouter.get(
+  "/:id",
+  checkAuth(...Object.values(Role)),
+  RidesController.singleRideRequest,
+);
 
 // List ride history for current user
 RidesRouter.get("/me", checkAuth(Role.USER), (req, res) => {

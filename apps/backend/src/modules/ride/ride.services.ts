@@ -5,7 +5,7 @@ import { generateTransactionId } from "@repo/utils";
 import { IRide } from "./ride.interface";
 import { RideModel } from "./ride.model";
 
-export const createRideRequest = async (rideData: Partial<IRide>) => {
+const createRideRequest = async (rideData: Partial<IRide>) => {
   // Validate required fields
   if (!rideData.riderId) {
     throw new Error("riderId is required");
@@ -29,7 +29,7 @@ export const createRideRequest = async (rideData: Partial<IRide>) => {
   return await RideModel.create(newRideRequest);
 };
 
-export const cancelRide = async (riderId: string, rideId: string) => {
+const cancelRide = async (riderId: string, rideId: string) => {
   // Find the ride by id and riderId to ensure the user owns the ride
   const ride = await RideModel.findOne({ _id: rideId, riderId });
 
@@ -55,7 +55,16 @@ export const cancelRide = async (riderId: string, rideId: string) => {
   return ride;
 };
 
+const findRideById = async (rideId: string) => {
+  const ride = await RideModel.findById(rideId);
+  if (!ride) {
+    throw new AppError(404, "Ride not found.");
+  }
+  return ride;
+};
+
 export const RideServices = {
   createRideRequest,
   cancelRide,
+  findRideById,
 };

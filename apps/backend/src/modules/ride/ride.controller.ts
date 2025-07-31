@@ -23,23 +23,35 @@ const handleRequestRide = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const handleCancelRide = catchAsync(
-  async (req: Request, res: Response) => {
-    const riderId = req.user.id;
-    const rideId = req.params.id;
+const handleCancelRide = catchAsync(async (req: Request, res: Response) => {
+  const riderId = req.user.id;
+  const rideId = req.params.id;
 
-    const ride = await RideServices.cancelRide(riderId, rideId!);
+  const ride = await RideServices.cancelRide(riderId, rideId!);
 
-    sendResponse(res, {
-      statusCode: 200,
-      success: true,
-      message: "Ride cancelled successfully",
-      data: ride,
-    });
-  },
-);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Ride cancelled successfully",
+    data: ride,
+  });
+});
+
+const singleRideRequest = catchAsync(async (req: Request, res: Response) => {
+  const rideId = req.params.id;
+
+  const ride = await RideServices.findRideById(rideId!);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Ride details fetched successfully",
+    data: ride,
+  });
+});
 
 export const RidesController = {
   handleRequestRide,
   handleCancelRide,
+  singleRideRequest,
 };
