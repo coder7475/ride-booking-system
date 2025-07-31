@@ -31,9 +31,7 @@ RidesRouter.get(
 );
 
 // List ride history for current user
-RidesRouter.get("/me", checkAuth(Role.USER), (req, res) => {
-  // Handler to be implemented
-});
+RidesRouter.get("/me", checkAuth(Role.USER), RidesController.listMyRides);
 
 // Driver accepts ride
 RidesRouter.patch("/:id/accept", checkAuth(Role.DRIVER), (req, res) => {

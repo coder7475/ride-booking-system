@@ -50,8 +50,22 @@ const singleRideRequest = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const listMyRides = catchAsync(async (req: Request, res: Response) => {
+  const riderId = req.user.id;
+
+  const rides = await RideServices.findRidesByRiderId(riderId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Ride history fetched successfully",
+    data: rides,
+  });
+});
+
 export const RidesController = {
   handleRequestRide,
   handleCancelRide,
   singleRideRequest,
+  listMyRides,
 };

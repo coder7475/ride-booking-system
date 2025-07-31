@@ -63,8 +63,13 @@ const findRideById = async (rideId: string) => {
   return ride;
 };
 
+const findRidesByRiderId = async (riderId: string) => {
+  return await RideModel.find({ riderId }).sort({ createdAt: -1 });
+};
+
 export const RideServices = {
   createRideRequest,
   cancelRide,
   findRideById,
+  findRidesByRiderId,
 };
