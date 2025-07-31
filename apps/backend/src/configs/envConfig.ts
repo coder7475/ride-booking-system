@@ -43,6 +43,15 @@ const envSchema = z.object({
   JWT_ACCESS_EXPIRES: z.string(),
   JWT_REFRESH_SECRET: z.string(),
   JWT_REFRESH_EXPIRES: z.string(),
+  PASSWORD_HASH_SALT: z
+    .string()
+    .default("12")
+    .transform((val) => {
+      const parsed = Number(val);
+      if (Number.isNaN(parsed))
+        throw new Error("PASSWORD_HASH_SALT must be a valid number");
+      return parsed;
+    }),
 });
 
 // Validate process.env and infer typed env object

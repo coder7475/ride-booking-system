@@ -1,4 +1,5 @@
 import AppError from "@/configs/AppError";
+import { env } from "@/configs/envConfig";
 import { AccountStatus, AuthProviderNames, IAuthProvider } from "@/types/types";
 import { hashPassword } from "@repo/utils";
 
@@ -13,7 +14,7 @@ const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
     throw new AppError(400, "User Already Exist");
   }
 
-  const hashedPassword = hashPassword(password!, 12);
+  const hashedPassword = hashPassword(password!, env.PASSWORD_HASH_SALT);
 
   const authProvider: IAuthProvider = {
     provider: AuthProviderNames.LOCAL,
