@@ -15,6 +15,12 @@ driverRoutes.post(
   DriversControllers.applyForDriver,
 );
 
+driverRoutes.patch(
+  "/me/status",
+  validateZod(UpdateDriverSchema),
+  checkAuth(...Object.values(Role)),
+  DriversControllers.updateOnlineStatus,
+);
 // router.get("/:id", getDriverById);
 // router.put("/:id", validate(UpdateDriverSchema), updateDriver);
 // router.delete("/:id", deleteDriver);

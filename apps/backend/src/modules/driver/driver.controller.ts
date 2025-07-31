@@ -23,7 +23,10 @@ const applyForDriver = catchAsync(async (req: Request, res: Response) => {
 
 const updateOnlineStatus = catchAsync(async (req: Request, res: Response) => {
   const decoded = req.user;
-  const isDriver = await DriverModel.findById(decoded.id);
+
+  const isDriver = await DriverModel.findOne({
+    userId: decoded.id,
+  });
   if (!isDriver) {
     return sendResponse(res, {
       success: false,
@@ -35,8 +38,21 @@ const updateOnlineStatus = catchAsync(async (req: Request, res: Response) => {
 
   const updateStatus = req.body;
 
+  // Only accept onlineStatus in the request body
+  if (
+    !("onlineStatus" in updateStatus) ||
+    Object.keys(updateStatus).length !== 1
+  ) {
+    return sendResponse(res, {
+      success: false,
+      statusCode: 400,
+      message: "Only onlineStatus is accepted in the request body",
+      data: null,
+    });
+  }
+
   const data = await DriverServices.updateDriverStatus(
-    decoded.id,
+    isDriver.id,
     updateStatus,
   );
 
