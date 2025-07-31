@@ -62,6 +62,7 @@
 | Method | Endpoint                     | Description                        |
 | ------ | ---------------------------- | ---------------------------------- |
 | GET    | `/admin/users`               | List all users                     |
+| GET    | `/admin/users/:id`           | Get a single users data            |
 | PATCH  | `/admin/users/:id/status`    | Change user account status         |
 | GET    | `/admin/drivers`             | List all drivers                   |
 | PATCH  | `/admin/drivers/:id/approve` | Approve/reject driver application  |

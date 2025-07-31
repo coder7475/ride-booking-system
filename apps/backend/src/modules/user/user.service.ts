@@ -30,6 +30,16 @@ const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
   return await UserModel.create(user);
 };
 
+const updateUserById = async (userId: string, updateData: Partial<IUser>) => {
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    userId,
+    { $set: updateData },
+    { new: true, runValidators: true, select: "-password" },
+  );
+
+  return updatedUser;
+};
+
 const findUserById = async (userId: string) => {
   return await UserModel.findById(userId).select("-password");
 };
@@ -37,4 +47,5 @@ const findUserById = async (userId: string) => {
 export const UserServices = {
   createUser,
   findUserById,
+  updateUserById,
 };
