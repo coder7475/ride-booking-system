@@ -7,7 +7,7 @@ import { z } from "zod";
 
 export const RideSchema = z.object({
   rider_id: z.string(),
-  driver_id: z.string(),
+  driver_id: z.string().optional(),
   ride_status: z.nativeEnum(RideStatus),
   pickup_location: LocationSchema,
   destination_location: LocationSchema,

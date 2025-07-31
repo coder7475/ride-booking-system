@@ -10,7 +10,7 @@ export interface IRideDocument extends Document, IRide {}
 const RideSchemaMongoose = new Schema<IRideDocument>(
   {
     rider_id: { type: String, required: true, ref: "User" },
-    driver_id: { type: String, required: true, ref: "Driver" },
+    driver_id: { type: String, required: false, ref: "Driver", default: null },
     ride_status: {
       type: String,
       enum: Object.values(RideStatus),
