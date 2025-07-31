@@ -1,3 +1,4 @@
+import { AccountStatus, Role } from "@/types/types";
 import { catchAsync } from "@/utils/asyncHandler";
 import sendResponse from "@/utils/sendResponse";
 import { NextFunction, Request, Response } from "express";
@@ -60,6 +61,20 @@ const getPublicProfile = catchAsync(
     }
 
     const user = await UserServices.findUserById(userId);
+
+    if (
+      !user ||
+      user.account_status !== AccountStatus.ACTIVE ||
+      user.role === Role.ADMIN
+    ) {
+      sendResponse(res, {
+        success: false,
+        statusCode: 403,
+        message: "User profile is not accessible",
+        data: null,
+      });
+      return;
+    }
 
     const publicProfile = user
       ? {
