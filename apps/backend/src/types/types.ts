@@ -59,10 +59,13 @@ export enum RideStatus {
   CANCELLED = "CANCELLED",
 }
 
-export type RideStatusTimestamps = {
-  [status in RideStatus]?: Date;
-};
-
+export interface IRideStatusTimestamps {
+  requested?: Date;
+  accepted?: Date;
+  started?: Date;
+  completed?: Date;
+  canceled?: Date;
+}
 // transactions
 export enum PaymentStatus {
   PENDING = "PENDING",

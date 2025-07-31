@@ -1,7 +1,6 @@
-import { ILocation, RideStatus, RideStatusTimestamps } from "@/types/types";
+import { ILocation, IRideStatusTimestamps, RideStatus } from "@/types/types";
 
 export interface IRide {
-  ride_id: string;
   rider_id: string;
   driver_id: string;
   ride_status: RideStatus;
@@ -10,6 +9,5 @@ export interface IRide {
   transaction_id: string;
   fare_estimated: number;
   fare_final: number;
-  createdAt: Date;
-  timestamps: RideStatusTimestamps;
+  timestamps: IRideStatusTimestamps;
 }

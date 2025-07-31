@@ -1,7 +1,7 @@
+import { LocationSchema } from "@/types/mongoose/location.schema";
 import {
   DriverApprovalStatus,
   DriverOnlineStatus,
-  ILocation,
   IVehicleInfo,
 } from "@/types/types";
 import { Document, model, Model, Schema } from "mongoose";
@@ -9,14 +9,6 @@ import { Document, model, Model, Schema } from "mongoose";
 import { IDriver } from "./driver.interface";
 
 export interface IDriverDoc extends IDriver, Document {}
-
-const LocationSchema = new Schema<ILocation>(
-  {
-    latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true },
-  },
-  { _id: false, versionKey: false },
-);
 
 const VehicleInfoSchema = new Schema<IVehicleInfo>(
   {
