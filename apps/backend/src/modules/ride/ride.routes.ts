@@ -2,12 +2,16 @@ import { checkAuth } from "@/middlewares/CheckAuth";
 import { Role } from "@/types/types";
 import { Router } from "express";
 
+import { RideServices } from "./ride.services";
+
 const RidesRouter: Router = Router();
 
-// Rider requests a new ride - user requets rides
-RidesRouter.post("/request", checkAuth(Role.USER), (req, res) => {
-  // Handler to be implemented
-});
+// Rider requests a new ride - user request rides
+RidesRouter.post(
+  "/request",
+  checkAuth(Role.USER),
+  RideServices.createRideRequest,
+);
 
 // Cancel ride before pickup - user
 RidesRouter.post("/:id/cancel", checkAuth(Role.USER), (req, res) => {
