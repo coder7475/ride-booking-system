@@ -64,7 +64,20 @@ const updateOnlineStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getMe = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user.id;
+  const driver = await DriverServices.findDriverByUserId(userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Your driver profile retrieved successfully",
+    data: driver,
+  });
+});
+
 export const DriversControllers = {
   applyForDriver,
   updateOnlineStatus,
+  getMe,
 };

@@ -11,18 +11,24 @@ const driverRoutes: Router = Router();
 driverRoutes.post(
   "/apply",
   validateZod(CreateDriverSchema),
-  checkAuth(...Object.values(Role)),
+  checkAuth(Role.USER),
   DriversControllers.applyForDriver,
 );
 
 driverRoutes.patch(
   "/me/status",
   validateZod(UpdateDriverSchema),
-  checkAuth(...Object.values(Role)),
+  checkAuth(Role.USER, Role.DRIVER),
   DriversControllers.updateOnlineStatus,
 );
-// router.get("/:id", getDriverById);
-// router.put("/:id", validate(UpdateDriverSchema), updateDriver);
-// router.delete("/:id", deleteDriver);
+
+driverRoutes.get(
+  "/me",
+  checkAuth(Role.DRIVER, Role.USER),
+  DriversControllers.getMe,
+);
+
+// driverRoutes.get("/me/earnings")
+// driverRoutes.get("/me/rides")
 
 export default driverRoutes;

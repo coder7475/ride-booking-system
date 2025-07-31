@@ -26,7 +26,12 @@ const updateDriverStatus = async (
   return updatedDriver;
 };
 
+const findDriverByUserId = async (userId: string) => {
+  return await DriverModel.findOne({ userId });
+};
+
 export const DriverServices = {
   createDriver,
   updateDriverStatus,
+  findDriverByUserId,
 };
