@@ -20,7 +20,7 @@ const moduleRoutes = [
     routes: driverRoutes,
   },
   {
-    path: "rides",
+    path: "/rides",
     routes: RidesRouter,
   },
 ];

@@ -2,7 +2,7 @@ import { checkAuth } from "@/middlewares/CheckAuth";
 import { Role } from "@/types/types";
 import { Router } from "express";
 
-import { RideServices } from "./ride.services";
+import { RidesController } from "./ride.controllers";
 
 const RidesRouter: Router = Router();
 
@@ -10,7 +10,7 @@ const RidesRouter: Router = Router();
 RidesRouter.post(
   "/request",
   checkAuth(Role.USER),
-  RideServices.createRideRequest,
+  RidesController.handleRequestRide,
 );
 
 // Cancel ride before pickup - user
