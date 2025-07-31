@@ -41,18 +41,24 @@ RidesRouter.patch(
 );
 
 // Update ride status (PICKED_UP) - only driver
-RidesRouter.patch("/:id/picked", checkAuth(Role.DRIVER), (req, res) => {
-  // Handler to be implemented
-});
+RidesRouter.patch(
+  "/:id/picked",
+  checkAuth(Role.DRIVER),
+  RidesController.handlePickedUp,
+);
 
 // Update ride status (IN_TRANSIT) - only driver
-RidesRouter.patch("/:id/transit", checkAuth(Role.DRIVER), (req, res) => {
-  // Handler to be implemented
-});
+RidesRouter.patch(
+  "/:id/transit",
+  checkAuth(Role.DRIVER),
+  RidesController.handleInTransit,
+);
 
 // Update ride status (COMPLETED) - only driver
-RidesRouter.patch("/:id/complete", checkAuth(Role.DRIVER), (req, res) => {
-  // Handler to be implemented
-});
+RidesRouter.patch(
+  "/:id/complete",
+  checkAuth(Role.DRIVER),
+  RidesController.handleCompleted,
+);
 
 export default RidesRouter;

@@ -77,10 +77,55 @@ const handleAcceptRide = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const handlePickedUp = catchAsync(async (req: Request, res: Response) => {
+  const driverId = req.user.id;
+  const rideId = req.params.id;
+
+  const ride = await RideServices.pickedUp(driverId, rideId!);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Ride marked as picked up successfully",
+    data: ride,
+  });
+});
+
+const handleInTransit = catchAsync(async (req: Request, res: Response) => {
+  const driverId = req.user.id;
+  const rideId = req.params.id;
+
+  const ride = await RideServices.inTransit(driverId, rideId!);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Ride marked as in transit successfully",
+    data: ride,
+  });
+});
+
+const handleCompleted = catchAsync(async (req: Request, res: Response) => {
+  const driverId = req.user.id;
+  const rideId = req.params.id;
+
+  const ride = await RideServices.completedRide(driverId, rideId!);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Ride marked as completed successfully",
+    data: ride,
+  });
+});
+
 export const RidesController = {
   handleRequestRide,
   handleCancelRide,
   singleRideRequest,
   listMyRides,
   handleAcceptRide,
+  handlePickedUp,
+  handleInTransit,
+  handleCompleted,
 };
