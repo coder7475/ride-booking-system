@@ -28,6 +28,7 @@ const login = catchAsync(
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
     });
+
     res.cookie("refreshToken", generatedTokens.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

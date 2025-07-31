@@ -1,4 +1,6 @@
 import AppError from "@/configs/AppError";
+import { UserModel } from "@/modules/user/user.model";
+import { AccountStatus } from "@/types/types";
 import { verifyToken } from "@/utils/jwtHelpers";
 import { NextFunction, Request, Response } from "express";
 
@@ -10,7 +12,7 @@ interface DecodedUser {
 
 export const checkAuth =
   (...allowedRoles: string[]) =>
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, _res: Response, next: NextFunction) => {
     try {
       const authHeader = req.headers?.authorization;
 
@@ -20,6 +22,23 @@ export const checkAuth =
 
       const token = authHeader.split(" ")[1];
       const decoded = verifyToken(token!) as DecodedUser;
+      const isUser = await UserModel.findOne({ email: decoded.email });
+
+      if (!isUser) {
+        throw new AppError(400, "User does not exits!");
+      }
+
+      if (isUser.account_status === AccountStatus.BLOCKED) {
+        throw new AppError(403, "User is blocked!");
+      }
+
+      if (isUser.account_status === AccountStatus.SUSPENDED) {
+        throw new AppError(403, "User is suspended!");
+      }
+
+      if (isUser.account_status === AccountStatus.DEACTIVATED) {
+        throw new AppError(403, "User is deleted!");
+      }
 
       if (
         !decoded?.role ||
