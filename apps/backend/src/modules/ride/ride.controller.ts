@@ -63,9 +63,24 @@ const listMyRides = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const handleAcceptRide = catchAsync(async (req: Request, res: Response) => {
+  const driverId = req.user.id;
+  const rideId = req.params.id;
+
+  const ride = await RideServices.acceptRide(driverId, rideId!);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Ride accepted successfully",
+    data: ride,
+  });
+});
+
 export const RidesController = {
   handleRequestRide,
   handleCancelRide,
   singleRideRequest,
   listMyRides,
+  handleAcceptRide,
 };

@@ -34,11 +34,13 @@ RidesRouter.get(
 RidesRouter.get("/me", checkAuth(Role.USER), RidesController.listMyRides);
 
 // Driver accepts ride
-RidesRouter.patch("/:id/accept", checkAuth(Role.DRIVER), (req, res) => {
-  // Handler to be implemented
-});
+RidesRouter.patch(
+  "/:id/accept",
+  checkAuth(Role.DRIVER),
+  RidesController.handleAcceptRide,
+);
 
-// Update ride status (PICKED_UP, IN_TRANSIT, COMPLETED) - only driver
+// Update ride status (PICKED_UP) - only driver
 RidesRouter.patch("/:id/picked", checkAuth(Role.DRIVER), (req, res) => {
   // Handler to be implemented
 });

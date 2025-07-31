@@ -63,6 +63,7 @@ export interface IRideStatusTimestamps {
   requested?: string;
   accepted?: string;
   started?: string;
+  inTransit?: string;
   completed?: string;
   canceled?: string;
 }
