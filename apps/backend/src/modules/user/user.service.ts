@@ -30,6 +30,11 @@ const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
   return await UserModel.create(user);
 };
 
-export const userService = {
+const findUserById = async (userId: string) => {
+  return await UserModel.findById(userId).select("-password");
+};
+
+export const UserServices = {
   createUser,
+  findUserById,
 };

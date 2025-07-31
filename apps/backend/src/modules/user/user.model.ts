@@ -3,7 +3,7 @@ import { Document, Model, model, Schema } from "mongoose";
 
 import { IUser } from "./user.interface";
 
-interface IUserDoc extends IUser, Document {}
+export interface IUserDoc extends IUser, Document {}
 
 const MongooseAuthProviderSchema = new Schema<IAuthProvider>(
   {

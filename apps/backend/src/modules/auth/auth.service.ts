@@ -32,8 +32,8 @@ export const login = async (credentials: Partial<IUser>) => {
   }
 
   const payload = {
+    id: isUser._id,
     email: isUser.email,
-    password: isUser.password,
     role: isUser.role,
   };
 
@@ -67,8 +67,8 @@ const reissueAccessToken = async (refreshToken: string) => {
   }
 
   const payload = {
+    id: isUser._id,
     email: isUser.email,
-    password: isUser.password,
     role: isUser.role,
   };
 

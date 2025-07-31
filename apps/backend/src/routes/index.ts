@@ -1,5 +1,5 @@
 import authRoutes from "@/modules/auth/auth.routes";
-import userRoutes from "@/modules/user/users.routes";
+import userRoutes from "@/modules/user/user.routes";
 import { Router } from "express";
 
 const indexRouter: Router = Router();

@@ -6,8 +6,8 @@ import { NextFunction, Request, Response } from "express";
 
 interface DecodedUser {
   id: string;
-  role: string;
   email?: string;
+  role: string;
 }
 
 export const checkAuth =
