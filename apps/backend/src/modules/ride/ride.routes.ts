@@ -1,14 +1,17 @@
 import { checkAuth } from "@/middlewares/CheckAuth";
+import { validateZod } from "@/middlewares/ValidateRequest";
 import { Role } from "@/types/types";
 import { Router } from "express";
 
 import { RidesController } from "./ride.controller";
+import { CreateRideSchema } from "./ride.schema";
 
 const RidesRouter: Router = Router();
 
 // Rider requests a new ride - user request rides
 RidesRouter.post(
   "/request",
+  validateZod(CreateRideSchema),
   checkAuth(Role.USER),
   RidesController.handleRequestRide,
 );

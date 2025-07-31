@@ -5,16 +5,17 @@ import {
 } from "@/types/zod/schemas";
 import { z } from "zod";
 
-export const RideSchema = z.object({
-  riderId: z.string(),
-  driverId: z.string().optional(),
-  rideStatus: z.nativeEnum(RideStatus),
+export const CreateRideSchema = z.object({
   pickupLocation: LocationSchema,
   destinationLocation: LocationSchema,
-  transactionId: z.string().optional(),
   fareEstimated: z.number(),
   fareFinal: z.number().optional(),
-  timestamps: rideStatusTimestampsSchema,
+  timestamps: rideStatusTimestampsSchema.optional(),
+});
+export const UpdateRideSchema = CreateRideSchema.partial().extend({
+  driverId: z.string().optional(),
+  rideStatus: z.nativeEnum(RideStatus).optional(),
 });
 
-export type RideZodType = z.infer<typeof RideSchema>;
+export type CreateRideZodType = z.infer<typeof CreateRideSchema>;
+export type UpdateRideZodType = z.infer<typeof UpdateRideSchema>;
