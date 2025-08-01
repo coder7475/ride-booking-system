@@ -1,3 +1,4 @@
+import adminRoutes from "@/modules/admin/admin.routes";
 import authRoutes from "@/modules/auth/auth.routes";
 import driverRoutes from "@/modules/driver/driver.routes";
 import RidesRouter from "@/modules/ride/ride.routes";
@@ -22,6 +23,10 @@ const moduleRoutes = [
   {
     path: "/rides",
     routes: RidesRouter,
+  },
+  {
+    path: "/admin",
+    routes: adminRoutes,
   },
 ];
 

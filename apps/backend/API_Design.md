@@ -67,7 +67,8 @@
 | GET    | `/admin/users/:id`           | Get a single users data            |
 | PATCH  | `/admin/users/:id/status`    | Change user account status         |
 | GET    | `/admin/drivers`             | List all drivers                   |
-| PATCH  | `/admin/drivers/:id/approve` | Approve/reject driver application  |
+| PATCH  | `/admin/drivers/:id/approve` | Approve driver application         |
+| PATCH  | `/admin/drivers/:id/reject`  | Reject driver application          |
 | GET    | `/admin/reports`             | Get flagged issues or ride reports |
 
 ---
