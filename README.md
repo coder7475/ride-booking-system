@@ -1,45 +1,193 @@
-# TypeScript Monorepo starter
+# Ride Booking System
 
-This Turborepo starter is maintained by the [Robiul Hossain](https://robiulhossain.com).
+A modern, scalable ride-booking platform built with a TypeScript monorepo architecture using Turborepo. This system provides comprehensive functionality for riders, drivers, and administrators similar to popular ride-sharing services like Uber or Lyft.
 
-## Using this example
+## 🌟 Features
 
-Run the following command:
+- **🔐 Role-based Authentication**: Secure JWT-based auth for riders, drivers, and admins
+- **🚗 Real-time Ride Management**: Complete ride lifecycle from request to completion
+- **💰 Transaction Processing**: Integrated payment and earnings system
+- **🏗️ Scalable Architecture**: Modular monorepo structure with shared packages
 
-```sh
-npx create-turbo@latest
-```
-
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
+## 🏗️ Architecture
 
 This monorepo contains the following apps and packages:
 
-#### Apps
+### 📱 Applications
 
-- `docs`: a [Next.js](https://nextjs.org/) app for documentation
-- `express`: a robust Express.js application with user authentication and MongoDB integration
-- `node-framework`: a custom Node.js framework implementation
+- **`backend`**: Express.js REST API with MongoDB integration
+  - User authentication and authorization
+  - Ride management system
+  - Driver and rider functionality
+  - Admin panel APIs
+  - Transaction processing
+- **`frontend`**: Next.js application for the user interface
+  - Responsive design
+  - Role-based UI components
+  - Real-time updates
 
-#### Packages
+### 📦 Shared Packages
 
-- `@repo/ui`: React component library shared across applications
-- `@repo/db`: Database utilities and MongoDB connector
-- `@repo/ds`: Data structures implementation (Queue, Stack, RadixTree)
-- `@repo/framework`: Custom Node.js framework core
-- `@repo/math`: Mathematical utilities
-- `@repo/utils`: Common utilities including JWT and password hashing
+- **`@repo/db`**: Database utilities and MongoDB connector with Redis support
+- **`@repo/utils`**: Common utilities including:
+  - JWT token management
+  - Password hashing
+  - Email providers (Gmail, Resend)
+  - OTP generation
+  - Transaction ID generation
+  - URL slug utilities
+- **`@repo/math`**: Mathematical utilities for fare calculations and parsing
+- **`@repo/ui`**: Shared React component library
 
-#### Configs
+### ⚙️ Configuration Packages
 
-- `@repo/eslint-config`: ESLint configurations for Next.js and React
-- `@repo/prettier-config`: Prettier formatting configurations
-- `@repo/typescript-config`: TypeScript configurations for different project types
+- **`@repo/eslint-config`**: ESLint configurations for Next.js and React
+- **`@repo/prettier-config`**: Prettier formatting configurations
+- **`@repo/typescript-config`**: TypeScript configurations for different project types
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/) with strict type checking.
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Node.js** >= 18.0.0
+- **pnpm** >= 8.0.0 (recommended package manager)
+- **MongoDB** database
+
+### Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone <repository-url>
+   cd ride-booking-system
+   ```
+
+2. **Install dependencies:**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Environment Setup:**
+
+   ```bash
+   # Copy environment files
+   cp apps/backend/.env.example apps/backend/.env
+   cp apps/frontend/.env.example apps/frontend/.env
+   ```
+
+4. **Configure Environment Variables:**
+   ```env
+   # Backend (.env)
+   NODE_ENV=development
+   PORT=3000
+   HOST=localhost
+   DB_URI=mongodb://localhost:27017/ride-booking
+   JWT_ACCESS_SECRET=your-access-secret
+   JWT_REFRESH_SECRET=your-refresh-secret
+   ```
+
+### Development
+
+```bash
+# Run all applications in development mode
+pnpm dev
+
+# Run only the backend
+pnpm backend
+
+# Run specific app
+pnpm dev --filter=frontend
+pnpm dev --filter=backend
+```
+
+### Production Build
+
+```bash
+# Build all packages and apps
+pnpm build
+
+# Start production server
+cd apps/backend && pnpm start
+```
+
+## 📚 API Documentation
+
+The backend provides a comprehensive REST API with the following endpoints:
+
+### 🔐 Authentication
+
+- `POST /api/v1/auth/register` - Register a new user
+- `POST /api/v1/auth/login` - Login and receive JWT tokens
+- `POST /api/v1/auth/refresh-token` - Refresh access token
+- `POST /api/v1/auth/logout` - Logout user
+
+### 👤 User Management
+
+- `GET /api/v1/user/me` - Get current user profile
+- `PATCH /api/v1/user/me` - Update user profile
+- `DELETE /api/v1/user/me` - Delete user account
+
+### 🚗 Driver Operations
+
+- `POST /api/v1/drivers/apply` - Apply to become a driver
+- `GET /api/v1/drivers/me` - Get driver profile
+- `PATCH /api/v1/drivers/me/status` - Update availability status
+- `GET /api/v1/drivers/me/earnings` - View earnings history
+
+### 🚕 Ride Management
+
+- `POST /api/v1/rides/request` - Request a new ride
+- `GET /api/v1/rides/fare` - Estimate ride fare
+- `GET /api/v1/rides/me` - Get ride history
+- `PATCH /api/v1/rides/:id/accept` - Accept ride (driver)
+- `PATCH /api/v1/rides/:id/complete` - Complete ride (driver)
+- `POST /api/v1/rides/:id/cancel` - Cancel ride
+
+### 💰 Transactions
+
+- `PATCH /api/v1/transactions/pay` - Process ride payment
+
+### 👨‍💼 Admin Panel
+
+- `GET /api/v1/admin/users` - List all users
+- `GET /api/v1/admin/drivers` - List all drivers
+- `GET /api/v1/admin/rides` - List all rides
+- `PATCH /api/v1/admin/drivers/:id/approve` - Approve driver application
+- `PATCH /api/v1/admin/users/:id/block` - Block user account
+
+For detailed API documentation, see [API_Design.md](apps/backend/API_Design.md).
+
+## 🏗️ Project Structure
+
+```
+ride-booking-system/
+├── apps/
+│   ├── backend/              # Express.js API server
+│   │   ├── src/
+│   │   │   ├── modules/      # Feature modules (auth, user, ride, etc.)
+│   │   │   ├── middlewares/  # Express middlewares
+│   │   │   ├── utils/        # Utility functions
+│   │   │   ├── types/        # TypeScript type definitions
+│   │   │   └── configs/      # Configuration files
+│   │   └── dist/             # Compiled JavaScript
+│   └── frontend/             # Next.js application
+│       ├── src/
+│       ├── public/
+│       └── .next/
+├── packages/
+│   ├── db/                   # Database utilities
+│   ├── utils/                # Shared utilities
+│   ├── math/                 # Mathematical functions
+│   └── ui/                   # React components
+├── configs/
+│   ├── eslint-config/        # ESLint configurations
+│   ├── prettier-config/      # Prettier configurations
+│   └── typescript-config/    # TypeScript configurations
+└── turbo.json                # Turborepo configuration
+```
 
 ### Utilities
 
@@ -49,60 +197,51 @@ This Turborepo has some additional tools already setup for you:
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
 
-### Build
+## 🚀 Deployment
 
-To build all apps and packages, run the following command:
+### Backend Deployment
 
-```
-cd my-turborepo
+The backend is configured for deployment on platforms like Vercel, Railway, or any Node.js hosting service.
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+```bash
+# Build for production
+pnpm build --filter=backend
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+# Start production server
+cd apps/backend && pnpm start
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### Frontend Deployment
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+The frontend can be deployed to Vercel, Netlify, or any static hosting service.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+```bash
+# Build for production
+pnpm build --filter=frontend
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+# Static export (if needed)
+pnpm export --filter=frontend
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## 🛠️ Available Scripts
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+```bash
+# Development
+pnpm dev              # Run all apps in development
+pnpm backend          # Run only backend
+pnpm dev --filter=*   # Run specific app
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+# Building
+pnpm build            # Build all packages and apps
+pnpm build --filter=* # Build specific package
+
+# Code Quality
+pnpm lint             # Lint all packages
+pnpm format           # Format code with Prettier
+pnpm check-types      # Type check all packages
+
+# Cleaning
+pnpm clean            # Clean all build artifacts
 ```
 
 ### Remote Caching
@@ -140,13 +279,8 @@ yarn exec turbo link
 pnpm exec turbo link
 ```
 
-## Useful Links
+## 📄 License
 
-Learn more about the power of Turborepo:
+This project is licensed under the [MIT License](LICENSE).
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+You are free to use, modify, and distribute this software in accordance with the terms of the MIT License.
