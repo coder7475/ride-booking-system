@@ -7,23 +7,21 @@ export interface ITransactionDocument extends Document, ITransaction {}
 
 const TransactionSchemaMongoose = new Schema<ITransactionDocument>(
   {
-    transaction_id: { type: String, required: true, unique: true },
+    transactionId: { type: String, required: true, unique: true },
     amount: { type: Number, required: true },
-    payment_status: {
+    paymentStatus: {
       type: String,
       enum: Object.values(PaymentStatus),
       default: PaymentStatus.PENDING,
     },
-    payment_gateway: {
+    paymentGateway: {
       type: String,
       enum: Object.values(PaymentGateway),
-      required: true,
+      default: PaymentGateway.SSLCOMMERZ,
     },
-    invoice_url: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    invoiceUrl: { type: String, default: "" },
   },
-  { timestamps: false },
+  { timestamps: true, versionKey: false },
 );
 
 export const TransactionModel = model<ITransactionDocument>(

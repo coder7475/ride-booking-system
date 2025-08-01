@@ -178,6 +178,7 @@ const completedRide = async (driverId: string, rideId: string) => {
   };
 
   await ride.save();
+
   return ride;
 };
 
