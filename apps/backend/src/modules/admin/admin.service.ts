@@ -1,7 +1,8 @@
 import AppError from "@/configs/AppError";
-import { DriverApprovalStatus } from "@/types/types";
+import { DriverApprovalStatus, Role } from "@/types/types";
 
 import { DriverModel } from "../driver/driver.model";
+import { UserModel } from "../user/user.model";
 
 const approveDriver = async (driverId: string) => {
   const driver = await DriverModel.findById(driverId);
@@ -19,6 +20,18 @@ const approveDriver = async (driverId: string) => {
     { approvalStatus: DriverApprovalStatus.APPROVED },
     { new: true },
   );
+
+  if (updatedDriver) {
+    const userId = updatedDriver.userId;
+    const updateUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { role: Role.DRIVER },
+      { new: true },
+    );
+    if (!updateUser) {
+      throw new AppError(404, "User NOT Found!");
+    }
+  }
 
   return updatedDriver;
 };
