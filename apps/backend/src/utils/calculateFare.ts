@@ -37,7 +37,7 @@ export const calculateFareEstimate = (
   config: FareConfig = baseConfig,
 ): number => {
   const distanceKm = calculateHaversineDistance(pickup, destination);
-  const fare = config.baseFare + distanceKm * config.perKmRate;
+  const fare = Math.round(config.baseFare + distanceKm * config.perKmRate);
 
   return Math.max(fare, config.minimumFare ?? 0);
 };
