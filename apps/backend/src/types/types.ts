@@ -81,3 +81,9 @@ export enum PaymentGateway {
   BKASH = "BKASH",
   SSLCOMMERZ = "SSLCOMMERZ",
 }
+
+export type FareConfig = {
+  baseFare: number;
+  perKmRate: number;
+  minimumFare?: number;
+};

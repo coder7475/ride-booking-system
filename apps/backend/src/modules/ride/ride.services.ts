@@ -1,7 +1,9 @@
 import AppError from "@/configs/AppError";
 import { RideStatus } from "@/types/types";
+import { calculateFareEstimate } from "@/utils/calculateFare";
 import { generateTransactionId } from "@repo/utils";
 
+import { TransactionModel } from "../transaction/transaction.model";
 import { IRide } from "./ride.interface";
 import { RideModel } from "./ride.model";
 
@@ -177,9 +179,26 @@ const completedRide = async (driverId: string, rideId: string) => {
     completed: new Date().toISOString(),
   };
 
+  // Calculate Final Fare
+  const finalFare = calculateFareEstimate(
+    ride.pickupLocation,
+    ride.destinationLocation,
+  );
+  ride.fareFinal = finalFare;
+
   await ride.save();
 
-  return ride;
+  const FinalTransaction = {
+    transactionId: ride.transactionId,
+    amount: finalFare,
+  };
+
+  const transaction = await TransactionModel.create(FinalTransaction);
+
+  return {
+    ride,
+    transaction,
+  };
 };
 
 export const RideServices = {

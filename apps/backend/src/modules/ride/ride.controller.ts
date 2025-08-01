@@ -109,13 +109,13 @@ const handleCompleted = catchAsync(async (req: Request, res: Response) => {
   const driverId = req.user.id;
   const rideId = req.params.id;
 
-  const ride = await RideServices.completedRide(driverId, rideId!);
+  const data = await RideServices.completedRide(driverId, rideId!);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: "Ride marked as completed successfully",
-    data: ride,
+    data,
   });
 });
 
