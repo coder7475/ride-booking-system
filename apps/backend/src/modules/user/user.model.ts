@@ -18,15 +18,15 @@ const MongooseAuthProviderSchema = new Schema<IAuthProvider>(
 const UserMongooseSchema = new Schema<IUserDoc>(
   {
     email: { type: String, required: true, unique: true },
-    user_name: { type: String, required: true },
+    userName: { type: String, required: true },
     password: { type: String, required: true },
     role: { type: String, enum: Object.values(Role), default: Role.USER },
-    account_status: {
+    accountStatus: {
       type: String,
       enum: Object.values(AccountStatus),
       default: AccountStatus.ACTIVE,
     },
-    auth_providers: [MongooseAuthProviderSchema],
+    authProviders: [MongooseAuthProviderSchema],
   },
   { timestamps: true, versionKey: false },
 );

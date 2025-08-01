@@ -64,7 +64,7 @@ const getPublicProfile = catchAsync(
 
     if (
       !user ||
-      user.account_status !== AccountStatus.ACTIVE ||
+      user.accountStatus !== AccountStatus.ACTIVE ||
       user.role === Role.ADMIN
     ) {
       sendResponse(res, {
@@ -78,7 +78,7 @@ const getPublicProfile = catchAsync(
 
     const publicProfile = user
       ? {
-          name: user.user_name,
+          name: user.userName,
           email: user.email,
         }
       : null;

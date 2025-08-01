@@ -15,13 +15,13 @@ export const login = async (credentials: Partial<IUser>) => {
     throw new AppError(400, "User does not exits!");
   }
 
-  if (isUser.account_status === AccountStatus.BLOCKED) {
+  if (isUser.accountStatus === AccountStatus.BLOCKED) {
     throw new AppError(403, "User is blocked!");
   }
-  if (isUser.account_status === AccountStatus.SUSPENDED) {
+  if (isUser.accountStatus === AccountStatus.SUSPENDED) {
     throw new AppError(403, "User is suspended!");
   }
-  if (isUser.account_status === AccountStatus.DEACTIVATED) {
+  if (isUser.accountStatus === AccountStatus.DEACTIVATED) {
     throw new AppError(403, "User is deleted!");
   }
 
@@ -56,13 +56,13 @@ const reissueAccessToken = async (refreshToken: string) => {
   if (!isUser) {
     throw new AppError(400, "User does not exits!");
   }
-  if (isUser.account_status === AccountStatus.BLOCKED) {
+  if (isUser.accountStatus === AccountStatus.BLOCKED) {
     throw new AppError(403, "User is blocked!");
   }
-  if (isUser.account_status === AccountStatus.SUSPENDED) {
+  if (isUser.accountStatus === AccountStatus.SUSPENDED) {
     throw new AppError(403, "User is suspended!");
   }
-  if (isUser.account_status === AccountStatus.DEACTIVATED) {
+  if (isUser.accountStatus === AccountStatus.DEACTIVATED) {
     throw new AppError(403, "User is deleted!");
   }
 

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const CreateUserSchema = z.object({
-  user_name: z
+  userName: z
     .string({ invalid_type_error: "Name must be string" })
     .min(2, { message: "Name must be at least 2 characters long." })
     .max(50, { message: "Name cannot exceed 50 characters." }),

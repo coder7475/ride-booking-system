@@ -24,7 +24,7 @@ const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
   const user: Partial<IUser> = {
     email,
     password: hashedPassword,
-    auth_providers: [authProvider],
+    authProviders: [authProvider],
     ...data,
   };
 
@@ -47,7 +47,7 @@ const findUserById = async (userId: string) => {
 
 const deleteUser = async (userId: string) => {
   const updateData = {
-    account_status: AccountStatus.DEACTIVATED,
+    accountStatus: AccountStatus.DEACTIVATED,
   };
   const deletedUser = await UserModel.findByIdAndUpdate(
     userId,

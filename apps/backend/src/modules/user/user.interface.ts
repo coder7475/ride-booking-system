@@ -2,12 +2,12 @@ import { AccountStatus, IAuthProvider, Role } from "@/types/types";
 import { Types } from "mongoose";
 
 export interface IUser {
-  user_name: string;
+  userName: string;
   email: string;
   password: string;
   role: Role;
-  account_status: AccountStatus;
-  auth_providers: IAuthProvider[];
+  accountStatus: AccountStatus;
+  authProviders: IAuthProvider[];
   createdAt: Date;
   updatedAt: Date;
 }

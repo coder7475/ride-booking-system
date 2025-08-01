@@ -121,11 +121,11 @@ const blockUser = async (userId: string) => {
     throw new AppError(404, "User not found");
   }
 
-  if (user.account_status === AccountStatus.BLOCKED) {
+  if (user.accountStatus === AccountStatus.BLOCKED) {
     throw new AppError(400, "User is already blocked");
   }
 
-  user.account_status = AccountStatus.BLOCKED;
+  user.accountStatus = AccountStatus.BLOCKED;
   await user.save();
 
   return user;
@@ -137,11 +137,11 @@ const unblockUser = async (userId: string) => {
     throw new AppError(404, "User not found");
   }
 
-  if (user.account_status !== AccountStatus.BLOCKED) {
+  if (user.accountStatus !== AccountStatus.BLOCKED) {
     throw new AppError(400, "User is not blocked");
   }
 
-  user.account_status = AccountStatus.ACTIVE;
+  user.accountStatus = AccountStatus.ACTIVE;
   await user.save();
 
   return user;
