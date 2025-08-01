@@ -6,6 +6,7 @@ import helmet from "helmet";
 
 import { env } from "./configs/envConfig";
 import { middlewares } from "./middlewares";
+import sendResponse from "./utils/sendResponse";
 
 const app: Express = express();
 
@@ -19,14 +20,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 
 app.use("/api/v1", indexRouter);
-app.use("/", (_req, res) => {
-  return res.status(200).json({
+
+// Root route handler
+app.get("/", (_req, res) => {
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
     message: "Welcome to Ride Sharing System!",
+    data: null,
   });
 });
 
-// Not found route handler
-app.use(middlewares.notFoundRoute);
+// Not found route handler (should be after all valid routes)
+app.all("*", middlewares.notFoundRoute);
 // Global error handler
 app.use(middlewares.globalErrorHandler);
 
