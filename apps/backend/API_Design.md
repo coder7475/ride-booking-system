@@ -46,8 +46,7 @@
 | PATCH  | `/rides/:id/picked`   | Update ride status to PICKED_UP (driver only)  |
 | PATCH  | `/rides/:id/transit`  | Update ride status to IN_TRANSIT (driver only) |
 | PATCH  | `/rides/:id/complete` | Update ride status to COMPLETED (driver only)  |
-
----
+| POST   | `/rides/fare`         | Estimate fare of a ride                        |
 
 ### 💰 **Transaction APIs**
 

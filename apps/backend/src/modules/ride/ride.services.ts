@@ -3,6 +3,7 @@ import { RideStatus } from "@/types/types";
 import { calculateFareEstimate } from "@/utils/calculateFare";
 import { generateTransactionId } from "@repo/utils";
 
+import { DriverModel } from "../driver/driver.model";
 import { TransactionModel } from "../transaction/transaction.model";
 import { IRide } from "./ride.interface";
 import { RideModel } from "./ride.model";
@@ -154,6 +155,7 @@ const inTransit = async (driverId: string, rideId: string) => {
 };
 
 const completedRide = async (driverId: string, rideId: string) => {
+  const driver = await DriverModel.findById(driverId);
   const ride = await RideModel.findById(rideId);
 
   if (!ride) {
@@ -182,7 +184,7 @@ const completedRide = async (driverId: string, rideId: string) => {
   // Calculate Final Fare
   const finalFare = calculateFareEstimate(
     ride.pickupLocation,
-    ride.destinationLocation,
+    driver?.driverLocation!,
   );
   ride.fareFinal = finalFare;
 
