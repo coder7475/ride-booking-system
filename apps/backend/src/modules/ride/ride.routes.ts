@@ -4,10 +4,18 @@ import { Role } from "@/types/types";
 import { Router } from "express";
 
 import { RidesController } from "./ride.controller";
-import { CreateRideSchema } from "./ride.schema";
+import { CreateRideSchema, UpdateRideSchema } from "./ride.schema";
 
 const RidesRouter: Router = Router();
 
+// Estimate fare of a ride
+RidesRouter.get(
+  "/fare",
+
+  // checkAuth(Role.USER),
+
+  RidesController.estimateFare,
+);
 // Rider requests a new ride - user request rides
 RidesRouter.post(
   "/request",

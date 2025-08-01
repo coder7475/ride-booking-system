@@ -1,3 +1,4 @@
+import { ILocation } from "@/types/types";
 import { catchAsync } from "@/utils/asyncHandler";
 import sendResponse from "@/utils/sendResponse";
 import { Request, Response } from "express";
@@ -119,6 +120,42 @@ const handleCompleted = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const estimateFare = catchAsync(async (req: Request, res: Response) => {
+  // Get locations from params and create pickup and destination location
+  const { pickupLat, pickupLng, destLat, destLng } = req.query;
+
+  if (
+    typeof pickupLat !== "string" ||
+    typeof pickupLng !== "string" ||
+    typeof destLat !== "string" ||
+    typeof destLng !== "string"
+  ) {
+    throw new Error("Missing or invalid location parameters");
+  }
+
+  const pickupLocation: ILocation = {
+    latitude: parseFloat(pickupLat),
+    longitude: parseFloat(pickupLng),
+  };
+
+  const destinationLocation: ILocation = {
+    latitude: parseFloat(destLat),
+    longitude: parseFloat(destLng),
+  };
+
+  const fare = await RideServices.estimateFare(
+    pickupLocation,
+    destinationLocation,
+  );
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Fare estimated successfully",
+    data: { fare },
+  });
+});
+
 export const RidesController = {
   handleRequestRide,
   handleCancelRide,
@@ -128,4 +165,5 @@ export const RidesController = {
   handlePickedUp,
   handleInTransit,
   handleCompleted,
+  estimateFare,
 };

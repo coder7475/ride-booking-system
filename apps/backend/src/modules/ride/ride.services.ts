@@ -1,5 +1,5 @@
 import AppError from "@/configs/AppError";
-import { RideStatus } from "@/types/types";
+import { ILocation, RideStatus } from "@/types/types";
 import { calculateFareEstimate } from "@/utils/calculateFare";
 import { generateTransactionId } from "@repo/utils";
 
@@ -203,6 +203,17 @@ const completedRide = async (driverId: string, rideId: string) => {
   };
 };
 
+const estimateFare = async (
+  pickupLocation: ILocation,
+  destinationLocation: ILocation,
+): Promise<number> => {
+  const estimatedFare = calculateFareEstimate(
+    pickupLocation,
+    destinationLocation,
+  );
+  return estimatedFare;
+};
+
 export const RideServices = {
   createRideRequest,
   cancelRide,
@@ -212,4 +223,5 @@ export const RideServices = {
   pickedUp,
   inTransit,
   completedRide,
+  estimateFare,
 };
