@@ -38,15 +38,15 @@
 
 | Method | Endpoint              | Description                                    |
 | ------ | --------------------- | ---------------------------------------------- |
+| GET    | `/rides/fare`         | Estimate fare of a ride                        |
+| GET    | `/rides/me`           | List ride history for current user             |
 | POST   | `/rides/request`      | Rider requests a new ride                      |
 | POST   | `/rides/:id/cancel`   | Cancel ride before pickup                      |
 | GET    | `/rides/:id`          | Get ride details                               |
-| GET    | `/rides/me`           | List ride history for current user             |
 | PATCH  | `/rides/:id/accept`   | Driver accepts ride                            |
 | PATCH  | `/rides/:id/picked`   | Update ride status to PICKED_UP (driver only)  |
 | PATCH  | `/rides/:id/transit`  | Update ride status to IN_TRANSIT (driver only) |
 | PATCH  | `/rides/:id/complete` | Update ride status to COMPLETED (driver only)  |
-| GET    | `/rides/fare?`        | Estimate fare of a ride                        |
 
 ### 💰 **Transaction APIs**
 

@@ -9,13 +9,15 @@ import { CreateRideSchema, UpdateRideSchema } from "./ride.schema";
 const RidesRouter: Router = Router();
 
 // Estimate fare of a ride
+RidesRouter.get("/fare", RidesController.estimateFare);
+
+// List ride history for current user
 RidesRouter.get(
-  "/fare",
-
-  // checkAuth(Role.USER),
-
-  RidesController.estimateFare,
+  "/me",
+  checkAuth(...Object.values(Role)),
+  RidesController.listMyRides,
 );
+
 // Rider requests a new ride - user request rides
 RidesRouter.post(
   "/request",
@@ -37,9 +39,6 @@ RidesRouter.get(
   checkAuth(...Object.values(Role)),
   RidesController.singleRideRequest,
 );
-
-// List ride history for current user
-RidesRouter.get("/me", checkAuth(Role.USER), RidesController.listMyRides);
 
 // Driver accepts ride
 RidesRouter.patch(
