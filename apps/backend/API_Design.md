@@ -30,7 +30,6 @@
 | GET    | `/drivers/me`          | Get driver profile                |
 | PATCH  | `/drivers/me/status`   | Update online/availability status |
 | GET    | `/drivers/me/earnings` | View earning history              |
-| GET    | `/drivers/me/rides`    | View ride history                 |
 
 ---
 
@@ -50,32 +49,23 @@
 
 ### 💰 **Transaction APIs**
 
-| Method | Endpoint            | Description                       |
-| ------ | ------------------- | --------------------------------- |
-| GET    | `/transactions/:id` | Get transaction details           |
-| GET    | `/transactions/me`  | List transactions (user-specific) |
-| PATCH  | `/transactions/pay` | Process ride payment              |
+| Method | Endpoint            | Description          |
+| ------ | ------------------- | -------------------- |
+| PATCH  | `/transactions/pay` | Process ride payment |
 
 ---
 
 ### 💼 **Admin APIs**
 
-| Method | Endpoint                     | Description                        |
-| ------ | ---------------------------- | ---------------------------------- |
-| GET    | `/admin/users`               | List all users                     |
-| GET    | `/admin/users/:id`           | Get a single users data            |
-| PATCH  | `/admin/users/:id/status`    | Change user account status         |
-| GET    | `/admin/drivers`             | List all drivers                   |
-| PATCH  | `/admin/drivers/:id/approve` | Approve driver application         |
-| PATCH  | `/admin/drivers/:id/reject`  | Reject driver application          |
-| GET    | `/admin/reports`             | Get flagged issues or ride reports |
+| Method | Endpoint                     | Description                |
+| ------ | ---------------------------- | -------------------------- |
+| GET    | `/admin/users`               | List all users             |
+| GET    | `/admin/drivers`             | List all drivers           |
+| GET    | `/admin/rides`               | List all rides             |
+| GET    | `/admin/users/:id`           | Get a single users data    |
+| PATCH  | `/admin/users/:id/block`     | Block user account         |
+| PATCH  | `/admin/users/:id/unblock`   | Unblock user account       |
+| PATCH  | `/admin/drivers/:id/approve` | Approve driver application |
+| PATCH  | `/admin/drivers/:id/reject`  | Reject driver application  |
 
 ---
-
-### 📊 **Analytics & Reporting APIs** _(Admin Dashboard)_
-
-| Method | Endpoint                    | Description                            |
-| ------ | --------------------------- | -------------------------------------- |
-| GET    | `/admin/analytics/overview` | Summary of usage and metrics           |
-| GET    | `/admin/analytics/earnings` | View total earnings                    |
-| GET    | `/admin/analytics/rides`    | Ride frequency, success/failure ratios |

@@ -1,7 +1,8 @@
 import AppError from "@/configs/AppError";
-import { DriverApprovalStatus, Role } from "@/types/types";
+import { AccountStatus, DriverApprovalStatus, Role } from "@/types/types";
 
 import { DriverModel } from "../driver/driver.model";
+import { RideModel } from "../ride/ride.model";
 import { UserModel } from "../user/user.model";
 
 const approveDriver = async (driverId: string) => {
@@ -93,7 +94,66 @@ const rejectDriver = async (driverId: string) => {
   return updatedDriver;
 };
 
+const listUsers = async () => {
+  return await UserModel.find({}).exec();
+};
+
+const listDrivers = async () => {
+  return await DriverModel.find({}).exec();
+};
+
+const listRides = async () => {
+  return await RideModel.find({}).exec();
+};
+
+const getUserById = async (userId: string) => {
+  const user = await UserModel.findById(userId).exec();
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+  return user;
+};
+
+const blockUser = async (userId: string) => {
+  const user = await UserModel.findById(userId);
+
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+
+  if (user.account_status === AccountStatus.BLOCKED) {
+    throw new AppError(400, "User is already blocked");
+  }
+
+  user.account_status = AccountStatus.BLOCKED;
+  await user.save();
+
+  return user;
+};
+const unblockUser = async (userId: string) => {
+  const user = await UserModel.findById(userId);
+
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+
+  if (user.account_status !== AccountStatus.BLOCKED) {
+    throw new AppError(400, "User is not blocked");
+  }
+
+  user.account_status = AccountStatus.ACTIVE;
+  await user.save();
+
+  return user;
+};
+
 export const AdminServices = {
+  getUserById,
+  listDrivers,
+  listUsers,
+  listRides,
   approveDriver,
   rejectDriver,
+  blockUser,
+  unblockUser,
 };

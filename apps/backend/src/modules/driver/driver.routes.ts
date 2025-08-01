@@ -35,6 +35,5 @@ driverRoutes.get(
   checkAuth(Role.DRIVER),
   DriversControllers.getEarningHistory,
 );
-// driverRoutes.get("/me/rides")
 
 export default driverRoutes;
