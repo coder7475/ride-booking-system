@@ -27,8 +27,8 @@
 | Method | Endpoint               | Description                       |
 | ------ | ---------------------- | --------------------------------- |
 | POST   | `/drivers/apply`       | Apply to become a driver          |
+| GET    | `/drivers/me`          | Get driver profile                |
 | PATCH  | `/drivers/me/status`   | Update online/availability status |
-| GET    | `/drivers/me`          | Get driver profile & status       |
 | GET    | `/drivers/me/earnings` | View earning history              |
 | GET    | `/drivers/me/rides`    | View ride history                 |
 

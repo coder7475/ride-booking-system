@@ -1,6 +1,7 @@
 import { DriverApprovalStatus } from "@/types/types";
 import { z } from "zod";
 
+import { RideModel } from "../ride/ride.model";
 import { IDriver } from "./driver.interface";
 import { DriverModel } from "./driver.model";
 import { CreateDriverSchema } from "./driver.schema";
@@ -30,8 +31,27 @@ const findDriverByUserId = async (userId: string) => {
   return await DriverModel.findOne({ userId });
 };
 
+const earningHistory = async (driverId: string) => {
+  const rides = await RideModel.find({
+    driverId,
+    rideStatus: "COMPLETED",
+  }).select("fareFinal rideStatus createdAt");
+
+  const totalEarnings = rides.reduce(
+    (sum, ride) =>
+      ride.rideStatus === "COMPLETED" ? sum + (ride.fareFinal || 0) : sum,
+    0,
+  );
+
+  return {
+    totalEarnings,
+    rides,
+  };
+};
+
 export const DriverServices = {
   createDriver,
   updateDriverStatus,
   findDriverByUserId,
+  earningHistory,
 };

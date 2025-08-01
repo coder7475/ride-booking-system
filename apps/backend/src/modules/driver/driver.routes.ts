@@ -15,20 +15,26 @@ driverRoutes.post(
   DriversControllers.applyForDriver,
 );
 
-driverRoutes.patch(
-  "/me/status",
-  validateZod(UpdateDriverSchema),
-  checkAuth(Role.USER, Role.DRIVER),
-  DriversControllers.updateOnlineStatus,
-);
-
+// Get Driver profile
 driverRoutes.get(
   "/me",
   checkAuth(Role.DRIVER, Role.USER),
   DriversControllers.getMe,
 );
 
-// driverRoutes.get("/me/earnings")
+// update availability status (Online/Offline)
+driverRoutes.patch(
+  "/me/status",
+  validateZod(UpdateDriverSchema),
+  checkAuth(Role.DRIVER),
+  DriversControllers.updateOnlineStatus,
+);
+
+driverRoutes.get(
+  "/me/earnings",
+  checkAuth(Role.DRIVER),
+  DriversControllers.getEarningHistory,
+);
 // driverRoutes.get("/me/rides")
 
 export default driverRoutes;

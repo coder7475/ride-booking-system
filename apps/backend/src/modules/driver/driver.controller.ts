@@ -76,8 +76,32 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getEarningHistory = async (req: Request, res: Response) => {
+  const userId = req.user.id;
+  const driver = await DriverServices.findDriverByUserId(userId);
+  console.log(driver);
+  if (!driver) {
+    return sendResponse(res, {
+      success: false,
+      statusCode: 404,
+      message: "Driver not found",
+      data: null,
+    });
+  }
+
+  const earnings = await DriverServices.earningHistory(userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Earning history retrieved successfully",
+    data: earnings,
+  });
+};
+
 export const DriversControllers = {
   applyForDriver,
   updateOnlineStatus,
   getMe,
+  getEarningHistory,
 };
