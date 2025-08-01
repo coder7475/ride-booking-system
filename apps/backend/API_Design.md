@@ -55,7 +55,7 @@
 | ------ | ------------------- | --------------------------------- |
 | GET    | `/transactions/:id` | Get transaction details           |
 | GET    | `/transactions/me`  | List transactions (user-specific) |
-| POST   | `/transactions/pay` | Process ride payment              |
+| PATCH  | `/transactions/pay` | Process ride payment              |
 
 ---
 
