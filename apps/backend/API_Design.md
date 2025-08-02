@@ -983,6 +983,93 @@ GET /admin/drivers
 </details>
 
 <details>
+  <summary>GET /admin/rides</summary>
+
+**Description**
+
+List all rides in the system. Only accessible by admin users.
+
+**Sample Response**
+
+```json
+{
+    "statusCode": 200,
+    "success": true,
+    "message": "Rides fetched successfully",
+    "data": [
+        {
+            "_id": "688db61e411e9aef67702f16",
+            "riderId": "688d9ee7f868bd68bbb23f72",
+            "driverId": "688d9f33f868bd68bbb23f7b",
+            "rideStatus": "COMPLETED",
+            "pickupLocation": {
+                "latitude": 23.780573,
+                "longitude": 93.279239
+            },
+            "destinationLocation": {
+                "latitude": 23.768406,
+                "longitude": 90.408918
+            },
+            "transactionId": "txn_mdtwd6cg_0r2okxza",
+            "fareEstimated": 370,
+            "fareFinal": 7342,
+            "timestamps": {
+                "requested": "2025-07-31T14:15:00.000Z",
+                "accepted": "2025-08-02T07:03:52.781Z",
+                "started": "2025-08-02T07:05:41.660Z",
+                "completed": "2025-08-02T07:27:53.909Z",
+                "canceled": "2025-08-02T06:56:27.659Z"
+            },
+            "createdAt": "2025-08-02T06:54:22.056Z",
+            "updatedAt": "2025-08-02T07:27:53.915Z"
+        },
+        ...
+    ]
+}
+
+```
+
+</details>
+
+<details>
+  <summary>GET /admin/users/:id</summary>
+
+**Description**
+
+Fetch detailed information about a specific user by their ID. Only accessible by admin users.
+
+**Sample Request**
+
+`GET /admin/users/688d9ee7f868bd68bbb23f72`
+
+**Sample Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "User fetched successfully",
+  "data": {
+    "_id": "688d9ee7f868bd68bbb23f72",
+    "email": "rob@gmail.com",
+    "userName": "rob",
+    "password": "$purebcrypt$12$fcf35aeae6ce7673a5a9becebd64fba1$1ce8f7e7dc6bd8eaab402471dc744f30a5703f8ba3ba10bd66aef1c6fd96c92d",
+    "role": "USER",
+    "accountStatus": "active",
+    "authProviders": [
+      {
+        "provider": "local",
+        "providerId": "rob@gamail.com"
+      }
+    ],
+    "createdAt": "2025-08-02T05:15:19.272Z",
+    "updatedAt": "2025-08-02T05:15:19.272Z"
+  }
+}
+```
+
+</details>
+<details>
   <summary>PATCH /admin/users/:id/block</summary>
 
 **Response**
@@ -991,7 +1078,53 @@ GET /admin/drivers
 {
   "statusCode": 200,
   "success": true,
-  "message": "User blocked"
+  "message": "User blocked successfully",
+  "data": {
+    "_id": "688d9ee7f868bd68bbb23f72",
+    "email": "rob@gmail.com",
+    "userName": "rob",
+    "password": "$purebcrypt$12$fcf35aeae6ce7673a5a9becebd64fba1$1ce8f7e7dc6bd8eaab402471dc744f30a5703f8ba3ba10bd66aef1c6fd96c92d",
+    "role": "USER",
+    "accountStatus": "blocked",
+    "authProviders": [
+      {
+        "provider": "local",
+        "providerId": "rob@gamail.com"
+      }
+    ],
+    "createdAt": "2025-08-02T05:15:19.272Z",
+    "updatedAt": "2025-08-02T13:01:39.110Z"
+  }
+}
+```
+
+</details>
+<details>
+  <summary>PATCH /admin/users/:id/unblock</summary>
+
+**Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "User unblocked successfully",
+  "data": {
+    "_id": "688d9ee7f868bd68bbb23f72",
+    "email": "rob@gmail.com",
+    "userName": "rob",
+    "password": "$purebcrypt$12$fcf35aeae6ce7673a5a9becebd64fba1$1ce8f7e7dc6bd8eaab402471dc744f30a5703f8ba3ba10bd66aef1c6fd96c92d",
+    "role": "USER",
+    "accountStatus": "active",
+    "authProviders": [
+      {
+        "provider": "local",
+        "providerId": "rob@gamail.com"
+      }
+    ],
+    "createdAt": "2025-08-02T05:15:19.272Z",
+    "updatedAt": "2025-08-02T13:03:43.637Z"
+  }
 }
 ```
 
