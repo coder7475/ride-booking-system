@@ -1,6 +1,6 @@
 import AppError from "@/configs/AppError";
 import { env } from "@/configs/envConfig";
-import { TErrorSources } from "@/types/error";
+import type { TErrorSources } from "@/types/error";
 import {
   handleCastError,
   handlerDuplicateError,
@@ -8,15 +8,24 @@ import {
   handlerZodError,
 } from "@/utils/errorHelpers";
 import { logger } from "@/utils/logger";
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import type { CastError, Error as MongooseError } from "mongoose";
+import type { ZodError } from "zod";
 
 const MONGO_DUPLICATE_KEY_ERROR = 11_000;
 
+// Type definitions for error handlers
+interface MongoDuplicateError {
+  message: string;
+  keyValue: Record<string, unknown>;
+  code: number;
+}
+
 const GlobalErrorHandler = (
   err: unknown,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ) => {
   // Log the error
   if (env.NODE_ENV === "development") {
@@ -30,7 +39,7 @@ const GlobalErrorHandler = (
   let message = "Something went wrong!";
 
   // Type guards
-  const isObject = (val: unknown): val is Record<string, any> =>
+  const isObject = (val: unknown): val is Record<string, unknown> =>
     typeof val === "object" && val !== null;
 
   // Duplicate key error (MongoDB)
@@ -39,26 +48,30 @@ const GlobalErrorHandler = (
     "code" in err &&
     err.code === MONGO_DUPLICATE_KEY_ERROR
   ) {
-    const simplifiedError = handlerDuplicateError(err);
+    const simplifiedError = handlerDuplicateError(
+      err as unknown as MongoDuplicateError,
+    );
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
   }
   // Cast error (invalid ObjectId)
   else if (isObject(err) && "name" in err && err.name === "CastError") {
-    const simplifiedError = handleCastError(err as any);
+    const simplifiedError = handleCastError(err as unknown as CastError);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
   }
   // Zod schema validation error
   else if (isObject(err) && "name" in err && err.name === "ZodError") {
-    const simplifiedError = handlerZodError(err as any);
+    const simplifiedError = handlerZodError(err as unknown as ZodError);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
   }
   // Mongoose validation error
   else if (isObject(err) && "name" in err && err.name === "ValidationError") {
-    const simplifiedError = handlerValidationError(err as any);
+    const simplifiedError = handlerValidationError(
+      err as unknown as MongooseError.ValidationError,
+    );
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
