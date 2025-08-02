@@ -1,13 +1,13 @@
 import { env } from "@/configs/envConfig";
 import { parseExpiry } from "@repo/math";
-import { Response } from "express";
+import type { Response } from "express";
 
 interface AuthTokens {
   accessToken?: string;
   refreshToken?: string;
 }
 
-export const setAuthCookie = (
+export const setAuthCookies = (
   res: Response,
   { accessToken, refreshToken }: AuthTokens,
 ) => {
@@ -18,7 +18,7 @@ export const setAuthCookie = (
       httpOnly: true,
       secure: !isDev,
       sameSite: isDev ? "lax" : "none",
-      maxAge: parseExpiry("15m"), // 15 minutes - better taken from env
+      maxAge: parseExpiry(env.JWT_ACCESS_EXPIRES),
     });
   }
 
@@ -27,7 +27,7 @@ export const setAuthCookie = (
       httpOnly: true,
       secure: !isDev,
       sameSite: isDev ? "lax" : "none",
-      maxAge: parseExpiry("7d"), // 7 days - better taken from env
+      maxAge: parseExpiry(env.JWT_REFRESH_EXPIRES),
     });
   }
 };

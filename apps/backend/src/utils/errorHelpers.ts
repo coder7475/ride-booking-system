@@ -1,6 +1,6 @@
-import { TGenericErrorResponse } from "@/types/error";
-import { CastError, Error } from "mongoose";
-import { ZodError } from "zod";
+import type { TGenericErrorResponse } from "@/types/error";
+import type { CastError, Error as MongooseError } from "mongoose";
+import type { ZodError } from "zod";
 
 export const handlerZodError = (err: ZodError): TGenericErrorResponse => {
   const errorSources = err.issues.map((issue) => ({
@@ -15,16 +15,27 @@ export const handlerZodError = (err: ZodError): TGenericErrorResponse => {
   };
 };
 
-export const handlerDuplicateError = (err: any): TGenericErrorResponse => {
+interface MongoDuplicateError {
+  message: string;
+  keyValue: Record<string, unknown>;
+  code: number;
+}
+
+export const handlerDuplicateError = (
+  err: MongoDuplicateError,
+): TGenericErrorResponse => {
   const match = err.message.match(/(["'])(\\?.)*?\1/);
   const value = match ? match[0] : "";
+
+  const keyValueKeys = Object.keys(err.keyValue);
+  const firstKey = keyValueKeys.length > 0 ? keyValueKeys[0] : "unknown";
 
   return {
     statusCode: 409,
     message: "Duplicate Key Error",
     errorSources: [
       {
-        path: Object.keys(err.keyValue)[0]!,
+        path: firstKey || "unknown",
         message: `${value} already exists.`,
       },
     ],
@@ -32,7 +43,7 @@ export const handlerDuplicateError = (err: any): TGenericErrorResponse => {
 };
 
 export const handlerValidationError = (
-  err: Error.ValidationError,
+  err: MongooseError.ValidationError,
 ): TGenericErrorResponse => {
   const errorSources = Object.values(err.errors).map((val) => ({
     path: val.path,
