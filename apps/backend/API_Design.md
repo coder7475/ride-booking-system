@@ -253,10 +253,16 @@ Requires JWT in `Authorization` header.
 
 ```json
 {
-  "licenseNumber": "ABC123456",
+  "driverLocation": {
+    "latitude": 23.8103,
+    "longitude": 90.4125
+  },
   "vehicleInfo": {
-    "make": "Toyota",
-    "model": "Prius"
+    "vehicleType": "Car",
+    "brand": "Toyota",
+    "model": "Corolla",
+    "year": 2020,
+    "plateNumber": "DHK-5487"
   }
 }
 ```
@@ -267,8 +273,26 @@ Requires JWT in `Authorization` header.
 {
   "statusCode": 201,
   "success": true,
-  "message": "Driver application submitted",
-  "data": { ... }
+  "message": "Driver application submitted successfully",
+  "data": {
+    "userId": "688d9f33f868bd68bbb23f7b",
+    "approvalStatus": "PENDING",
+    "onlineStatus": "OFFLINE",
+    "driverLocation": {
+      "latitude": 23.8103,
+      "longitude": 90.4125
+    },
+    "vehicleInfo": {
+      "vehicleType": "Car",
+      "brand": "Toyota",
+      "model": "Corolla",
+      "year": 2020,
+      "plateNumber": "DHK-5487"
+    },
+    "_id": "688dad9b39d4876810a2d98e",
+    "createdAt": "2025-08-02T06:18:03.519Z",
+    "updatedAt": "2025-08-02T06:18:03.519Z"
+  }
 }
 ```
 
@@ -453,6 +477,82 @@ Requires JWT in `Authorization` header.
   "statusCode": 200,
   "success": true,
   "message": "User blocked"
+}
+```
+
+</details>
+
+<details>
+  <summary>PATCH /admin/drivers/:id/approve</summary>
+
+**Sample Request**
+
+`PATCH /admin/drivers/688dad9b39d4876810a2d98e/approve`
+
+**Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Driver approved successfully",
+  "data": {
+    "_id": "688dad9b39d4876810a2d98e",
+    "userId": "688d9f33f868bd68bbb23f7b",
+    "approvalStatus": "APPROVED",
+    "onlineStatus": "OFFLINE",
+    "driverLocation": {
+      "latitude": 23.8103,
+      "longitude": 90.4125
+    },
+    "vehicleInfo": {
+      "vehicleType": "Car",
+      "brand": "Toyota",
+      "model": "Corolla",
+      "year": 2020,
+      "plateNumber": "DHK-5487"
+    },
+    "createdAt": "2025-08-02T06:18:03.519Z",
+    "updatedAt": "2025-08-02T06:33:12.765Z"
+  }
+}
+```
+
+</details>
+
+<details>
+  <summary>PATCH /admin/drivers/:id/reject</summary>
+
+**Sample Request**
+
+`PATCH /admin/drivers/688dad9b39d4876810a2d98e/reject`
+
+**Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Driver rejected successfully",
+  "data": {
+    "_id": "688dad9b39d4876810a2d98e",
+    "userId": "688d9f33f868bd68bbb23f7b",
+    "approvalStatus": "REJECTED",
+    "onlineStatus": "OFFLINE",
+    "driverLocation": {
+      "latitude": 23.8103,
+      "longitude": 90.4125
+    },
+    "vehicleInfo": {
+      "vehicleType": "Car",
+      "brand": "Toyota",
+      "model": "Corolla",
+      "year": 2020,
+      "plateNumber": "DHK-5487"
+    },
+    "createdAt": "2025-08-02T06:18:03.519Z",
+    "updatedAt": "2025-08-02T06:35:53.476Z"
+  }
 }
 ```
 
