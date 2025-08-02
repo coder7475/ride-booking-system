@@ -95,7 +95,7 @@ const rejectDriver = async (driverId: string) => {
 };
 
 const listUsers = async () => {
-  return await UserModel.find({}).exec();
+  return await UserModel.find().exec();
 };
 
 const listDrivers = async () => {

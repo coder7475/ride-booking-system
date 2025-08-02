@@ -461,7 +461,79 @@ Requires JWT in `Authorization` header.
 {
   "statusCode": 200,
   "success": true,
-  "data": [{ "userName": "nafis", "email": "nafis@gmail.com", "role": "USER" }]
+  "message": "Users fetched successfully",
+  "data": [
+    {
+      "_id": "688d9ee7f868bd68bbb23f72",
+      "email": "rob@gamail.com",
+      "userName": "rob",
+      "password": "$purebcrypt$12$fcf35aeae6ce7673a5a9becebd64fba1$1ce8f7e7dc6bd8eaab402471dc744f30a5703f8ba3ba10bd66aef1c6fd96c92d",
+      "role": "USER",
+      "accountStatus": "active",
+      "authProviders": [
+        {
+          "provider": "local",
+          "providerId": "rob@gamail.com"
+        }
+      ],
+      "createdAt": "2025-08-02T05:15:19.272Z",
+      "updatedAt": "2025-08-02T05:15:19.272Z"
+    },
+    {
+      "_id": "688d9f33f868bd68bbb23f7b",
+      "email": "lucky@gamail.com",
+      "userName": "lucky",
+      "password": "$purebcrypt$12$dd4b581e9359f8cd65bd16ca57887624$980b6b4fc4d183a172f9332ae04e4b79321dde5ea63a693e007082d6a00e6d7b",
+      "role": "DRIVER",
+      "accountStatus": "active",
+      "authProviders": [
+        {
+          "provider": "local",
+          "providerId": "lucky@gamail.com"
+        }
+      ],
+      "createdAt": "2025-08-02T05:16:35.805Z",
+      "updatedAt": "2025-08-02T06:36:35.799Z"
+    },
+    ....
+  ]
+}
+```
+
+</details>
+
+<details>
+  <summary>GET /admin/drivers</summary>
+
+**Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Drivers fetched successfully",
+  "data": [
+    {
+      "_id": "688dad9b39d4876810a2d98e",
+      "userId": "688d9f33f868bd68bbb23f7b",
+      "approvalStatus": "APPROVED",
+      "onlineStatus": "OFFLINE",
+      "driverLocation": {
+        "latitude": 23.8103,
+        "longitude": 90.4125
+      },
+      "vehicleInfo": {
+        "vehicleType": "Car",
+        "brand": "Toyota",
+        "model": "Corolla",
+        "year": 2020,
+        "plateNumber": "DHK-5487"
+      },
+      "createdAt": "2025-08-02T06:18:03.519Z",
+      "updatedAt": "2025-08-02T06:36:35.796Z"
+    },
+    ....
+  ]
 }
 ```
 
