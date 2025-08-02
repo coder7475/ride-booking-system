@@ -1,70 +1,63 @@
+import AppError from "@/configs/AppError";
 import { catchAsync } from "@/utils/asyncHandler";
+import { setAuthCookies } from "@/utils/cookieHelpers";
 import sendResponse from "@/utils/sendResponse";
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 import { UserServices } from "../user/user.service";
 import { AuthServices } from "./auth.service";
 
 const registerUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const user = await UserServices.createUser(req.body);
 
     sendResponse(res, {
-      success: true,
       statusCode: 201,
-      message: "User Created Successfully",
+      success: true,
+      message: "User registered successfully",
       data: user,
     });
   },
 );
 
 const login = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const generatedTokens = await AuthServices.login(req.body);
 
-    // Set the tokens in cookies
-    res.cookie("accessToken", generatedTokens.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
-    });
-
-    res.cookie("refreshToken", generatedTokens.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
-    });
+    setAuthCookies(res, generatedTokens);
 
     sendResponse(res, {
-      success: true,
       statusCode: 200,
-      message: "Login Successfully",
-      data: null,
+      success: true,
+      message: "User login successful",
+      data: {
+        accessToken: generatedTokens.accessToken,
+        refreshToken: generatedTokens.refreshToken,
+      },
     });
   },
 );
 
+// Refresh token function
 const reissueAccessToken = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      sendResponse(res, {
-        success: false,
-        statusCode: 401,
-        message: "Refresh token missing or invalid",
-        data: null,
-      });
+      throw new AppError(401, "Refresh token required");
     }
 
-    const refreshToken = authHeader?.split(" ")[1];
+    const refreshToken = authHeader.split(" ")[1];
+    if (!refreshToken) {
+      throw new AppError(401, "Refresh token not found");
+    }
 
-    const newAccessToken = await AuthServices.reissueAccessToken(refreshToken!);
+    const newAccessToken = await AuthServices.reissueAccessToken(refreshToken);
 
     sendResponse(res, {
-      success: true,
       statusCode: 200,
-      message: "New Access Token Issued!",
+      success: true,
+      message: "Access token refreshed successfully",
       data: {
         accessToken: newAccessToken,
         refreshToken,
@@ -73,24 +66,25 @@ const reissueAccessToken = catchAsync(
   },
 );
 
+// Logout endpoint
 const logout = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (_req: Request, res: Response, _next: NextFunction) => {
     // Clear the refresh token cookie (if set)
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "strict",
     });
-    // Clear the refresh token cookie (if set)
+
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "strict",
     });
 
     sendResponse(res, {
-      success: true,
       statusCode: 200,
+      success: true,
       message: "Logged out successfully",
       data: null,
     });
