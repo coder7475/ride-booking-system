@@ -405,7 +405,7 @@ Requires JWT in `Authorization` header.
 **GET /rides/fare**
 
 ```
-?pickup=23.7,90.4&dropoff=23.8,90.5
+fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.177530855&destLng=50805231.177530855
 ```
 
 **Response**
@@ -414,18 +414,72 @@ Requires JWT in `Authorization` header.
 {
   "statusCode": 200,
   "success": true,
+  "message": "Fare estimated successfully",
   "data": {
-    "estimatedFare": 120.5
+    "fare": 100
+  }
+}
+```
+
+**GET /rides/:id**
+
+- Requires JWT in `Authorization` header.
+
+**Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Ride details fetched successfully",
+  "data": {
+    "_id": "688db61e411e9aef67702f16",
+    "riderId": "688d9ee7f868bd68bbb23f72",
+    "driverId": null,
+    "rideStatus": "REQUESTED",
+    "pickupLocation": {
+      "latitude": 23.780573,
+      "longitude": 93.279239
+    },
+    "destinationLocation": {
+      "latitude": 23.768406,
+      "longitude": 90.408918
+    },
+    "transactionId": "txn_mdtwd6cg_0r2okxza",
+    "fareEstimated": 370,
+    "fareFinal": 0,
+    "timestamps": {
+      "requested": "2025-07-31T14:15:00.000Z",
+      "canceled": "2025-08-02T06:56:27.659Z"
+    },
+    "createdAt": "2025-08-02T06:54:22.056Z",
+    "updatedAt": "2025-08-02T06:56:27.661Z"
   }
 }
 ```
 
 **POST /rides/request**
 
+**Request**
+
+- Requires JWT in `Authorization` header.
+- body:
+
 ```json
 {
-  "pickup": { "lat": 23.7, "lng": 90.4 },
-  "dropoff": { "lat": 23.8, "lng": 90.5 }
+  "pickupLocation": {
+    "latitude": 23.780573,
+    "longitude": 93.279239
+  },
+  "destinationLocation": {
+    "latitude": 23.768406,
+    "longitude": 90.408918
+  },
+  "fareEstimated": 370,
+  "fareFinal": 0.0,
+  "timestamps": {
+    "requested": "2025-07-31T14:15:00.000Z"
+  }
 }
 ```
 
@@ -435,8 +489,181 @@ Requires JWT in `Authorization` header.
 {
   "statusCode": 201,
   "success": true,
-  "message": "Ride requested",
-  "data": { ... }
+  "message": "Ride request created successfully",
+  "data": {
+    "riderId": "688d9ee7f868bd68bbb23f72",
+    "driverId": null,
+    "rideStatus": "REQUESTED",
+    "pickupLocation": {
+      "latitude": 23.780573,
+      "longitude": 93.279239
+    },
+    "destinationLocation": {
+      "latitude": 23.768406,
+      "longitude": 90.408918
+    },
+    "transactionId": "txn_mdtwd6cg_0r2okxza",
+    "fareEstimated": 370,
+    "fareFinal": 0,
+    "timestamps": {
+      "requested": "2025-07-31T14:15:00.000Z"
+    },
+    "_id": "688db61e411e9aef67702f16",
+    "createdAt": "2025-08-02T06:54:22.056Z",
+    "updatedAt": "2025-08-02T06:54:22.056Z"
+  }
+}
+```
+
+| POST | `/rides/:id/cancel` | Cancel ride before pickup |
+
+<details>
+  <summary>POST /rides/:id/cancel</summary>
+
+**Request**
+
+- Requires JWT in `Authorization` header.
+
+**Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Ride cancelled successfully",
+  "data": {
+    "_id": "688db61e411e9aef67702f16",
+    "riderId": "688d9ee7f868bd68bbb23f72",
+    "driverId": null,
+    "rideStatus": "CANCELLED",
+    "pickupLocation": {
+      "latitude": 23.780573,
+      "longitude": 93.279239
+    },
+    "destinationLocation": {
+      "latitude": 23.768406,
+      "longitude": 90.408918
+    },
+    "transactionId": "txn_mdtwd6cg_0r2okxza",
+    "fareEstimated": 370,
+    "fareFinal": 0,
+    "timestamps": {
+      "requested": "2025-07-31T14:15:00.000Z",
+      "canceled": "2025-08-02T06:56:27.659Z"
+    },
+    "createdAt": "2025-08-02T06:54:22.056Z",
+    "updatedAt": "2025-08-02T06:56:27.661Z"
+  }
+}
+```
+
+**PATCH /rides/\:id/accept**
+
+**Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Ride accepted successfully",
+  "data": {
+    "_id": "688db61e411e9aef67702f16",
+    "riderId": "688d9ee7f868bd68bbb23f72",
+    "driverId": "688d9f33f868bd68bbb23f7b",
+    "rideStatus": "ACCEPTED",
+    "pickupLocation": {
+      "latitude": 23.780573,
+      "longitude": 93.279239
+    },
+    "destinationLocation": {
+      "latitude": 23.768406,
+      "longitude": 90.408918
+    },
+    "transactionId": "txn_mdtwd6cg_0r2okxza",
+    "fareEstimated": 370,
+    "fareFinal": 0,
+    "timestamps": {
+      "requested": "2025-07-31T14:15:00.000Z",
+      "accepted": "2025-08-02T07:03:52.781Z",
+      "canceled": "2025-08-02T06:56:27.659Z"
+    },
+    "createdAt": "2025-08-02T06:54:22.056Z",
+    "updatedAt": "2025-08-02T07:03:52.782Z"
+  }
+}
+```
+
+**PATCH /rides/\:id/picked**
+
+**Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Ride marked as picked up successfully",
+  "data": {
+    "_id": "688db61e411e9aef67702f16",
+    "riderId": "688d9ee7f868bd68bbb23f72",
+    "driverId": "688d9f33f868bd68bbb23f7b",
+    "rideStatus": "PICKED_UP",
+    "pickupLocation": {
+      "latitude": 23.780573,
+      "longitude": 93.279239
+    },
+    "destinationLocation": {
+      "latitude": 23.768406,
+      "longitude": 90.408918
+    },
+    "transactionId": "txn_mdtwd6cg_0r2okxza",
+    "fareEstimated": 370,
+    "fareFinal": 0,
+    "timestamps": {
+      "requested": "2025-07-31T14:15:00.000Z",
+      "accepted": "2025-08-02T07:03:52.781Z",
+      "started": "2025-08-02T07:05:41.660Z",
+      "canceled": "2025-08-02T06:56:27.659Z"
+    },
+    "createdAt": "2025-08-02T06:54:22.056Z",
+    "updatedAt": "2025-08-02T07:05:41.661Z"
+  }
+}
+```
+
+**PATCH /rides/\:id/transit**
+
+**Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Ride marked as in transit successfully",
+  "data": {
+    "_id": "688db61e411e9aef67702f16",
+    "riderId": "688d9ee7f868bd68bbb23f72",
+    "driverId": "688d9f33f868bd68bbb23f7b",
+    "rideStatus": "IN_TRANSIT",
+    "pickupLocation": {
+      "latitude": 23.780573,
+      "longitude": 93.279239
+    },
+    "destinationLocation": {
+      "latitude": 23.768406,
+      "longitude": 90.408918
+    },
+    "transactionId": "txn_mdtwd6cg_0r2okxza",
+    "fareEstimated": 370,
+    "fareFinal": 0,
+    "timestamps": {
+      "requested": "2025-07-31T14:15:00.000Z",
+      "accepted": "2025-08-02T07:03:52.781Z",
+      "started": "2025-08-02T07:05:41.660Z",
+      "canceled": "2025-08-02T06:56:27.659Z"
+    },
+    "createdAt": "2025-08-02T06:54:22.056Z",
+    "updatedAt": "2025-08-02T07:11:29.842Z"
+  }
 }
 ```
 

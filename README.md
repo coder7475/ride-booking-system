@@ -124,34 +124,46 @@ cd apps/backend && pnpm start
 
 The backend provides a comprehensive REST API with the following endpoints:
 
-### 🔐 Authentication
+### 🔐 **Authentication APIs**
 
-- `POST /api/v1/auth/register` - Register a new user
-- `POST /api/v1/auth/login` - Login and receive JWT tokens
-- `POST /api/v1/auth/refresh-token` - Refresh access token
-- `POST /api/v1/auth/logout` - Logout user
+| Method | Endpoint              | Description             |
+| ------ | --------------------- | ----------------------- |
+| POST   | `/auth/register`      | Register a new user     |
+| POST   | `/auth/login`         | Login and receive JWTs  |
+| POST   | `/auth/refresh-token` | Refresh access token    |
+| POST   | `/auth/logout`        | Invalidate token/logout |
 
-### 👤 User Management
+### 👤 **User APIs**
 
-- `GET /api/v1/user/me` - Get current user profile
-- `PATCH /api/v1/user/me` - Update user profile
-- `DELETE /api/v1/user/me` - Delete user account
+| Method | Endpoint    | Description                      |
+| ------ | ----------- | -------------------------------- |
+| GET    | `/user/me`  | Get current user info (self)     |
+| PATCH  | `/user/me`  | Update profile info              |
+| DELETE | `/user/me`  | Deactivate or delete own account |
+| GET    | `/user/:id` | Get public profile of a user     |
 
-### 🚗 Driver Operations
+### 🚗 **Driver APIs**
 
-- `POST /api/v1/drivers/apply` - Apply to become a driver
-- `GET /api/v1/drivers/me` - Get driver profile
-- `PATCH /api/v1/drivers/me/status` - Update availability status
-- `GET /api/v1/drivers/me/earnings` - View earnings history
+| Method | Endpoint               | Description                       |
+| ------ | ---------------------- | --------------------------------- |
+| POST   | `/drivers/apply`       | Apply to become a driver          |
+| GET    | `/drivers/me`          | Get driver profile                |
+| PATCH  | `/drivers/me/status`   | Update online/availability status |
+| GET    | `/drivers/me/earnings` | View earning history              |
 
 ### 🚕 Ride Management
 
-- `POST /api/v1/rides/request` - Request a new ride
-- `GET /api/v1/rides/fare` - Estimate ride fare
-- `GET /api/v1/rides/me` - Get ride history
-- `PATCH /api/v1/rides/:id/accept` - Accept ride (driver)
-- `PATCH /api/v1/rides/:id/complete` - Complete ride (driver)
-- `POST /api/v1/rides/:id/cancel` - Cancel ride
+| Method | Endpoint              | Description                        |
+| ------ | --------------------- | ---------------------------------- |
+| GET    | `/rides/fare`         | Estimate fare of a ride            |
+| POST   | `/rides/request`      | Rider requests a new ride          |
+| PATCH  | `/rides/:id/accept`   | Driver accepts ride                |
+| PATCH  | `/rides/:id/picked`   | Update ride status to PICKED_UP    |
+| PATCH  | `/rides/:id/transit`  | Update ride status to IN_TRANSIT   |
+| PATCH  | `/rides/:id/complete` | Update ride status to COMPLETED    |
+| POST   | `/rides/:id/cancel`   | Cancel ride before pickup          |
+| GET    | `/rides/me`           | List ride history for current user |
+| GET    | `/rides/:id`          | Get ride details                   |
 
 ### 💰 Transactions
 
