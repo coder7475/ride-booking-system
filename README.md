@@ -79,15 +79,22 @@ Each package/app is 100% [TypeScript](https://www.typescriptlang.org/) with stri
    ```
 
 4. **Configure Environment Variables:**
-   ```env
-   # Backend (.env)
-   NODE_ENV=development
+
+```env
+   # Server Configuration
    PORT=3000
    HOST=localhost
-   DB_URI=mongodb://localhost:27017/ride-booking
-   JWT_ACCESS_SECRET=your-access-secret
-   JWT_REFRESH_SECRET=your-refresh-secret
-   ```
+   NODE_ENV=development
+   DB_URI="mongodb://127.0.0.1:27017/practice"
+   # JWT ENVS
+   JWT_ACCESS_SECRET="access"
+   JWT_ACCESS_EXPIRES="15m"
+   JWT_REFRESH_SECRET="refresh"
+   JWT_REFRESH_EXPIRES="1d"
+
+   # Hash Salt
+   PASSWORD_HASH_SALT=12
+```
 
 ### Development
 
@@ -284,3 +291,7 @@ pnpm exec turbo link
 This project is licensed under the [MIT License](LICENSE).
 
 You are free to use, modify, and distribute this software in accordance with the terms of the MIT License.
+
+```
+
+```
