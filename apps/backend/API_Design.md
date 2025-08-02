@@ -847,8 +847,8 @@ Requires JWT in `Authorization` header.
 
 ```json
 {
-  "rideId": "abc123",
-  "paymentMethod": "card"
+  "rideId": "688db61e411e9aef67702f16",
+  "paymentGateway": "STRIPE"
 }
 ```
 
@@ -858,9 +858,16 @@ Requires JWT in `Authorization` header.
 {
   "statusCode": 200,
   "success": true,
-  "message": "Payment successful",
+  "message": "Payment processed successfully",
   "data": {
-    "transactionId": "txn_xyz123"
+    "_id": "688dbdf9450e72b38d77ae38",
+    "transactionId": "txn_mdtwd6cg_0r2okxza",
+    "amount": 7342,
+    "paymentStatus": "PAID",
+    "paymentGateway": "STRIPE",
+    "invoiceUrl": "",
+    "createdAt": "2025-08-02T07:27:53.932Z",
+    "updatedAt": "2025-08-02T12:40:51.327Z"
   }
 }
 ```

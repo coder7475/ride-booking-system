@@ -6,13 +6,13 @@ import { Router } from "express";
 import { TransactionAuthController } from "./transaction.controller";
 import { TransactionSchema } from "./transaction.schema";
 
-const TransactionsRouter: Router = Router();
+const transactionsRouter: Router = Router();
 
-TransactionsRouter.patch(
+transactionsRouter.patch(
   "/pay",
   validateZod(TransactionSchema),
   checkAuth(Role.USER),
   TransactionAuthController.processPayment,
 );
 
-export default TransactionsRouter;
+export default transactionsRouter;
