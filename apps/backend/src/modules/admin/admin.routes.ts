@@ -1,6 +1,6 @@
+import { Router } from "express";
 import { checkAuth } from "@/middlewares/CheckAuth";
 import { Role } from "@/types/types";
-import { Router } from "express";
 
 import { AdminController } from "./admin.controller";
 
@@ -17,36 +17,36 @@ adminRoutes.get("/rides", checkAuth(Role.ADMIN), AdminController.getRides);
 
 // Get a single user's data
 adminRoutes.get(
-  "/users/:id",
-  checkAuth(Role.ADMIN),
-  AdminController.getUserById,
+	"/users/:id",
+	checkAuth(Role.ADMIN),
+	AdminController.getUserById,
 );
 
 // Block user account
 adminRoutes.patch(
-  "/users/:id/block",
-  checkAuth(Role.ADMIN),
-  AdminController.blockUser,
+	"/users/:id/block",
+	checkAuth(Role.ADMIN),
+	AdminController.blockUser,
 );
 
 // Unblock user account
 adminRoutes.patch(
-  "/users/:id/unblock",
-  checkAuth(Role.ADMIN),
-  AdminController.unblockUser,
+	"/users/:id/unblock",
+	checkAuth(Role.ADMIN),
+	AdminController.unblockUser,
 );
 
 // approve or reject driver application
 adminRoutes.patch(
-  "/drivers/:id/approve",
-  checkAuth(Role.ADMIN),
-  AdminController.approveDriver,
+	"/drivers/:id/approve",
+	checkAuth(Role.ADMIN),
+	AdminController.approveDriver,
 );
 
 adminRoutes.patch(
-  "/drivers/:id/reject",
-  checkAuth(Role.ADMIN),
-  AdminController.rejectDriver,
+	"/drivers/:id/reject",
+	checkAuth(Role.ADMIN),
+	AdminController.rejectDriver,
 );
 
 export default adminRoutes;
