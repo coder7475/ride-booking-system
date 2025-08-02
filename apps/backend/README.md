@@ -321,6 +321,10 @@ All API responses follow a consistent format:
 
 ![Ride Lifecycle](./rideCycle.png)
 
+### Driver Approval Flow
+
+![Driver Approval Flow](./Driver_approval_flow.png)
+
 ## 📄 License
 
 MIT License - feel free to use and modify for your projects.
