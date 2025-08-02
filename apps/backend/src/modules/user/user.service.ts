@@ -1,24 +1,37 @@
 import AppError from "@/configs/AppError";
 import { env } from "@/configs/envConfig";
-import { AccountStatus, AuthProviderNames, IAuthProvider } from "@/types/types";
+import {
+  AccountStatus,
+  AuthProviderNames,
+  type IAuthProvider,
+} from "@/types/types";
 import { hashPassword } from "@repo/utils";
 
-import { IUser } from "./user.interface";
+import type { IUser } from "./user.interface";
 import { UserModel } from "./user.model";
 
 const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
   const { email, password, ...data } = userData;
+
+  if (!email) {
+    throw new AppError(400, "Email is required");
+  }
+
+  if (!password) {
+    throw new AppError(400, "Password is required");
+  }
+
   const isUser = await UserModel.findOne({ email });
 
   if (isUser) {
     throw new AppError(400, "User Already Exist");
   }
 
-  const hashedPassword = hashPassword(password!, env.PASSWORD_HASH_SALT);
+  const hashedPassword = hashPassword(password, env.PASSWORD_HASH_SALT);
 
   const authProvider: IAuthProvider = {
     provider: AuthProviderNames.LOCAL,
-    providerId: email!,
+    providerId: email,
   };
 
   const user: Partial<IUser> = {
