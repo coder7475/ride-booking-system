@@ -9,9 +9,7 @@ A robust, scalable REST API for a ride-booking platform built with **Express.js*
 - **🚗 Complete Ride Management**: Full ride lifecycle from request to completion
 - **💰 Transaction Processing**: Integrated payment and earnings system
 - **📊 Admin Dashboard APIs**: Comprehensive administrative controls
-- **🔍 Advanced Querying**: Pagination, sorting, and filtering capabilities
-- **📧 Email Services**: Multi-provider email system (Gmail, Resend)
-- **🛡️ Security**: Helmet.js, CORS, input validation with Zod
+- **🛡️ Security**: CORS, input validation with Zod
 - **📝 Comprehensive Logging**: Structured logging with Pino
 - **🏗️ Modular Architecture**: Clean, maintainable codebase structure
 
@@ -24,7 +22,6 @@ A robust, scalable REST API for a ride-booking platform built with **Express.js*
 - **Driver Management**: Driver applications, approvals, and status tracking
 - **Ride System**: Request, matching, tracking, and completion workflow
 - **Transaction System**: Payment processing and earnings management
-- **Admin Panel**: User management, driver approvals, system oversight
 
 ### Database Models
 
@@ -78,12 +75,13 @@ A robust, scalable REST API for a ride-booking platform built with **Express.js*
    JWT_REFRESH_SECRET=your-super-secret-refresh-key
    JWT_ACCESS_EXPIRES_IN=24h
    JWT_REFRESH_EXPIRES_IN=7d
-
-   # Email Configuration (Optional)
-   GMAIL_USER=your-email@gmail.com
-   GMAIL_PASSWORD=your-app-password
-   RESEND_API_KEY=your-resend-api-key
    ```
+
+# Hash Salt
+
+PASSWORD_HASH_SALT=12
+
+````
 
 ### Development
 
@@ -100,7 +98,7 @@ pnpm start
 # Linting and formatting
 pnpm lint
 pnpm format
-```
+````
 
 ## 📚 API Documentation
 
@@ -129,15 +127,15 @@ The API is organized into the following modules:
 
 ### 🚕 Ride Management (`/api/v1/rides`)
 
-- `POST /request` - Request a new ride
 - `GET /fare` - Calculate ride fare estimate
-- `GET /me` - Get user's ride history
-- `GET /:id` - Get specific ride details
+- `POST /request` - Request a new ride
 - `PATCH /:id/accept` - Accept ride (driver only)
 - `PATCH /:id/picked` - Mark passenger picked up
 - `PATCH /:id/transit` - Mark ride in transit
 - `PATCH /:id/complete` - Complete ride
 - `POST /:id/cancel` - Cancel ride
+- `GET /me` - Get user's ride history
+- `GET /:id` - Get specific ride details
 
 ### 💰 Transactions (`/api/v1/transactions`)
 
@@ -199,8 +197,6 @@ src/
 - **Password Hashing**: Bcrypt-based password hashing
 - **Input Validation**: Zod schema validation
 - **CORS Protection**: Configurable CORS policies
-- **Helmet.js**: Security headers
-- **Rate Limiting**: API rate limiting (configurable)
 - **Error Handling**: Comprehensive error handling
 
 ## 📊 Database Schema
@@ -209,18 +205,16 @@ src/
 
 ```typescript
 {
-  username: string
-  email: string
-  password: string (hashed)
-  role: 'rider' | 'driver' | 'admin'
-  isBlocked: boolean
-  profile: {
-    firstName: string
-    lastName: string
-    phone?: string
-    avatar?: string
-  }
-  timestamps: createdAt, updatedAt
+  email: { type: String, required: true, unique: true },
+		userName: { type: String, required: true },
+		password: { type: String, required: true },
+		role: { type: String, enum: Object.values(Role), default: Role.USER },
+		accountStatus: {
+			type: String,
+			enum: Object.values(AccountStatus),
+			default: AccountStatus.ACTIVE,
+		},
+		authProviders: [MongooseAuthProviderSchema],
 }
 ```
 
@@ -228,36 +222,20 @@ src/
 
 ```typescript
 {
-  rider: ObjectId (User)
-  driver?: ObjectId (User)
-  pickup: {
-    address: string
-    coordinates: [longitude, latitude]
-  }
-  destination: {
-    address: string
-    coordinates: [longitude, latitude]
-  }
-  fare: {
-    estimated: number
-    final?: number
-  }
-  status: 'REQUESTED' | 'ACCEPTED' | 'PICKED_UP' | 'IN_TRANSIT' | 'COMPLETED' | 'CANCELLED'
-  timestamps: createdAt, updatedAt
+    riderId: { type: String, required: true, ref: "User" },
+		driverId: { type: String, required: false, ref: "Driver", default: null },
+		rideStatus: {
+			type: String,
+			enum: Object.values(RideStatus),
+			default: RideStatus.REQUESTED,
+		},
+		pickupLocation: LocationSchema,
+		destinationLocation: LocationSchema,
+		transactionId: { type: String, required: true, ref: "Transaction" },
+		fareEstimated: { type: Number, required: true },
+		fareFinal: { type: Number, required: true, default: 0 },
+		timestamps: { type: RideTimestampsSchema, default: {} },
 }
-```
-
-## 🧪 Testing
-
-```bash
-# Run tests
-pnpm test
-
-# Run tests with coverage
-pnpm test:coverage
-
-# Run tests in watch mode
-pnpm test:watch
 ```
 
 ## 🚀 Deployment
@@ -278,16 +256,11 @@ pnpm start
 NODE_ENV=production
 PORT=3000
 DB_URI=mongodb://your-production-db-uri
-JWT_ACCESS_SECRET=your-production-access-secret
-JWT_REFRESH_SECRET=your-production-refresh-secret
-```
-
-### Docker Support
-
-```dockerfile
-# Available Docker configuration
-# Build: docker build -t ride-booking-api .
-# Run: docker run -p 3000:3000 ride-booking-api
+JWT_ACCESS_SECRET="access"
+JWT_ACCESS_EXPIRES="15m"
+JWT_REFRESH_SECRET="refresh"
+JWT_REFRESH_EXPIRES="1d"
+PASSWORD_HASH_SALT=12
 ```
 
 ## 📋 API Response Format
@@ -312,16 +285,17 @@ All API responses follow a consistent format:
 
 ### Environment Variables
 
-| Variable                 | Description               | Default       |
-| ------------------------ | ------------------------- | ------------- |
-| `NODE_ENV`               | Environment mode          | `development` |
-| `PORT`                   | Server port               | `3000`        |
-| `HOST`                   | Server host               | `localhost`   |
-| `DB_URI`                 | MongoDB connection string | Required      |
-| `JWT_ACCESS_SECRET`      | JWT access token secret   | Required      |
-| `JWT_REFRESH_SECRET`     | JWT refresh token secret  | Required      |
-| `JWT_ACCESS_EXPIRES_IN`  | Access token expiry       | `24h`         |
-| `JWT_REFRESH_EXPIRES_IN` | Refresh token expiry      | `7d`          |
+| Variable                 | Description                      | Default       |
+| ------------------------ | -------------------------------- | ------------- |
+| `NODE_ENV`               | Environment mode                 | `development` |
+| `PORT`                   | Server port                      | `3000`        |
+| `HOST`                   | Server host                      | `localhost`   |
+| `DB_URI`                 | MongoDB connection string        | Required      |
+| `JWT_ACCESS_SECRET`      | JWT access token secret          | Required      |
+| `JWT_REFRESH_SECRET`     | JWT refresh token secret         | Required      |
+| `JWT_ACCESS_EXPIRES_IN`  | Access token expiry              | `24h`         |
+| `JWT_REFRESH_EXPIRES_IN` | Refresh token expiry             | `7d`          |
+| `PASSWORD_HASH_SALT`     | cost rounds for password hashing | `12`          |
 
 ## 🤝 Contributing
 
