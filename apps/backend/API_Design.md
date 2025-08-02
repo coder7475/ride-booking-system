@@ -122,9 +122,8 @@ Authorization: Bearer <your-refresh-token>
 | GET    | `/user/:id` | Get public profile of a user     |
 
 <details>
-  <summary>Sample Request & Response</summary>
+  <summary>GET /user/me</summary>
 
-**GET /user/me**
 Requires JWT in `Authorization` header.
 
 **Response**
@@ -152,9 +151,12 @@ Requires JWT in `Authorization` header.
 }
 ```
 
-**PATCH /user/me**
+</details>
 
-**Request**
+<details>
+  <summary>PATCH /user/me</summary>
+
+**Sample Request**
 
 ```json
 {
@@ -162,7 +164,7 @@ Requires JWT in `Authorization` header.
 }
 ```
 
-**Response**
+**Sample Response**
 
 ```json
 {
@@ -187,9 +189,16 @@ Requires JWT in `Authorization` header.
 }
 ```
 
-**DELETE /user/me**
+</details>
 
-**Response**
+<details>
+  <summary>DELETE /user/me</summary>
+
+**Sample Request**
+
+Requires JWT in `Authorization` header.
+
+**Sample Response**
 
 ```json
 {
@@ -214,12 +223,16 @@ Requires JWT in `Authorization` header.
 }
 ```
 
-**GET /user/\:id**
-**Request**
+</details>
 
-`/user/688da86f5adf6531e6852cfc`
+<details>
+  <summary>GET /user/:id</summary>
 
-**Response**
+**Sample Request**
+
+`GET /user/688da86f5adf6531e6852cfc`
+
+**Sample Response**
 
 ```json
 {
@@ -247,9 +260,7 @@ Requires JWT in `Authorization` header.
 | GET    | `/drivers/me/earnings` | View earning history              |
 
 <details>
-  <summary>Sample Request & Response</summary>
-
-**POST /drivers/apply**
+  <summary>POST /drivers/apply</summary>
 
 ```json
 {
@@ -296,7 +307,10 @@ Requires JWT in `Authorization` header.
 }
 ```
 
-**GET /drivers/me**
+</details>
+
+<details>
+  <summary>GET /drivers/me</summary>
 
 Requires JWT in `Authorization` header.
 
@@ -329,7 +343,10 @@ Requires JWT in `Authorization` header.
 }
 ```
 
-**PATCH /drivers/me/status**
+</details>
+
+<details>
+  <summary>PATCH /drivers/me/status</summary>
 
 ```json
 {
@@ -366,18 +383,29 @@ Requires JWT in `Authorization` header.
 }
 ```
 
-**GET /drivers/me/earnings**
+</details>
+<details>
+  <summary>GET /drivers/me/earnings</summary>
 
 **Response**
 
 ```json
 {
-  "statusCode": 200,
-  "success": true,
-  "data": [
-    { "date": "2025-08-01", "amount": 50 },
-    { "date": "2025-08-02", "amount": 75 }
-  ]
+    "statusCode": 200,
+    "success": true,
+    "message": "Earning history retrieved successfully",
+    "data": {
+        "totalEarnings": 7342,
+        "rides": [
+            {
+                "_id": "688db61e411e9aef67702f16",
+                "rideStatus": "COMPLETED",
+                "fareFinal": 7342,
+                "createdAt": "2025-08-02T06:54:22.056Z"
+            },
+            ....
+        ]
+    }
 }
 ```
 
@@ -391,18 +419,16 @@ Requires JWT in `Authorization` header.
 | ------ | --------------------- | ---------------------------------- |
 | GET    | `/rides/fare`         | Estimate fare of a ride            |
 | POST   | `/rides/request`      | Rider requests a new ride          |
+| POST   | `/rides/:id/cancel`   | Cancel ride before pickup          |
 | PATCH  | `/rides/:id/accept`   | Driver accepts ride                |
 | PATCH  | `/rides/:id/picked`   | Update ride status to PICKED_UP    |
 | PATCH  | `/rides/:id/transit`  | Update ride status to IN_TRANSIT   |
 | PATCH  | `/rides/:id/complete` | Update ride status to COMPLETED    |
-| POST   | `/rides/:id/cancel`   | Cancel ride before pickup          |
 | GET    | `/rides/me`           | List ride history for current user |
 | GET    | `/rides/:id`          | Get ride details                   |
 
 <details>
-  <summary>Sample Request & Response</summary>
-
-**GET /rides/fare**
+  <summary>GET /rides/fare</summary>
 
 ```
 fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.177530855&destLng=50805231.177530855
@@ -421,49 +447,14 @@ fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.
 }
 ```
 
-**GET /rides/:id**
+</details>
 
-- Requires JWT in `Authorization` header.
+<details>
+  <summary>POST /rides/request</summary>
 
-**Response**
+**Sample Request**
 
-```json
-{
-  "statusCode": 200,
-  "success": true,
-  "message": "Ride details fetched successfully",
-  "data": {
-    "_id": "688db61e411e9aef67702f16",
-    "riderId": "688d9ee7f868bd68bbb23f72",
-    "driverId": null,
-    "rideStatus": "REQUESTED",
-    "pickupLocation": {
-      "latitude": 23.780573,
-      "longitude": 93.279239
-    },
-    "destinationLocation": {
-      "latitude": 23.768406,
-      "longitude": 90.408918
-    },
-    "transactionId": "txn_mdtwd6cg_0r2okxza",
-    "fareEstimated": 370,
-    "fareFinal": 0,
-    "timestamps": {
-      "requested": "2025-07-31T14:15:00.000Z",
-      "canceled": "2025-08-02T06:56:27.659Z"
-    },
-    "createdAt": "2025-08-02T06:54:22.056Z",
-    "updatedAt": "2025-08-02T06:56:27.661Z"
-  }
-}
-```
-
-**POST /rides/request**
-
-**Request**
-
-- Requires JWT in `Authorization` header.
-- body:
+Requires JWT in `Authorization` header.
 
 ```json
 {
@@ -483,7 +474,7 @@ fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.
 }
 ```
 
-**Response**
+**Sample Response**
 
 ```json
 {
@@ -515,7 +506,7 @@ fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.
 }
 ```
 
-| POST | `/rides/:id/cancel` | Cancel ride before pickup |
+</details>
 
 <details>
   <summary>POST /rides/:id/cancel</summary>
@@ -557,7 +548,12 @@ fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.
 }
 ```
 
-**PATCH /rides/\:id/accept**
+</details>
+<details>
+  <summary>PATCH /rides/:id/accept</summary>
+
+- Requires JWT in `Authorization` header.
+- Only available to drivers.
 
 **Response**
 
@@ -593,7 +589,13 @@ fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.
 }
 ```
 
-**PATCH /rides/\:id/picked**
+</details>
+
+<details>
+  <summary>PATCH /rides/:id/picked</summary>
+
+- Requires JWT in `Authorization` header.
+- Only available to drivers.
 
 **Response**
 
@@ -630,7 +632,13 @@ fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.
 }
 ```
 
-**PATCH /rides/\:id/transit**
+</details>
+
+<details>
+  <summary>PATCH /rides/:id/transit</summary>
+
+- Requires JWT in `Authorization` header.
+- Only available to drivers.
 
 **Response**
 
@@ -667,7 +675,13 @@ fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.
 }
 ```
 
-**PATCH /rides/\:id/complete**
+</details>
+
+<details>
+  <summary>PATCH /rides/:id/complete</summary>
+
+- Requires JWT in `Authorization` header.
+- Only available to drivers.
 
 **Response**
 
@@ -713,6 +727,105 @@ fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.
       "createdAt": "2025-08-02T07:27:53.932Z",
       "updatedAt": "2025-08-02T07:27:53.932Z"
     }
+  }
+}
+```
+
+</details>
+
+<details>
+  <summary>GET /rides/me</summary>
+
+**Sample Request**
+
+Requires JWT in `Authorization` header.
+
+**Sample Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Ride history retrieved successfully",
+  "data": [
+    {
+      "_id": "688db61e411e9aef67702f16",
+      "riderId": "688d9ee7f868bd68bbb23f72",
+      "driverId": "688d9f33f868bd68bbb23f7b",
+      "rideStatus": "COMPLETED",
+      "pickupLocation": {
+        "latitude": 23.780573,
+        "longitude": 93.279239
+      },
+      "destinationLocation": {
+        "latitude": 23.768406,
+        "longitude": 90.408918
+      },
+      "fareEstimated": 370,
+      "fareFinal": 7342,
+      "createdAt": "2025-08-02T06:54:22.056Z"
+    },
+    {
+      "_id": "688db82f411e9aef67702f20",
+      "riderId": "688d9ee7f868bd68bbb23f72",
+      "driverId": null,
+      "rideStatus": "CANCELLED",
+      "pickupLocation": {
+        "latitude": 23.780573,
+        "longitude": 93.279239
+      },
+      "destinationLocation": {
+        "latitude": 23.768406,
+        "longitude": 90.408918
+      },
+      "fareEstimated": 250,
+      "fareFinal": 0,
+      "createdAt": "2025-08-02T07:03:11.340Z"
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+  <summary>GET /rides/:id</summary>
+
+**Sample Request**
+
+`GET /rides/688db61e411e9aef67702f16`
+
+Requires JWT in `Authorization` header.
+
+**Sample Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Ride details fetched successfully",
+  "data": {
+    "_id": "688db61e411e9aef67702f16",
+    "riderId": "688d9ee7f868bd68bbb23f72",
+    "driverId": null,
+    "rideStatus": "REQUESTED",
+    "pickupLocation": {
+      "latitude": 23.780573,
+      "longitude": 93.279239
+    },
+    "destinationLocation": {
+      "latitude": 23.768406,
+      "longitude": 90.408918
+    },
+    "transactionId": "txn_mdtwd6cg_0r2okxza",
+    "fareEstimated": 370,
+    "fareFinal": 0,
+    "timestamps": {
+      "requested": "2025-07-31T14:15:00.000Z",
+      "canceled": "2025-08-02T06:56:27.659Z"
+    },
+    "createdAt": "2025-08-02T06:54:22.056Z",
+    "updatedAt": "2025-08-02T06:56:27.661Z"
   }
 }
 ```
@@ -822,7 +935,13 @@ fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.
 <details>
   <summary>GET /admin/drivers</summary>
 
-**Response**
+**Sample Request**
+
+```
+GET /admin/drivers
+```
+
+**Sample Response**
 
 ```json
 {
