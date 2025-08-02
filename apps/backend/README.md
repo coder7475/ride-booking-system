@@ -309,6 +309,7 @@ All API responses follow a consistent format:
 
 - **[API_Design.md](./API_Design.md)** - Complete API endpoint documentation
 - **[SRS.md](./SRS.md)** - Software Requirements Specification
+- **[Postman Collection: Ride Booking System](./Ride%20Booking%20System.postman_collection.json)**
 
 ## 🖼️ Diagrams
 
