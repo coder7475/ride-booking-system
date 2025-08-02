@@ -296,11 +296,44 @@ Requires JWT in `Authorization` header.
 }
 ```
 
+**GET /drivers/me**
+
+Requires JWT in `Authorization` header.
+
+**Response**
+
+```json
+{
+  "statusCode": 200,
+  "success": true,
+  "message": "Your driver profile retrieved successfully",
+  "data": {
+    "_id": "688dad9b39d4876810a2d98e",
+    "userId": "688d9f33f868bd68bbb23f7b",
+    "approvalStatus": "APPROVED",
+    "onlineStatus": "ONLINE",
+    "driverLocation": {
+      "latitude": 23.8103,
+      "longitude": 90.4125
+    },
+    "vehicleInfo": {
+      "vehicleType": "Car",
+      "brand": "Toyota",
+      "model": "Corolla",
+      "year": 2020,
+      "plateNumber": "DHK-5487"
+    },
+    "createdAt": "2025-08-02T06:18:03.519Z",
+    "updatedAt": "2025-08-02T06:46:06.205Z"
+  }
+}
+```
+
 **PATCH /drivers/me/status**
 
 ```json
 {
-  "online": true
+  "onlineStatus": "ONLINE"
 }
 ```
 
@@ -310,7 +343,26 @@ Requires JWT in `Authorization` header.
 {
   "statusCode": 200,
   "success": true,
-  "message": "Status updated"
+  "message": "Driver status updated successfully",
+  "data": {
+    "_id": "688dad9b39d4876810a2d98e",
+    "userId": "688d9f33f868bd68bbb23f7b",
+    "approvalStatus": "APPROVED",
+    "onlineStatus": "ONLINE",
+    "driverLocation": {
+      "latitude": 23.8103,
+      "longitude": 90.4125
+    },
+    "vehicleInfo": {
+      "vehicleType": "Car",
+      "brand": "Toyota",
+      "model": "Corolla",
+      "year": 2020,
+      "plateNumber": "DHK-5487"
+    },
+    "createdAt": "2025-08-02T06:18:03.519Z",
+    "updatedAt": "2025-08-02T06:46:06.205Z"
+  }
 }
 ```
 
