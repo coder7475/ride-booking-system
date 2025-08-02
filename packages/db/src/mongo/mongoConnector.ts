@@ -12,8 +12,27 @@ export async function mongoConnector(uri: string) {
     return;
   }
 
+  mongoose.set("strictQuery", false); // optional, for flexibility
+
   try {
-    await mongoose.connect(uri);
+    await mongoose.connect(uri, {
+      // Add options if needed
+      serverSelectionTimeoutMS: 10000, // 10s timeout for connecting
+    });
+
+    // Listen for connection events
+    mongoose.connection.on("connected", () => {
+      console.log("🟢 MongoDB connected");
+    });
+
+    mongoose.connection.on("error", (err) => {
+      console.error("🔴 MongoDB connection error:", err);
+    });
+
+    mongoose.connection.on("disconnected", () => {
+      console.warn("⚠️ MongoDB disconnected");
+    });
+
     isConnected = true;
     console.log("✅ Connected to MongoDB");
   } catch (error) {

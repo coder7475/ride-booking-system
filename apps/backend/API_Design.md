@@ -675,7 +675,45 @@ fare?pickupLat=50805231.177530855&pickupLng=50805231.177530855&destLat=50805231.
 {
   "statusCode": 200,
   "success": true,
-  "message": "Ride marked as completed"
+  "message": "Ride marked as completed successfully",
+  "data": {
+    "ride": {
+      "_id": "688db61e411e9aef67702f16",
+      "riderId": "688d9ee7f868bd68bbb23f72",
+      "driverId": "688d9f33f868bd68bbb23f7b",
+      "rideStatus": "COMPLETED",
+      "pickupLocation": {
+        "latitude": 23.780573,
+        "longitude": 93.279239
+      },
+      "destinationLocation": {
+        "latitude": 23.768406,
+        "longitude": 90.408918
+      },
+      "transactionId": "txn_mdtwd6cg_0r2okxza",
+      "fareEstimated": 370,
+      "fareFinal": 7342,
+      "timestamps": {
+        "requested": "2025-07-31T14:15:00.000Z",
+        "accepted": "2025-08-02T07:03:52.781Z",
+        "started": "2025-08-02T07:05:41.660Z",
+        "completed": "2025-08-02T07:27:53.909Z",
+        "canceled": "2025-08-02T06:56:27.659Z"
+      },
+      "createdAt": "2025-08-02T06:54:22.056Z",
+      "updatedAt": "2025-08-02T07:27:53.915Z"
+    },
+    "transaction": {
+      "transactionId": "txn_mdtwd6cg_0r2okxza",
+      "amount": 7342,
+      "paymentStatus": "PENDING",
+      "paymentGateway": "SSLCOMMERZ",
+      "invoiceUrl": "",
+      "_id": "688dbdf9450e72b38d77ae38",
+      "createdAt": "2025-08-02T07:27:53.932Z",
+      "updatedAt": "2025-08-02T07:27:53.932Z"
+    }
+  }
 }
 ```
 

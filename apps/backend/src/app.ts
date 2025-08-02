@@ -1,8 +1,8 @@
+import indexRouter from "@/routes";
 import { mongoConnector } from "@repo/db";
 import cors from "cors";
 import express, { type Express } from "express";
 import helmet from "helmet";
-import indexRouter from "@/routes";
 
 import { env } from "./configs/envConfig";
 import { middlewares } from "./middlewares";
@@ -23,12 +23,12 @@ app.use("/api/v1", indexRouter);
 
 // Root route handler
 app.get("/", (_req, res) => {
-	sendResponse(res, {
-		statusCode: 200,
-		success: true,
-		message: "Welcome to Ride Sharing System!",
-		data: null,
-	});
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Welcome to Ride Sharing System!",
+    data: null,
+  });
 });
 
 // Not found route handler (should be after all valid routes)
