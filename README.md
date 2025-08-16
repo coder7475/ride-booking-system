@@ -5,7 +5,7 @@ A modern, scalable ride-booking platform built with a TypeScript monorepo archit
 ## 🌟 Features
 
 - **🔐 Role-based Authentication**: Secure JWT-based auth for riders, drivers, and admins
-- **🚗 Real-time Ride Management**: Complete ride lifecycle from request to completion
+- **🚗 Ride Management**: Complete ride lifecycle from request to completion
 - **💰 Transaction Processing**: Integrated payment and earnings system
 - **🏗️ Scalable Architecture**: Modular monorepo structure with shared packages
 
