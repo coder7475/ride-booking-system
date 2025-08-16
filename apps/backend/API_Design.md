@@ -112,6 +112,12 @@ Authorization: Bearer <your-refresh-token>
 
 ---
 
+### 🔑 OTP APIs
+
+Method Endpoint Description
+POST /api/otp/send Send OTP to email or SMS
+POST /api/otp/verify Verify OTP provided by the user
+
 ### 👤 **User APIs**
 
 | Method | Endpoint    | Description                      |

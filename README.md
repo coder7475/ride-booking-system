@@ -133,6 +133,12 @@ The backend provides a comprehensive REST API with the following endpoints:
 | POST   | `/auth/refresh-token` | Refresh access token    |
 | POST   | `/auth/logout`        | Invalidate token/logout |
 
+### 🔑 OTP APIs
+
+Method Endpoint Description
+POST /api/otp/send Send OTP to email or SMS
+POST /api/otp/verify Verify OTP provided by the user
+
 ### 👤 **User APIs**
 
 | Method | Endpoint    | Description                      |
