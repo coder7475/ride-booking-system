@@ -5,6 +5,11 @@ import Analytics from "@/pages/Admin/Analytics";
 import Contact from "@/pages/Contact";
 import FAQ from "@/pages/FAQ";
 import Features from "@/pages/Features";
+import Blogs from "@/pages/FooterPages/Blogs";
+import Careers from "@/pages/FooterPages/Careers";
+import HelpCenter from "@/pages/FooterPages/HelpCenter";
+import Press from "@/pages/FooterPages/Press";
+import Safety from "@/pages/FooterPages/Safety";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
@@ -55,6 +60,30 @@ const router = createBrowserRouter([
       {
         path: "privacy",
         Component: Privacy,
+      },
+      {
+        path: "careers",
+        Component: Careers,
+      },
+      {
+        path: "safety",
+        Component: Safety,
+      },
+      {
+        path: "/blogs",
+        Component: Blogs,
+      },
+      {
+        path: "help",
+        Component: HelpCenter,
+      },
+      {
+        path: "press",
+        Component: Press,
+      },
+      {
+        path: "blog",
+        Component: Blogs,
       },
       {
         path: "verify",

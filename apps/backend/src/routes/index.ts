@@ -30,6 +30,7 @@ const moduleRoutes = [
     path: "/rides",
     routes: RidesRouter,
   },
+
   {
     path: "/admin",
     routes: adminRoutes,

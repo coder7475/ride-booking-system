@@ -24,7 +24,7 @@ const CTA = ({ title, description, btnText }: CTAProps) => {
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
-          <Link to="/about">
+          <Link to="/faq">
             <Button
               variant="outline"
               size="lg"
