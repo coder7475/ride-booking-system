@@ -1,11 +1,43 @@
+import { Card } from "@/components/ui/card";
 import { LoginForm } from "@/modules/auth/LoginForm";
+import { Separator } from "@radix-ui/react-separator";
+import { Car } from "lucide-react";
+import { Link } from "react-router";
 
 export default function Login() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-background py-8 px-4">
-      <div className="w-full max-w-md bg-white dark:bg-card rounded-lg shadow-lg p-6 md:p-10 flex flex-col gap-6">
-        <div className="flex flex-col items-center justify-center">
-          <LoginForm />
+    <div className="dark:bg-background min-h-screen bg-gray-50 px-4 py-20">
+      <div className="flex w-full items-center justify-center">
+        <div className="w-full max-w-md">
+          <Card className="card-gradient dark:bg-accent flex flex-col items-center px-8">
+            {/* Header */}
+            <div className="flex w-full flex-col items-center rounded-lg text-center">
+              <div className="bg-gradient-b mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+                <Car className="text-primary h-8 w-8" />
+              </div>
+              <h1 className="mb-2 text-2xl font-bold">Welcome Back</h1>
+              <p className="text-muted-foreground">
+                Sign in to your RideBook account
+              </p>
+            </div>
+
+            {/* Form */}
+            <div className="flex w-full flex-col items-center">
+              <LoginForm className="w-full" />
+              <div className="mt-6 w-full">
+                <Separator className="my-4" />
+                <p className="text-muted-foreground text-center text-sm">
+                  Don't have an account?{" "}
+                  <Link
+                    to="/register"
+                    className="text-primary font-medium hover:underline"
+                  >
+                    Sign up here
+                  </Link>
+                </p>
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
     </div>

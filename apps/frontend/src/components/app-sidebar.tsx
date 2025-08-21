@@ -1,9 +1,9 @@
-import * as React from "react"
+import * as React from "react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -16,20 +16,20 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { Minus, Plus, TestTube2 } from "lucide-react"
-import { adminSideRoutes } from "@/router/adminSideRoutes"
+} from "@/components/ui/sidebar";
+import { adminSideRoutes } from "@/router/adminSideRoutes";
+import { Minus, Plus, TestTube2 } from "lucide-react";
 
 // This is sample data.
 const data = {
-  navMain: adminSideRoutes
-}
+  navMain: adminSideRoutes,
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <TestTube2 className="flex items-center justify-center w-6 h-6 mx-2"/>
+        <TestTube2 className="mx-2 flex h-6 w-6 items-center justify-center" />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -53,10 +53,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <SidebarMenuSub>
                         {item.items.map((item) => (
                           <SidebarMenuSubItem key={item.title}>
-                            <SidebarMenuSubButton
-                              asChild
-                              isActive={item.isActive}
-                            >
+                            <SidebarMenuSubButton asChild>
                               <a href={item.url}>{item.title}</a>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -72,5 +69,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

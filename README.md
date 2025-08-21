@@ -21,7 +21,7 @@ This monorepo contains the following apps and packages:
   - Driver and rider functionality
   - Admin panel APIs
   - Transaction processing
-- **`frontend`**: Next.js application for the user interface
+- **`frontend`**: React application for the user interface
   - Responsive design
   - Role-based UI components
   - Real-time updates
