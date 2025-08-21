@@ -14,7 +14,7 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const Index = () => {
   const { data } = useUserInfoQuery(undefined);
@@ -314,17 +314,21 @@ const Index = () => {
             transportation needs
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button size="lg" className="btn-hero group">
-              Get Started Today
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-            >
-              Learn More
-            </Button>
+            <Link to="/register">
+              <Button size="lg" className="btn-hero group cursor-pointer">
+                Get Started Today
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
+            <Link to="/about">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground dark:text-secondary-foreground cursor-pointer"
+              >
+                Learn More
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
