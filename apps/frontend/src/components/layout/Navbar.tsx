@@ -45,7 +45,7 @@ const Navbar = () => {
                 className={`text-sm font-medium transition-colors ${
                   isActive(item.href)
                     ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground dark:text-white"
                 }`}
               >
                 {item.name}
@@ -84,7 +84,7 @@ const Navbar = () => {
                   className={`block rounded-md px-3 py-2 text-base font-medium transition-colors ${
                     isActive(item.href)
                       ? "text-primary bg-accent"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent dark:text-white"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
