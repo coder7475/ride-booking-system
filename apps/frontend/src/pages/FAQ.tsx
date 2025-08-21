@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { faqCategories, faqs } from "@/constants/faqs";
 import { Mail, MessageCircle, Phone, Search } from "lucide-react";
+import { Link } from "react-router";
 
 const FAQ = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -137,9 +138,11 @@ const FAQ = () => {
                 <p className="text-muted-foreground mb-6">
                   Get instant help from our support team available 24/7
                 </p>
-                <Button variant="default" className="w-full">
-                  Start Chat
-                </Button>
+                <Link to="/contact">
+                  <Button variant="default" className="w-full cursor-pointer">
+                    Start Chat
+                  </Button>
+                </Link>
               </Card>
 
               <Card className="card-gradient p-8 text-center transition-transform duration-300 hover:scale-105">
@@ -150,9 +153,11 @@ const FAQ = () => {
                 <p className="text-muted-foreground mb-6">
                   Speak directly with our customer service representatives
                 </p>
-                <Button variant="outline" className="w-full">
-                  Call Now
-                </Button>
+                <Link to="/contact">
+                  <Button variant="outline" className="w-full cursor-pointer">
+                    Call Now
+                  </Button>
+                </Link>
               </Card>
 
               <Card className="card-gradient p-8 text-center transition-transform duration-300 hover:scale-105">
@@ -163,9 +168,11 @@ const FAQ = () => {
                 <p className="text-muted-foreground mb-6">
                   Send us detailed questions and we'll respond within 24 hours
                 </p>
-                <Button variant="outline" className="w-full">
-                  Send Email
-                </Button>
+                <Link to="/contact">
+                  <Button variant="outline" className="w-full cursor-pointer">
+                    Send Email
+                  </Button>
+                </Link>
               </Card>
             </div>
           </div>
