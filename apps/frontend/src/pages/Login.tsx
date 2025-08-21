@@ -12,8 +12,8 @@ export default function Login() {
           <Card className="card-gradient dark:bg-accent flex flex-col items-center px-8">
             {/* Header */}
             <div className="flex w-full flex-col items-center rounded-lg text-center">
-              <div className="bg-gradient-b mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-                <Car className="text-primary h-8 w-8" />
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-500">
+                <Car className="h-8 w-8 text-white" />
               </div>
               <h1 className="mb-2 text-2xl font-bold">Welcome Back</h1>
               <p className="text-muted-foreground">
