@@ -12,7 +12,7 @@ export default function CommonLayout({ children }: Readonly<IProps>) {
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <div className="grow-1">{children}</div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }
