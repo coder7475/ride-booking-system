@@ -2,6 +2,8 @@ import { Star } from "lucide-react";
 import { Link } from "react-router";
 
 const Footer = () => {
+  const year = new Date().getFullYear();
+
   return (
     <footer className="bg-primary text-primary-foreground py-12">
       <div className="container mx-auto px-4">
@@ -134,7 +136,7 @@ const Footer = () => {
         </div>
 
         <div className="border-primary-foreground/20 text-primary-foreground/60 mt-8 border-t pt-8 text-center">
-          <p>&copy; 2024 RideBook. All rights reserved.</p>
+          <p>&copy; {year} RideBook. All rights reserved.</p>
         </div>
       </div>
     </footer>
