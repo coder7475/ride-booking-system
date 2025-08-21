@@ -1,5 +1,5 @@
+import CTA from "@/components/CTA";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -8,7 +8,6 @@ import {
   riderFeatures,
 } from "@/constants/features";
 import {
-  ArrowRight,
   BarChart3,
   Car,
   CheckCircle,
@@ -229,26 +228,13 @@ const Features = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="mb-6 text-4xl font-bold">
-            Ready to Experience These Features?
-          </h2>
-          <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-xl">
-            Join millions of users who trust RideBook for their daily
-            transportation needs
-          </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button variant="default" size="lg" className="group">
-              Start Your Journey
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button variant="outline" size="lg">
-              Learn More
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CTA
+        title={"Ready to Experience These Features?"}
+        description={
+          "Join millions of users who trust RideBook for their daily transportation needs"
+        }
+        btnText={"Start Your Journey"}
+      />
     </div>
   );
 };

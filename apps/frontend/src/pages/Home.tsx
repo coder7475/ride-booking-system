@@ -1,10 +1,9 @@
 import { useEffect } from "react";
+import CTA from "@/components/CTA";
 import HeroSection from "@/components/HeroSection";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import {
-  ArrowRight,
   Car,
   CreditCard,
   MapPin,
@@ -14,7 +13,7 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 const Index = () => {
   const { data } = useUserInfoQuery(undefined);
@@ -304,34 +303,13 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="mb-6 text-4xl font-bold md:text-5xl">
-            Ready to Start Your Journey?
-          </h2>
-          <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-xl">
-            Join millions of users who trust RideBook for their daily
-            transportation needs
-          </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Link to="/register">
-              <Button size="lg" className="btn-hero group cursor-pointer">
-                Get Started Today
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
-            <Link to="/about">
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground dark:text-secondary-foreground cursor-pointer"
-              >
-                Learn More
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CTA
+        title={"Ready to Start Your Journey?"}
+        description={
+          "Join millions of users who trust RideBook for their daily transportation needs"
+        }
+        btnText={" Get Started Today"}
+      />
     </div>
   );
 };

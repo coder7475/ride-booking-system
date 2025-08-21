@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import CTA from "@/components/CTA";
 import { Card } from "@/components/ui/card";
 import { leaders } from "@/constants/leaders";
 import { Award, Heart, Target, Users } from "lucide-react";
@@ -154,23 +154,11 @@ const About = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-subtle py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="mb-6 text-4xl font-bold">Join Our Journey</h2>
-          <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-xl">
-            Be part of the transportation revolution. Whether as a rider,
-            driver, or team member.
-          </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button variant="default" size="lg">
-              Start Riding
-            </Button>
-            <Button variant="outline" size="lg">
-              View Careers
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CTA
+        title="Join Our Journey"
+        description="Be part of the transportation revolution. Whether as a rider, driver, or team member."
+        btnText="Start Riding"
+      />
     </div>
   );
 };
