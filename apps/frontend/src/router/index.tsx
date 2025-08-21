@@ -8,7 +8,9 @@ import Features from "@/pages/Features";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
+import Privacy from "@/pages/Privacy";
 import Register from "@/pages/Register";
+import Terms from "@/pages/Terms";
 import Assessment from "@/pages/User/Assessment";
 import Verify from "@/pages/Verify";
 import { createBrowserRouter } from "react-router";
@@ -45,6 +47,14 @@ const router = createBrowserRouter([
       {
         path: "login",
         Component: Login,
+      },
+      {
+        path: "terms",
+        Component: Terms,
+      },
+      {
+        path: "privacy",
+        Component: Privacy,
       },
       {
         path: "verify",
