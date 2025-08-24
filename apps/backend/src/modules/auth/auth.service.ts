@@ -3,10 +3,12 @@ import { env } from "@/configs/envConfig";
 import { AccountStatus } from "@/types/types";
 import { generateToken, verifyToken } from "@/utils/jwtHelpers";
 import { sendEmail } from "@/utils/sendEmail";
-import { verifyPassword } from "@repo/utils";
+import { hashPassword, verifyPassword } from "@repo/utils";
+import { JwtPayload } from "jsonwebtoken";
 
 import type { IUser } from "../user/user.interface";
 import { UserModel } from "../user/user.model";
+import { IResetPassword } from "./auth.interface";
 
 export const login = async (credentials: Partial<IUser>) => {
   const { email, password } = credentials;
@@ -116,10 +118,48 @@ const forgetPassword = async (email: string) => {
       resetLink,
     },
   });
+
+  return {
+    message: `Reset email sent to ${email}. Please check your email.`,
+  };
+};
+
+const resetPassword = async (
+  userData: IResetPassword,
+  decodedUser: JwtPayload,
+) => {
+  if (userData.id !== decodedUser.id) {
+    throw new AppError(400, "Id doesn't match");
+  }
+  const userExisting = await UserModel.findById(userData.id);
+
+  if (!userExisting) {
+    throw new AppError(400, "User does not exits");
+  }
+  if (!userExisting.isVerified) {
+    throw new AppError(400, "User is not verified");
+  }
+  // deny if user is suspended, blocked, or deactivate(deleted)
+  if (userExisting.accountStatus !== "active") {
+    throw new AppError(400, "User is not active");
+  }
+
+  const hashedPassword = hashPassword(userData.password);
+
+  const result = await UserModel.findByIdAndUpdate(
+    userData.id,
+    {
+      password: hashedPassword,
+    },
+    { new: true },
+  );
+
+  return result;
 };
 
 export const AuthServices = {
   login,
   reissueAccessToken,
   forgetPassword,
+  resetPassword,
 };

@@ -14,7 +14,8 @@ export const checkAuth =
   (...allowedRoles: string[]) =>
   async (req: Request, _res: Response, next: NextFunction) => {
     try {
-      const authHeader = req.headers.authorization;
+      const authHeader = req.headers?.authorization;
+
       let token: string | undefined;
 
       if (authHeader?.startsWith("Bearer ")) {

@@ -19,3 +19,10 @@ export const forgetPasswordSchema = z.object({
     .min(5, { message: "Email must be at least 5 characters long." })
     .max(100, { message: "Email cannot exceed 100 characters." }),
 });
+
+export const resetPasswordSchema = z.object({
+  id: z.string(),
+  password: z
+    .string({ invalid_type_error: "Password must be string" })
+    .min(8, { message: "Password must be at least 8 characters long." }),
+});

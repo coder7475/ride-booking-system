@@ -3,8 +3,10 @@ import { catchAsync } from "@/utils/asyncHandler";
 import { setAuthCookies } from "@/utils/cookieHelpers";
 import sendResponse from "@/utils/sendResponse";
 import type { NextFunction, Request, Response } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 import { UserServices } from "../user/user.service";
+import { IResetPassword } from "./auth.interface";
 import { AuthServices } from "./auth.service";
 
 const registerUser = catchAsync(
@@ -101,7 +103,23 @@ const forgetPassword = catchAsync(
       statusCode: 200,
       success: true,
       message: "Reset Link generated successfully",
-      data: null,
+      data: result,
+    });
+  },
+);
+
+const resetPassword = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    const userData: IResetPassword = req.body;
+    const decodedUser: JwtPayload = req.user;
+
+    const data = await AuthServices.resetPassword(userData, decodedUser);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Password Reset generated successfully",
+      data,
     });
   },
 );
@@ -112,4 +130,5 @@ export const AuthController = {
   reissueAccessToken,
   logout,
   forgetPassword,
+  resetPassword,
 };
