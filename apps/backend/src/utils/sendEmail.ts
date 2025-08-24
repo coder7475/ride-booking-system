@@ -4,7 +4,10 @@ import { Resend } from "resend";
 
 import { logger } from "./logger";
 import { renderTemplate } from "./renderTemplate";
-import { otpHtmlTemplate } from "./templates/otp.html";
+import {
+  otpHtmlTemplate,
+  resetPasswordHtmlTemplate,
+} from "./templates/otp.html";
 
 interface SendEmailOptions {
   to: string;
@@ -25,6 +28,8 @@ export const sendEmail = async ({
     // Only one template for now, but you can add more templates here
     if (templateName === "otp") {
       htmlContent = renderTemplate(otpHtmlTemplate, templateData);
+    } else if (templateName === "resetPassword") {
+      htmlContent = renderTemplate(resetPasswordHtmlTemplate, templateData);
     } else {
       throw new AppError(400, "Unknown email template");
     }

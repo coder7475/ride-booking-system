@@ -1,9 +1,8 @@
 import path from "path";
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-
 import { cloudflare } from "@cloudflare/vite-plugin";
-import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react-swc";
+import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -13,4 +12,4 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-})
+});

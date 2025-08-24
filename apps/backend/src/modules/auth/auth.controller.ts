@@ -91,9 +91,25 @@ const logout = catchAsync(
   },
 );
 
+const forgetPassword = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    const email = req.body.email;
+
+    const result = await AuthServices.forgetPassword(email);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Reset Link generated successfully",
+      data: null,
+    });
+  },
+);
+
 export const AuthController = {
   registerUser,
   login,
   reissueAccessToken,
   logout,
+  forgetPassword,
 };

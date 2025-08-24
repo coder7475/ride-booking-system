@@ -66,6 +66,7 @@ const envSchema = z.object({
     }),
   EMAIL_FROM: z.string().email(),
   RESEND_API_KEY: z.string(),
+  FRONTEND_LINK: z.string(),
 });
 
 // Validate process.env and infer typed env object
