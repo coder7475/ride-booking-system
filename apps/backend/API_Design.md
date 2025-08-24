@@ -2,12 +2,14 @@
 
 ### 🔐 **Authentication APIs**
 
-| Method | Endpoint              | Description             |
-| ------ | --------------------- | ----------------------- |
-| POST   | `/auth/register`      | Register a new user     |
-| POST   | `/auth/login`         | Login and receive JWTs  |
-| POST   | `/auth/refresh-token` | Refresh access token    |
-| POST   | `/auth/logout`        | Invalidate token/logout |
+| Method | Endpoint               | Description              |
+| ------ | ---------------------- | ------------------------ |
+| POST   | `/auth/register`       | Register a new user      |
+| POST   | `/auth/login`          | Login and receive JWTs   |
+| POST   | `/auth/refresh-token`  | Refresh access token     |
+| POST   | `/auth/logout`         | Invalidate token/logout  |
+| POST   | `auth/forget-password` | send reset link to email |
+| POST   | `auth/reset-password`  | reset password           |
 
 <details>
   <summary>POST /auth/register</summary>
