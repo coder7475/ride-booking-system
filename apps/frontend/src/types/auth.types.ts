@@ -1,3 +1,10 @@
+// User
+export enum Role {
+  ADMIN = "ADMIN",
+  USER = "USER",
+  DRIVER = "DRIVER",
+}
+
 export interface ISendOtp {
   email: string;
 }

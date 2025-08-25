@@ -19,55 +19,15 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useRegisterMutation } from "@/redux/features/auth/auth.api";
+import { Role } from "@/types/auth.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Car, Lock, Mail, Phone, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
-import { z } from "zod";
+import type z from "zod";
 
-const registerSchema = z
-  .object({
-    firstName: z
-      .string()
-      .min(2, {
-        message: "First name must be at least 2 characters",
-      })
-      .max(50),
-    lastName: z
-      .string()
-      .min(2, {
-        message: "Last name must be at least 2 characters",
-      })
-      .max(50),
-    email: z.string().email(),
-    phone: z
-      .string()
-      .min(10, { message: "Phone number must be at least 10 digits" })
-      .max(15, { message: "Phone number is too long" }),
-    password: z
-      .string()
-      .min(8, { message: "Password is too short" })
-      .regex(/[A-Z]/, {
-        message: "Password must contain at least one uppercase letter",
-      })
-      .regex(/[^A-Za-z0-9]/, {
-        message: "Password must contain at least one special character",
-      }),
-    confirmPassword: z
-      .string()
-      .min(8, { message: "Confirm Password is too short" }),
-    userType: z.enum(["rider", "driver"]).refine((val) => !!val, {
-      message: "Please select whether you want to be a rider or driver",
-    }),
-    terms: z.boolean().refine((val) => val === true, {
-      message: "You must accept the terms and conditions",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Password do not match",
-    path: ["confirmPassword"],
-  });
+import { registerSchema } from "./AuthSchemas";
 
 export function RegisterForm({
   className,
@@ -83,7 +43,7 @@ export function RegisterForm({
       lastName: "",
       email: "",
       phone: "",
-      userType: "rider",
+      role: Role.USER,
       password: "",
       confirmPassword: "",
       terms: false,
@@ -96,24 +56,23 @@ export function RegisterForm({
 
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     const userInfo = {
-      name: `${data.firstName} ${data.lastName}`,
+      userName: `${data.firstName} ${data.lastName}`,
       email: data.email,
       phone: data.phone,
-      userType: data.userType,
+      role: data.role,
       password: data.password,
     };
 
     try {
       const result = await register(userInfo).unwrap();
-
-      if (result.success) {
+      console.log(result);
+      if (result?.data?.success) {
         toast.success("User created successfully");
         navigate("/verify", { state: data.email });
       }
     } catch (error) {
       console.error(error);
       toast.warning("User Creation failed or user already exits");
-      navigate("/login");
     }
   };
 
@@ -162,7 +121,14 @@ export function RegisterForm({
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Last name" {...field} />
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                        <Input
+                          className="pl-10"
+                          placeholder="Last name"
+                          {...field}
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -218,7 +184,7 @@ export function RegisterForm({
             {/* User Type Select */}
             <FormField
               control={form.control}
-              name="userType"
+              name="role"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>I want to</FormLabel>
@@ -230,13 +196,13 @@ export function RegisterForm({
                       <SelectValue placeholder="Choose your role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="rider">
+                      <SelectItem value="USER">
                         <div className="flex items-center">
                           <User className="mr-2 h-4 w-4" />
                           Be a Rider - Book rides
                         </div>
                       </SelectItem>
-                      <SelectItem value="driver">
+                      <SelectItem value="DRIVER">
                         <div className="flex items-center">
                           <Car className="mr-2 h-4 w-4" />
                           Be a Driver - Earn money driving
