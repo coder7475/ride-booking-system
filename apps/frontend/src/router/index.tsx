@@ -106,7 +106,7 @@ const router = createBrowserRouter([
     Component: DashboardLayout,
     children: [
       {
-        path: "assessment",
+        path: "dashboard",
         Component: Assessment,
       },
     ],

@@ -29,9 +29,10 @@ export function LoginForm({
     try {
       // console.log(data);
       const res = await login(data).unwrap();
-
+      console.log(res);
       if (res.success) {
         toast.success("Login Successfully!");
+
         navigate("/");
       }
     } catch (err) {
