@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,7 +29,6 @@ import {
 } from "@/redux/features/auth/auth.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dot } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -43,10 +43,9 @@ const FormSchema = z.object({
 export default function Verify() {
   const location = useLocation();
   const navigate = useNavigate();
-  
-const email = typeof location.state === "string"
-  ? location.state
-  : location.state?.email;
+
+  const email =
+    typeof location.state === "string" ? location.state : location.state?.email;
   const [confirmed, setConfirmed] = useState(false);
   const [sendOtp, { isLoading: isSendingOtp }] = useSendOtpMutation();
   const [verifyOtp, { isLoading: isVerifyingOtp }] = useVerifyOtpMutation();
@@ -66,8 +65,8 @@ const email = typeof location.state === "string"
   const getErrorMessage = (error: any): string => {
     if (error?.data?.message) return error.data.message;
     if (error?.message) return error.message;
-    if (typeof error === 'string') return error;
-    return 'An unexpected error occurred';
+    if (typeof error === "string") return error;
+    return "An unexpected error occurred";
   };
 
   // Helper function to check if email is valid
@@ -92,12 +91,14 @@ const email = typeof location.state === "string"
 
     // Check resend attempts limit
     if (resendAttempts >= maxResendAttempts) {
-      toast.error(`Maximum resend attempts (${maxResendAttempts}) reached. Please try again later.`);
+      toast.error(
+        `Maximum resend attempts (${maxResendAttempts}) reached. Please try again later.`,
+      );
       return;
     }
 
     const toastId = toast.loading("Sending OTP...");
-    
+
     try {
       const res = await sendOtp({ email: email }).unwrap();
 
@@ -105,28 +106,32 @@ const email = typeof location.state === "string"
         toast.success("OTP sent successfully to your email", { id: toastId });
         setConfirmed(true);
         setTimer(60); // Reset to 60 seconds for better UX
-        setResendAttempts(prev => prev + 1);
-        
+        setResendAttempts((prev) => prev + 1);
+
         // Clear any previous form errors
         form.clearErrors();
         form.reset({ pin: "" });
       } else {
         toast.error(res.message || "Failed to send OTP", { id: toastId });
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Send OTP Error:", error);
       const errorMessage = getErrorMessage(error);
-      
+
       // Handle specific error cases
       if (error?.status === 429) {
-        toast.error("Too many requests. Please wait before trying again.", { id: toastId });
+        toast.error("Too many requests. Please wait before trying again.", {
+          id: toastId,
+        });
       } else if (error?.status === 400) {
         toast.error("Invalid email address or request", { id: toastId });
       } else if (error?.status === 500) {
         toast.error("Server error. Please try again later.", { id: toastId });
-      } else if (error?.status === 'FETCH_ERROR') {
-        toast.error("Network error. Please check your connection.", { id: toastId });
+      } else if (error?.status === "FETCH_ERROR") {
+        toast.error("Network error. Please check your connection.", {
+          id: toastId,
+        });
       } else {
         toast.error(errorMessage, { id: toastId });
       }
@@ -154,58 +159,67 @@ const email = typeof location.state === "string"
 
     try {
       const res = await verifyOtp(userInfo).unwrap();
-      
+
       if (res.success) {
         toast.success("OTP verified successfully!", { id: toastId });
-        
+
         // Store verified email in localStorage for future checks
-        const verifiedEmails = JSON.parse(localStorage.getItem('verifiedEmails') || '[]');
+        const verifiedEmails = JSON.parse(
+          localStorage.getItem("verifiedEmails") || "[]",
+        );
         if (!verifiedEmails.includes(email)) {
           verifiedEmails.push(email);
-          localStorage.setItem('verifiedEmails', JSON.stringify(verifiedEmails));
+          localStorage.setItem(
+            "verifiedEmails",
+            JSON.stringify(verifiedEmails),
+          );
         }
-        
+
         setConfirmed(true);
-        
+
         // Small delay for better UX before navigation
         setTimeout(() => {
-          navigate('/login', { 
-            state: { 
+          navigate("/login", {
+            state: {
               message: "Email verified successfully. You can now log in.",
-              email: email 
-            } 
+              email: email,
+            },
           });
         }, 1000);
       } else {
         toast.error(res.message || "OTP verification failed", { id: toastId });
-        form.setError("pin", { 
-          type: "manual", 
-          message: res.message || "Invalid OTP. Please try again." 
+        form.setError("pin", {
+          type: "manual",
+          message: res.message || "Invalid OTP. Please try again.",
         });
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Verify OTP Error:", error);
       const errorMessage = getErrorMessage(error);
-      
+
       // Handle specific error cases
       if (error?.status === 400) {
         toast.error("Invalid or expired OTP", { id: toastId });
-        form.setError("pin", { 
-          type: "manual", 
-          message: "Invalid or expired OTP. Please try again." 
+        form.setError("pin", {
+          type: "manual",
+          message: "Invalid or expired OTP. Please try again.",
         });
       } else if (error?.status === 429) {
-        toast.error("Too many verification attempts. Please wait.", { id: toastId });
+        toast.error("Too many verification attempts. Please wait.", {
+          id: toastId,
+        });
       } else if (error?.status === 500) {
         toast.error("Server error. Please try again later.", { id: toastId });
-      } else if (error?.status === 'FETCH_ERROR') {
-        toast.error("Network error. Please check your connection.", { id: toastId });
+      } else if (error?.status === "FETCH_ERROR") {
+        toast.error("Network error. Please check your connection.", {
+          id: toastId,
+        });
       } else {
         toast.error(errorMessage, { id: toastId });
-        form.setError("pin", { 
-          type: "manual", 
-          message: "Verification failed. Please try again." 
+        form.setError("pin", {
+          type: "manual",
+          message: "Verification failed. Please try again.",
         });
       }
     }
@@ -218,7 +232,7 @@ const email = typeof location.state === "string"
       navigate("/");
       return;
     }
-    
+
     if (!isValidEmail(email)) {
       toast.error("Invalid email address provided");
       navigate("/");
@@ -227,14 +241,14 @@ const email = typeof location.state === "string"
 
     // Check if user is already verified by making an API call or checking localStorage
     const checkVerificationStatus = async () => {
-      try {    
+      try {
         if (location.state?.isAlreadyVerified) {
           toast.info("Email is already verified");
-          navigate("/login", { 
-            state: { 
+          navigate("/login", {
+            state: {
               message: "Your email is already verified. Please log in.",
-              email: email 
-            } 
+              email: email,
+            },
           });
           return;
         }
@@ -274,7 +288,7 @@ const email = typeof location.state === "string"
   // Show loading state or error if email is invalid
   if (!email) {
     return (
-      <div className="grid place-content-center h-screen">
+      <div className="grid h-screen place-content-center">
         <Card>
           <CardHeader>
             <CardTitle className="text-xl text-red-600">Error</CardTitle>
@@ -288,13 +302,13 @@ const email = typeof location.state === "string"
   }
 
   return (
-    <div className="grid place-content-center h-screen">
+    <div className="grid h-screen place-content-center">
       {confirmed ? (
         <Card>
           <CardHeader>
             <CardTitle className="text-xl">Verify your email address</CardTitle>
             <CardDescription>
-              Please enter the 6-digit code we sent to <br /> 
+              Please enter the 6-digit code we sent to <br />
               <span className="font-medium">{email}</span>
             </CardDescription>
           </CardHeader>
@@ -312,8 +326,8 @@ const email = typeof location.state === "string"
                     <FormItem>
                       <FormLabel>One-Time Password</FormLabel>
                       <FormControl>
-                        <InputOTP 
-                          maxLength={6} 
+                        <InputOTP
+                          maxLength={6}
                           {...field}
                           disabled={isVerifyingOtp}
                         >
@@ -343,23 +357,33 @@ const email = typeof location.state === "string"
                           onClick={handleSendOtp}
                           type="button"
                           variant="link"
-                          disabled={timer !== 0 || isSendingOtp || resendAttempts >= maxResendAttempts}
-                          className={cn("p-0 m-0", {
-                            "cursor-pointer": timer === 0 && !isSendingOtp && resendAttempts < maxResendAttempts,
-                            "text-gray-500 font-semibold": timer !== 0 || isSendingOtp || resendAttempts >= maxResendAttempts,
+                          disabled={
+                            timer !== 0 ||
+                            isSendingOtp ||
+                            resendAttempts >= maxResendAttempts
+                          }
+                          className={cn("m-0 p-0", {
+                            "cursor-pointer":
+                              timer === 0 &&
+                              !isSendingOtp &&
+                              resendAttempts < maxResendAttempts,
+                            "font-semibold text-gray-500":
+                              timer !== 0 ||
+                              isSendingOtp ||
+                              resendAttempts >= maxResendAttempts,
                           })}
                         >
-                          {isSendingOtp 
-                            ? "Sending..." 
-                            : resendAttempts >= maxResendAttempts 
-                              ? "Max attempts reached" 
-                              : "Resend OTP"
-                          }{" "}
+                          {isSendingOtp
+                            ? "Sending..."
+                            : resendAttempts >= maxResendAttempts
+                              ? "Max attempts reached"
+                              : "Resend OTP"}{" "}
                         </Button>
                         {timer > 0 && <span>in {timer}s</span>}
                         {resendAttempts >= maxResendAttempts && (
-                          <p className="text-xs text-red-500 mt-1">
-                            Maximum resend attempts reached. Please try again later.
+                          <p className="mt-1 text-xs text-red-500">
+                            Maximum resend attempts reached. Please try again
+                            later.
                           </p>
                         )}
                       </FormDescription>
@@ -371,10 +395,15 @@ const email = typeof location.state === "string"
             </Form>
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button 
-              form="otp-form" 
+            <Button
+              form="otp-form"
               type="submit"
-              disabled={isVerifyingOtp || !form.watch("pin") || form.watch("pin").length !== 6}
+              className="cursor-pointer"
+              disabled={
+                isVerifyingOtp ||
+                !form.watch("pin") ||
+                form.watch("pin").length !== 6
+              }
             >
               {isVerifyingOtp ? "Verifying..." : "Submit"}
             </Button>
@@ -385,14 +414,14 @@ const email = typeof location.state === "string"
           <CardHeader>
             <CardTitle className="text-xl">Verify your email address</CardTitle>
             <CardDescription>
-              We will send you an OTP at <br /> 
+              We will send you an OTP at <br />
               <span className="font-medium">{email}</span>
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex justify-end">
-            <Button 
-              onClick={handleSendOtp} 
-              className="w-[300px]"
+            <Button
+              onClick={handleSendOtp}
+              className="w-[300px] cursor-pointer"
               disabled={isSendingOtp}
             >
               {isSendingOtp ? "Sending..." : "Confirm"}
