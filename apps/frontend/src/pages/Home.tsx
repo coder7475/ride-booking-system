@@ -3,6 +3,7 @@ import CTA from "@/components/CTA";
 import HeroSection from "@/components/HeroSection";
 import { Card } from "@/components/ui/card";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { Role } from "@/types/auth.types";
 import {
   Car,
   CreditCard,
@@ -21,10 +22,12 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (data?.data?.email) {
-      navigate("/dashboard");
+    if (data?.data?.role === Role.ADMIN) {
+      navigate("/admin/analytics");
+    } else {
+      navigate("/user/dashboard");
     }
-  }, [data?.data?.email, navigate]);
+  }, [data?.data?.role, navigate]);
 
   return (
     <div className="min-h-screen">
