@@ -1,5 +1,6 @@
 import indexRouter from "@/routes";
 import { mongoConnector } from "@repo/db";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type Express } from "express";
 import helmet from "helmet";
@@ -23,7 +24,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
-
+app.use(cookieParser());
 app.use("/api/v1", indexRouter);
 
 // Root route handler
