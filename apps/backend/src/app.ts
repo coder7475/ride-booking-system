@@ -14,7 +14,12 @@ const app: Express = express();
 mongoConnector(env.DB_URI as string).catch((err: Error) => console.error(err));
 
 // Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: env.FRONTEND_LINK,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
