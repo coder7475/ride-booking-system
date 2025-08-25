@@ -23,7 +23,7 @@ const sendOTP = async (email: string, name: string) => {
     EX: OTP_EXPIRATION,
   });
 
-  // console.log(otp)
+  // console.log(otp);
   await sendEmail({
     to: email,
     subject: "Your OTP Code",
