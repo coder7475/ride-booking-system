@@ -146,7 +146,7 @@ export function LoginForm({
               type="submit"
               variant="default"
               size="lg"
-              className="group w-full"
+              className="group w-full cursor-pointer"
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting ? "Signing in..." : "Sign In"}
