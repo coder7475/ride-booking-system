@@ -27,6 +27,7 @@ export function LoginForm({
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
+      // console.log(data);
       const res = await login(data).unwrap();
 
       if (res.success) {

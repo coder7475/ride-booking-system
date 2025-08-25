@@ -4,6 +4,7 @@ export interface IUser {
   userName: string;
   email: string;
   password: string;
+  phone: string;
   role: Role;
   isVerified: boolean;
   accountStatus: AccountStatus;

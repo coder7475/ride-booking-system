@@ -19,6 +19,7 @@ const UserMongooseSchema = new Schema<IUserDoc>(
   {
     email: { type: String, required: true, unique: true },
     userName: { type: String, required: true },
+    phone: { type: String },
     password: { type: String, required: true },
     role: { type: String, enum: Object.values(Role), default: Role.USER },
     isVerified: { type: Boolean, required: true, default: false },
