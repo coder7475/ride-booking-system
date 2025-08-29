@@ -7,6 +7,7 @@ import {
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarHeader,
   SidebarMenu,
@@ -21,10 +22,18 @@ import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { getSideBarLinks } from "@/utils/getSideBarLinks";
 import { Minus, Plus, TestTube2 } from "lucide-react";
 
+import { NavUser } from "./layout/NavUser";
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data } = useUserInfoQuery(undefined);
-  console.log(data);
+  // console.log(data);
+
   const navLinks = {
+    user: {
+      name: data?.data?.userName || "user",
+      email: data?.data?.email || "me@example.com",
+      avatar: "/logo.svg",
+    },
     navMain: getSideBarLinks(data?.data?.role),
   };
   return (
@@ -69,6 +78,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarRail />
+      <SidebarFooter>
+        <NavUser user={navLinks.user} />
+      </SidebarFooter>
     </Sidebar>
   );
 }
