@@ -1,4 +1,5 @@
 import Analytics from "@/pages/Admin/Analytics";
+import DriverApprovals from "@/pages/Admin/DriverApprovals";
 
 export const adminSideRoutes = [
   {
@@ -10,22 +11,9 @@ export const adminSideRoutes = [
         component: Analytics,
       },
       {
-        title: "Project Structure",
-        url: "#",
-      },
-    ],
-  },
-  {
-    title: "Dashboard",
-    items: [
-      {
-        title: "Bookings",
-        url: "/user/bookings",
-        component: Analytics,
-      },
-      {
-        title: "Project Structure",
-        url: "#",
+        title: "Driver Approvals",
+        url: "/admin/driver-approvals",
+        component: DriverApprovals,
       },
     ],
   },
