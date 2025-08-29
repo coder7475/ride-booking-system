@@ -17,15 +17,16 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { adminSideRoutes } from "@/router/adminSideRoutes";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { getSideBarLinks } from "@/utils/getSideBarLinks";
 import { Minus, Plus, TestTube2 } from "lucide-react";
 
-// This is sample data.
-const data = {
-  navMain: adminSideRoutes,
-};
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data } = useUserInfoQuery(undefined);
+  console.log(data);
+  const navLinks = {
+    navMain: getSideBarLinks(data?.data?.role),
+  };
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -34,7 +35,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item, index) => (
+            {navLinks.navMain.map((item, index) => (
               <Collapsible
                 key={item.title}
                 defaultOpen={index === 0}
