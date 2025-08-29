@@ -1,11 +1,11 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { Separator } from "@/components/ui/separator"
+import { AppSidebar } from "@/components/app-sidebar";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { Outlet } from "react-router"
+} from "@/components/ui/sidebar";
+import { Outlet } from "react-router";
 
 export default function DashboardLayout() {
   return (
@@ -24,5 +24,5 @@ export default function DashboardLayout() {
         </div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
