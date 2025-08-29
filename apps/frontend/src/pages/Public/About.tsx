@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { leaders } from "@/constants/leaders";
 import { Award, Heart, Target, Users } from "lucide-react";
 
-const About = () => {
+export const About = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -162,5 +162,3 @@ const About = () => {
     </div>
   );
 };
-
-export default About;
