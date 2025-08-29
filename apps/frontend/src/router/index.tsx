@@ -1,6 +1,5 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import Analytics from "@/pages/Admin/Analytics";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import About from "@/pages/Public/About";
@@ -17,8 +16,12 @@ import Privacy from "@/pages/Public/Privacy";
 import Terms from "@/pages/Public/Terms";
 import Verify from "@/pages/Public/Verify";
 import Register from "@/pages/Register";
-import Assessment from "@/pages/User/Bookings";
+import { generateRoutes } from "@/utils/generateRoutes";
 import { createBrowserRouter } from "react-router";
+
+import { adminSideRoutes } from "./adminSideRoutes";
+import { driverSideRoutes } from "./driverSideRoutes";
+import { userSideRoutes } from "./userSideRoutes";
 
 const router = createBrowserRouter([
   {
@@ -94,22 +97,17 @@ const router = createBrowserRouter([
   {
     Component: DashboardLayout,
     path: "/admin",
-    children: [
-      {
-        path: "analytics",
-        Component: Analytics,
-      },
-    ],
+    children: [...generateRoutes(adminSideRoutes)],
+  },
+  {
+    Component: DashboardLayout,
+    path: "/driver",
+    children: [...generateRoutes(driverSideRoutes)],
   },
   {
     Component: DashboardLayout,
     path: "/user",
-    children: [
-      {
-        path: "bookings",
-        Component: Assessment,
-      },
-    ],
+    children: [...generateRoutes(userSideRoutes)],
   },
   {
     path: "*",

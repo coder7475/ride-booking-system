@@ -1,13 +1,5 @@
-import type { ComponentType } from "react";
+import type { ISidebarRoutes } from "@/types";
 
-export interface ISidebarRoutes {
-  title: string;
-  items: {
-    title: string;
-    url: string;
-    component: ComponentType;
-  }[];
-}
 export const generateRoutes = (sidebarItems: ISidebarRoutes[]) => {
   return sidebarItems.flatMap((section) =>
     section.items.map((route) => ({
