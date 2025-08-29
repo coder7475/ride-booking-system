@@ -1,23 +1,23 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import About from "@/pages/About";
 import Analytics from "@/pages/Admin/Analytics";
-import Contact from "@/pages/Contact";
-import FAQ from "@/pages/FAQ";
-import Features from "@/pages/Features";
-import Blogs from "@/pages/FooterPages/Blogs";
-import Careers from "@/pages/FooterPages/Careers";
-import HelpCenter from "@/pages/FooterPages/HelpCenter";
-import Press from "@/pages/FooterPages/Press";
-import Safety from "@/pages/FooterPages/Safety";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
-import NotFound from "@/pages/NotFound";
-import Privacy from "@/pages/Privacy";
+import About from "@/pages/Public/About";
+import Blogs from "@/pages/Public/Blogs";
+import FAQ from "@/pages/Public/FAQ";
+import Features from "@/pages/Public/Features";
+import Careers from "@/pages/Public/FooterPages/Careers";
+import Contact from "@/pages/Public/FooterPages/Contact";
+import HelpCenter from "@/pages/Public/FooterPages/HelpCenter";
+import Press from "@/pages/Public/FooterPages/Press";
+import Safety from "@/pages/Public/FooterPages/Safety";
+import NotFound from "@/pages/Public/NotFound";
+import Privacy from "@/pages/Public/Privacy";
+import Terms from "@/pages/Public/Terms";
+import Verify from "@/pages/Public/Verify";
 import Register from "@/pages/Register";
-import Terms from "@/pages/Terms";
-import Assessment from "@/pages/User/Assessment";
-import Verify from "@/pages/Verify";
+import Assessment from "@/pages/User/Bookings";
 import { createBrowserRouter } from "react-router";
 
 const router = createBrowserRouter([
@@ -92,8 +92,8 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/admin",
     Component: DashboardLayout,
+    path: "/admin",
     children: [
       {
         path: "analytics",
@@ -102,11 +102,11 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/user",
     Component: DashboardLayout,
+    path: "/user",
     children: [
       {
-        path: "dashboard",
+        path: "bookings",
         Component: Assessment,
       },
     ],
