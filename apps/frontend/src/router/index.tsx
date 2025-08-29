@@ -1,5 +1,6 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import Unauthorized from "@/modules/auth/Unauthorized";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import { About, Blogs } from "@/pages/Public";
@@ -15,7 +16,9 @@ import Privacy from "@/pages/Public/Privacy";
 import Terms from "@/pages/Public/Terms";
 import Verify from "@/pages/Public/Verify";
 import Register from "@/pages/Register";
+import { Role } from "@/types/auth.types";
 import { generateRoutes } from "@/utils/generateRoutes";
+import { withAuth } from "@/utils/withAuth";
 import { createBrowserRouter } from "react-router";
 
 import { adminSideRoutes } from "./adminSideRoutes";
@@ -94,19 +97,23 @@ const router = createBrowserRouter([
     ],
   },
   {
-    Component: DashboardLayout,
+    Component: withAuth(DashboardLayout, Role.ADMIN),
     path: "/admin",
     children: [...generateRoutes(adminSideRoutes)],
   },
   {
-    Component: DashboardLayout,
+    Component: withAuth(DashboardLayout, Role.DRIVER),
     path: "/driver",
     children: [...generateRoutes(driverSideRoutes)],
   },
   {
-    Component: DashboardLayout,
+    Component: withAuth(DashboardLayout, Role.USER),
     path: "/user",
     children: [...generateRoutes(userSideRoutes)],
+  },
+  {
+    path: "/unauthorized",
+    Component: Unauthorized,
   },
   {
     path: "*",
