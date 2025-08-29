@@ -19,15 +19,15 @@ import { useNavigate } from "react-router";
 const Index = () => {
   const { data } = useUserInfoQuery(undefined);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    if (data?.data?.role === Role.ADMIN) {
-      navigate("/admin/analytics");
-    } else {
-      navigate("/user/dashboard");
-    }
-  }, [data?.data?.role, navigate]);
+  // useEffect(() => {
+  //   if (data?.data?.role === Role.ADMIN) {
+  //     navigate("/admin/analytics");
+  //   } else {
+  //     navigate("/user/analytics");
+  //   }
+  // }, [data?.data?.role, navigate]);
 
   return (
     <div className="min-h-screen">
