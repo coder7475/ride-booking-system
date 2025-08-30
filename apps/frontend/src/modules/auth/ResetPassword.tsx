@@ -31,19 +31,35 @@ const ResetPassword = () => {
     setCookie("accessToken", token);
   }, [token, setCookie]);
 
+  // validate only when submitting
+  const validatePassword = (pwd: string) => {
+    const rules = {
+      length: pwd.length >= 8,
+      upper: /[A-Z]/.test(pwd),
+      lower: /[a-z]/.test(pwd),
+      number: /\d/.test(pwd),
+      special: /[@$!%*?&]/.test(pwd),
+    };
+    return Object.values(rules).every(Boolean);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (!validatePassword(password)) {
+      setError(
+        "Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.",
+      );
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
 
-    const userInfo = {
-      id,
-      password,
-    };
+    const userInfo = { id, password };
 
     try {
       setLoading(true);
@@ -55,7 +71,7 @@ const ResetPassword = () => {
       toast.success("Password Reset Successfully!");
 
       setSuccess(true);
-      setTimeout(() => navigate("/login"), 2000); // redirect after success
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err: unknown) {
       setError((err as Error).message || "Something went wrong.");
     } finally {
