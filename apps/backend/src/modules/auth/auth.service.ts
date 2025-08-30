@@ -109,6 +109,8 @@ const forgetPassword = async (email: string) => {
 
   const resetLink = `${env.FRONTEND_LINK}/reset-password?id=${payload.id}&token=${token}`;
 
+  console.log(resetLink);
+
   await sendEmail({
     to: email,
     subject: "Reset Your Password",

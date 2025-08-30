@@ -24,7 +24,14 @@ export const authApi = baseApi.injectEndpoints({
         data: userInfo,
       }),
     }),
-     sendOtp: builder.mutation<IResponse<null>, ISendOtp>({
+    forgotPassword: builder.mutation({
+      query: (userInfo) => ({
+        url: "/auth/forget-password",
+        method: "POST",
+        data: userInfo,
+      }),
+    }),
+    sendOtp: builder.mutation<IResponse<null>, ISendOtp>({
       query: (userInfo) => ({
         url: "/otp/send",
         method: "POST",
@@ -38,7 +45,8 @@ export const authApi = baseApi.injectEndpoints({
         data: userInfo,
       }),
     }),
-     userInfo: builder.query({
+
+    userInfo: builder.query({
       query: () => ({
         url: "/user/me",
         method: "GET",
@@ -55,4 +63,5 @@ export const {
   useVerifyOtpMutation,
   useUserInfoQuery,
   useLogoutMutation,
+  useForgotPasswordMutation,
 } = authApi;
