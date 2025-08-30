@@ -156,7 +156,9 @@ const resetPassword = async (
     { new: true },
   );
 
-  return result;
+  const { password, ...data } = result as IUser;
+
+  return data;
 };
 
 export const AuthServices = {

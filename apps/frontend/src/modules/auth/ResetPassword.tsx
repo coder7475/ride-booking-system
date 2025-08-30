@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useResetPasswordMutation } from "@/redux/features/auth/auth.api";
+import { Eye, EyeOff } from "lucide-react";
 import { useCookies } from "react-cookie";
 import { useNavigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
@@ -21,6 +22,10 @@ const ResetPassword = () => {
   const [success, setSuccess] = useState(false);
   const [resetPassword] = useResetPasswordMutation();
   const [, setCookie] = useCookies(["accessToken"]);
+
+  // toggles
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     setCookie("accessToken", token);
@@ -73,26 +78,58 @@ const ResetPassword = () => {
             </p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
+              {/* New Password */}
+              <div className="relative">
                 <Input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="New Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 transform"
+                  tabIndex={-1}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="text-muted-foreground h-4 w-4" />
+                  ) : (
+                    <Eye className="text-muted-foreground h-4 w-4" />
+                  )}
+                </button>
               </div>
-              <div>
+
+              {/* Confirm Password */}
+              <div className="relative">
                 <Input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm Password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 transform"
+                  tabIndex={-1}
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="text-muted-foreground h-4 w-4" />
+                  ) : (
+                    <Eye className="text-muted-foreground h-4 w-4" />
+                  )}
+                </button>
               </div>
+
               {error && <p className="text-sm text-red-600">{error}</p>}
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button
+                type="submit"
+                className="w-full cursor-pointer"
+                disabled={loading}
+              >
                 {loading ? "Resetting..." : "Reset Password"}
               </Button>
             </form>
