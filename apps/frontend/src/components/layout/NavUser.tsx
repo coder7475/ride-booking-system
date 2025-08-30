@@ -22,6 +22,8 @@ import {
   CreditCard,
   LogOut,
 } from "lucide-react";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export function NavUser({
   user,
@@ -33,7 +35,19 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+
   const [logout] = useLogoutMutation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout(undefined);
+      navigate("/login");
+      toast.success("Logged Out!");
+    } catch {
+      toast.error("Logout Failed!");
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -76,22 +90,22 @@ export function NavUser({
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
                 <CreditCard />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
                 <Bell />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut onClick={logout} />
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+              <LogOut />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
