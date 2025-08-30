@@ -1,6 +1,7 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import ForgotPassword from "@/modules/auth/ForgotPassword";
+import ResetPassword from "@/modules/auth/ResetPassword";
 import Unauthorized from "@/modules/auth/Unauthorized";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
@@ -115,6 +116,10 @@ const router = createBrowserRouter([
   {
     path: "/forgot-password",
     Component: ForgotPassword,
+  },
+  {
+    path: "/reset-password",
+    Component: ResetPassword,
   },
   {
     path: "/unauthorized",
