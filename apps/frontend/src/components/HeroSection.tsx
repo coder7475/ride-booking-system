@@ -3,8 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { heroCards } from "@/constants/heroCards";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const HeroSection = () => {
+  const navigator = useNavigate();
+
   return (
     <section className="from-primary via-primary/90 to-accent relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br">
       {/* Background image with overlay */}
@@ -49,6 +52,7 @@ const HeroSection = () => {
             style={{ animationDelay: "0.4s" }}
           >
             <Button
+              onClick={() => navigator("/login")}
               size="lg"
               className="btn-hero from-primary-foreground via-primary-foreground/90 to-primary-foreground/80 text-primary group cursor-pointer bg-gradient-to-r px-8 py-4 font-semibold shadow-2xl transition-transform duration-200 hover:scale-105"
             >
@@ -56,6 +60,7 @@ const HeroSection = () => {
               <ArrowRight className="ml-3 h-6 w-6 transition-transform group-hover:translate-x-1" />
             </Button>
             <Button
+              onClick={() => navigator("/register")}
               variant="outline"
               size="lg"
               className="border-primary-foreground text-primary hover:bg-primary-foreground/20 hover:text-secondary cursor-pointer border-2 px-8 py-4 font-semibold shadow-lg transition-colors duration-200"
