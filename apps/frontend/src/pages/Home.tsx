@@ -26,8 +26,10 @@ const Index = () => {
       navigate("/admin/analytics");
     } else if (data?.data?.role === Role.DRIVER) {
       navigate("/driver/analytics");
-    } else {
+    } else if (data?.data?.role === Role.USER) {
       navigate("/user/analytics");
+    } else {
+      navigate("/");
     }
   }, [data?.data?.role, navigate]);
 

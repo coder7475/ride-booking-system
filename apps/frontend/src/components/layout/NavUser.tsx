@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useLogoutMutation } from "@/redux/features/auth/auth.api";
 import {
   BadgeCheck,
   Bell,
@@ -32,6 +33,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const [logout] = useLogoutMutation();
 
   return (
     <SidebarMenu>
@@ -89,7 +91,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <LogOut />
+              <LogOut onClick={logout} />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
