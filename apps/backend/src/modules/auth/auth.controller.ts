@@ -118,7 +118,7 @@ const resetPassword = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "Password Reset generated successfully",
+      message: "Password Reset successfully!",
       data,
     });
   },
