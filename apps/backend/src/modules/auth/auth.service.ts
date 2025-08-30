@@ -123,6 +123,7 @@ const forgetPassword = async (email: string) => {
 
   return {
     message: `Reset email sent to ${email}. Please check your email.`,
+    resetLink,
   };
 };
 
@@ -130,6 +131,8 @@ const resetPassword = async (
   userData: IResetPassword,
   decodedUser: JwtPayload,
 ) => {
+  console.log("user: ", userData);
+  console.log("decodedUser: ", decodedUser);
   if (userData.id !== decodedUser.id) {
     throw new AppError(400, "Id doesn't match");
   }
@@ -146,9 +149,15 @@ const resetPassword = async (
     throw new AppError(400, "User is not active");
   }
 
+  const compare = verifyPassword(userData.password, userExisting.password);
+
+  if (compare) {
+    throw new AppError(400, "You are giving old Password!");
+  }
+
   const hashedPassword = hashPassword(userData.password);
 
-  const result = await UserModel.findByIdAndUpdate(
+  await UserModel.findByIdAndUpdate(
     userData.id,
     {
       password: hashedPassword,
@@ -156,9 +165,7 @@ const resetPassword = async (
     { new: true },
   );
 
-  const { password, ...data } = result as IUser;
-
-  return data;
+  return null;
 };
 
 export const AuthServices = {
