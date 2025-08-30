@@ -1,5 +1,6 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import ForgotPassword from "@/modules/auth/ForgotPassword";
 import Unauthorized from "@/modules/auth/Unauthorized";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
@@ -110,6 +111,10 @@ const router = createBrowserRouter([
     Component: withAuth(DashboardLayout, Role.USER),
     path: "/user",
     children: [...generateRoutes(userSideRoutes)],
+  },
+  {
+    path: "/forgot-password",
+    Component: ForgotPassword,
   },
   {
     path: "/unauthorized",
