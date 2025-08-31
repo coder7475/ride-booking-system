@@ -14,7 +14,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useLogoutMutation } from "@/redux/features/auth/auth.api";
+import { authApi, useLogoutMutation } from "@/redux/features/auth/auth.api";
+import { useAppDispatch } from "@/redux/hook";
 import {
   BadgeCheck,
   Bell,
@@ -38,10 +39,12 @@ export function NavUser({
 
   const [logout] = useLogoutMutation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleLogout = async () => {
     try {
       await logout(undefined);
+      dispatch(authApi.util.resetApiState());
       navigate("/login");
       toast.success("Logged Out!");
     } catch {

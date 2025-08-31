@@ -71,17 +71,16 @@ const reissueAccessToken = catchAsync(
 // Logout endpoint
 const logout = catchAsync(
   async (_req: Request, res: Response, _next: NextFunction) => {
-    // Clear the refresh token cookie (if set)
     res.clearCookie("accessToken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
     });
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
     });
 
     sendResponse(res, {
