@@ -36,13 +36,12 @@ export const sendEmail = async ({
 
     const resend = new Resend(env.RESEND_API_KEY);
 
-    const info = await resend.emails.send({
+    await resend.emails.send({
       from: env.EMAIL_FROM,
       to: to,
       subject: subject,
       html: htmlContent,
     });
-    console.log(info);
 
     logger.info(`\u2709\uFE0F Email sent to ${to}`);
   } catch (error: any) {

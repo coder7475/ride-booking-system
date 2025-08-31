@@ -151,8 +151,8 @@ export const otpHtmlTemplate = `<!DOCTYPE html>
         </div>
         <div class="footer">
             <p class="footer-text">
-                This email was sent by <span class="company-name">Test School</span><br>
-                If you have any questions, please contact us at support@testschool.com
+                This email was sent by <span class="company-name">Ride Booking App</span><br>
+                If you have any questions, please contact us at support@ride.robiulhossain.com
             </p>
         </div>
     </div>
