@@ -38,16 +38,15 @@ export function LoginForm({
       console.error(err);
 
       if (typeof err === "object" && err !== null && "status" in err) {
-        const status = (err as { status?: number }).status;
+        const status = (err as { status?: number; data?: { message?: string } })
+          .status;
         if (status === 401) {
           toast.error("Your account is not verified");
           navigate("/verify", { state: data.email });
-        } else if (status === 400) {
-          toast.error("Incorrect Password");
-        } else if (status === 404) {
-          toast.error("User Does not exits!");
-          navigate("/register");
+        } else {
+          toast.error((err as { data?: { message?: string } })?.data?.message);
         }
+        navigate("/register");
       }
     }
   };
