@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { Car, Clock, CreditCard, MapPin, Star, User } from "lucide-react";
 
 import LiveRideTracking from "./LiveRideTracking";
@@ -52,10 +53,11 @@ const RiderDashboard = () => {
       rating: 4,
     },
   ];
-
+  const { data: userInfo } = useUserInfoQuery(undefined);
+  //   console.log(userInfo);
   return (
     <div className="bg-background min-h-screen">
-      <main className="container mx-auto px-4 pb-8 pt-20">
+      <main className="container mx-auto px-4 pb-8">
         <div className="mb-8 flex items-center gap-4">
           <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-full">
             <User className="text-primary-foreground h-6 w-6" />
@@ -64,7 +66,9 @@ const RiderDashboard = () => {
             <h1 className="text-foreground text-3xl font-bold">
               Rider Dashboard
             </h1>
-            <p className="text-muted-foreground">Welcome back, Sarah!</p>
+            <p className="text-muted-foreground">
+              Welcome back, {userInfo?.data?.userName}!
+            </p>
           </div>
         </div>
 

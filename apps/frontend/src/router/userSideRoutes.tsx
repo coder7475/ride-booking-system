@@ -1,11 +1,8 @@
-import Bookings from "@/pages/User/Bookings";
 import LiveRideTracking from "@/pages/User/LiveRideTracking";
 import ProfileManagement from "@/pages/User/ProfileManagement";
 import RideHistory from "@/pages/User/RideHistory";
 import RiderDashboard from "@/pages/User/RiderDashboard";
 import RideRequestForm from "@/pages/User/RideRequestForm";
-
-// import UserAnalytics from "@/pages/User/UserAnalytics";
 
 export const userSideRoutes = [
   {
