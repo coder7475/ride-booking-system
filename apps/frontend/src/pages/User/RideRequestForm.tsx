@@ -18,8 +18,10 @@ import {
 } from "@/components/ui/select";
 import { Clock, DollarSign, MapPin } from "lucide-react";
 
+const API_KEY = import.meta.env.VITE_GEOCODING_API_KEY;
+const base_url = import.meta.env.VITE_BASE_URL;
+
 const RideRequestForm = () => {
-  const API_KEY = import.meta.env.VITE_GEOCODING_API_KEY;
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
   const [vehicleType, setVehicleType] = useState("economy");
@@ -35,10 +37,11 @@ const RideRequestForm = () => {
   const [estimatedFare, setEstimatedFare] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+
   const [step, setStep] = useState<"form" | "estimate" | "confirm" | "success">(
     "form",
   );
+  //   console.log(destinationCoords);
 
   // Helper: Fetch lat/lng from address
   const fetchCoordinates = async (address: string) => {
@@ -54,7 +57,7 @@ const RideRequestForm = () => {
     if (data && data.length > 0) {
       return {
         lat: data[0].lat,
-        lng: data[0].lng,
+        lng: data[0].lon,
       };
     }
     return null;
@@ -65,7 +68,6 @@ const RideRequestForm = () => {
     if (e) e.preventDefault();
     setLoading(true);
     setError("");
-    setSuccess(false);
 
     try {
       const pickupResult = await fetchCoordinates(pickup);
@@ -80,19 +82,31 @@ const RideRequestForm = () => {
       setPickupCoords(pickupResult);
       setDestinationCoords(destResult);
 
-      // Dummy fare calculation based on "distance"
-      const distance =
-        Math.sqrt(
-          Math.pow(destResult.lat - pickupResult.lat, 2) +
-            Math.pow(destResult.lng - pickupResult.lng, 2),
-        ) * 111; // approx km conversion
-
-      // Adjust fare based on vehicle type
-      let multiplier = 1;
-      if (vehicleType === "comfort") multiplier = 1.5;
-      if (vehicleType === "premium") multiplier = 2.2;
-
-      const fare = (distance * 0.8 * multiplier + 5).toFixed(2); // Example pricing formula
+      let fare = 0;
+      try {
+        const response = await fetch(
+          `${base_url}/rides/fare?pickupLat=${pickupResult.lat}&pickupLng=${pickupResult.lng}&destLat=${destResult.lat}&destLng=${destResult.lng}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        const data = await response.json();
+        // console.log("fare: ", data);
+        if (data?.success) {
+          fare = data?.data?.fare;
+        } else {
+          setError("Failed to estimate fare. Please try again.");
+          setLoading(false);
+          return;
+        }
+      } catch {
+        setError("Failed to estimate fare. Please try again.");
+        setLoading(false);
+        return;
+      }
       setEstimatedFare(`$${fare}`);
       setStep("estimate");
     } catch {
@@ -106,7 +120,6 @@ const RideRequestForm = () => {
   const handleConfirm = async () => {
     setLoading(true);
     setError("");
-    setSuccess(false);
 
     try {
       // Validate coordinates before submitting
@@ -132,7 +145,6 @@ const RideRequestForm = () => {
       // Replace with actual API call in production
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      setSuccess(true);
       setStep("success");
       setError("");
     } catch {
@@ -147,7 +159,6 @@ const RideRequestForm = () => {
     setStep("form");
     setEstimatedFare(null);
     setError("");
-    setSuccess(false);
   };
 
   return (
@@ -299,7 +310,7 @@ const RideRequestForm = () => {
                 setPickupCoords(null);
                 setDestinationCoords(null);
                 setEstimatedFare(null);
-                setSuccess(false);
+
                 setError("");
                 setStep("form");
               }}
