@@ -1,19 +1,40 @@
 import Bookings from "@/pages/User/Bookings";
-import UserAnalytics from "@/pages/User/UserAnalytics";
+import LiveRideTracking from "@/pages/User/LiveRideTracking";
+import ProfileManagement from "@/pages/User/ProfileManagement";
+import RideHistory from "@/pages/User/RideHistory";
+import RiderDashboard from "@/pages/User/RiderDashboard";
+import RideRequestForm from "@/pages/User/RideRequestForm";
+
+// import UserAnalytics from "@/pages/User/UserAnalytics";
 
 export const userSideRoutes = [
   {
     title: "Dashboard",
     items: [
       {
-        title: "Analytics",
+        title: "Overview",
         url: "/user/analytics",
-        component: UserAnalytics,
+        component: RiderDashboard,
       },
       {
-        title: "Bookings",
-        url: "/user/bookings",
-        component: Bookings,
+        title: "Ride Request",
+        url: "/user/booking",
+        component: RideRequestForm,
+      },
+      {
+        title: "Live Tracking",
+        url: "/user/live-tracking",
+        component: LiveRideTracking,
+      },
+      {
+        title: "Ride History",
+        url: "/user/history",
+        component: RideHistory,
+      },
+      {
+        title: "Profile Management",
+        url: "/user/profile",
+        component: ProfileManagement,
       },
     ],
   },

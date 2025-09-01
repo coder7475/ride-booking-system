@@ -43,9 +43,10 @@ export function LoginForm({
         if (status === 401) {
           toast.error("Your account is not verified");
           navigate("/verify", { state: data.email });
+        } else if (status === 403) {
+          navigate("/blocked", { state: { status: data?.data?.status } });
         } else {
           toast.error((err as { data?: { message?: string } })?.data?.message);
-          navigate("/blocked", { state: { status: data?.data?.status } });
         }
       }
     }

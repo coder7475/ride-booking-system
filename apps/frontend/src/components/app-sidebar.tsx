@@ -32,7 +32,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     user: {
       name: data?.data?.userName || "user",
       email: data?.data?.email || "me@example.com",
-      avatar: "/logo.svg",
+      avatar: "",
     },
     navMain: getSideBarLinks(data?.data?.role),
   };
