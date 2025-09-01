@@ -3,7 +3,7 @@ import CTA from "@/components/CTA";
 import HeroSection from "@/components/HeroSection";
 import { Card } from "@/components/ui/card";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import { Role } from "@/types/auth.types";
+import { AccountStatus, Role } from "@/types/auth.types";
 import {
   Car,
   CreditCard,
@@ -22,7 +22,12 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (data?.data?.role === Role.ADMIN) {
+    if (
+      data?.data?.status === AccountStatus.SUSPENDED ||
+      data?.data?.status === AccountStatus.BLOCKED
+    ) {
+      navigate("/blocked", { state: { status: data?.data?.status } });
+    } else if (data?.data?.role === Role.ADMIN) {
       navigate("/admin/analytics");
     } else if (data?.data?.role === Role.DRIVER) {
       navigate("/driver/analytics");
@@ -31,7 +36,7 @@ const Index = () => {
     } else {
       navigate("/");
     }
-  }, [data?.data?.role, navigate]);
+  }, [data?.data?.role, navigate, data?.data?.status]);
 
   return (
     <div className="min-h-screen">

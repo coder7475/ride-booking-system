@@ -45,8 +45,8 @@ export function LoginForm({
           navigate("/verify", { state: data.email });
         } else {
           toast.error((err as { data?: { message?: string } })?.data?.message);
+          navigate("/blocked", { state: { status: data?.data?.status } });
         }
-        navigate("/register");
       }
     }
   };

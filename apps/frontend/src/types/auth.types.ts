@@ -5,6 +5,15 @@ export enum Role {
   DRIVER = "DRIVER",
 }
 
+export enum AccountStatus {
+  ACTIVE = "active",
+  PENDING = "pending",
+  SUSPENDED = "suspended",
+  BLOCKED = "blocked",
+  DEACTIVATED = "deactivated",
+}
+
+// otp
 export interface ISendOtp {
   email: string;
 }

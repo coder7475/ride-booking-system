@@ -1,5 +1,6 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import Blocked from "@/modules/auth/Blocked";
 import ForgotPassword from "@/modules/auth/ForgotPassword";
 import ResetPassword from "@/modules/auth/ResetPassword";
 import Unauthorized from "@/modules/auth/Unauthorized";
@@ -120,6 +121,10 @@ const router = createBrowserRouter([
   {
     path: "/reset-password",
     Component: ResetPassword,
+  },
+  {
+    path: "/blocked",
+    Component: Blocked,
   },
   {
     path: "/unauthorized",
