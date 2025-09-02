@@ -16,15 +16,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEstimateFareQuery } from "@/redux/features/rider/rides.api";
+import {
+  useEstimateFareQuery,
+  useRideRequestMutation,
+} from "@/redux/features/rider/rides.api";
+import { PaymentGateway } from "@/types/payment.types";
 import { fetchCoordinates } from "@/utils/fetchCoordinates";
 import { DollarSign, MapPin } from "lucide-react";
 
 const RideRequestForm = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
-  const [vehicleType, setVehicleType] = useState("economy");
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [paymentMethod, setPaymentMethod] = useState(PaymentGateway.CASH);
   const [pickupCoords, setPickupCoords] = useState<{
     lat: number;
     lng: number;
@@ -39,7 +42,9 @@ const RideRequestForm = () => {
   const [step, setStep] = useState<"form" | "estimate" | "confirm" | "success">(
     "form",
   );
-
+  // ride request endpoint
+  const [rideRequest] = useRideRequestMutation();
+  // console.log(rideRequest);
   // call the query hook
   const {
     data: fareData,
@@ -51,6 +56,10 @@ const RideRequestForm = () => {
     destLat: destinationCoords?.lat,
     destLng: destinationCoords?.lng,
   });
+
+  if (fareLoading) {
+    return <div>Loading</div>;
+  }
 
   //  Estimate Fare
   const handleEstimate = async (e?: React.FormEvent) => {
@@ -108,11 +117,11 @@ const RideRequestForm = () => {
 
       if (!pickupResult) {
         pickupResult = await fetchCoordinates(pickup);
-        setPickupCoords(pickupResult);
+        if (pickupResult) setPickupCoords(pickupResult);
       }
       if (!destResult) {
         destResult = await fetchCoordinates(destination);
-        setDestinationCoords(destResult);
+        if (destResult) setDestinationCoords(destResult);
       }
 
       if (!pickupResult || !destResult) {
@@ -120,15 +129,44 @@ const RideRequestForm = () => {
         setLoading(false);
         return;
       }
-
-      // Simulate API call to submit ride request
-      // Replace with actual API call in production
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      setStep("success");
-      setError("");
-    } catch {
-      setError("Failed to submit ride request.");
+      // console.log(typeof ?.lat);
+      // Create pickup request object
+      const rideInfo = {
+        pickupLocation: {
+          latitude: Number(pickupResult.lat),
+          longitude: Number(pickupResult.lng),
+        },
+        destinationLocation: {
+          latitude: Number(destResult.lat),
+          longitude: Number(destResult.lng),
+        },
+        fareEstimated: fareData?.data?.fare ?? 0,
+        fareFinal: 0.0,
+        timestamps: {
+          requested: new Date().toISOString(),
+        },
+        // paymentMethod,
+      };
+      // console.log(rideInfo);
+      // return;
+      const result = await rideRequest(rideInfo).unwrap();
+      if (result?.success) {
+        setStep("success");
+        setError("");
+      } else {
+        setError(result?.message || "Failed to submit ride request.");
+      }
+    } catch (err: unknown) {
+      if (
+        err &&
+        typeof err === "object" &&
+        "message" in err &&
+        typeof err.message === "string"
+      ) {
+        setError(`Failed to submit ride request: ${(err as Error).message}`);
+      } else {
+        setError("Failed to submit ride request.");
+      }
     } finally {
       setLoading(false);
     }
@@ -176,37 +214,24 @@ const RideRequestForm = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="vehicleType">Vehicle Type</Label>
-              <Select
-                value={vehicleType}
-                onValueChange={setVehicleType}
-                name="vehicleType"
-              >
-                <SelectTrigger id="vehicleType">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="economy">Economy - $</SelectItem>
-                  <SelectItem value="comfort">Comfort - $$</SelectItem>
-                  <SelectItem value="premium">Premium - $$$</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="paymentMethod">Payment Method</Label>
               <Select
                 value={paymentMethod}
-                onValueChange={setPaymentMethod}
+                onValueChange={(value) =>
+                  setPaymentMethod(value as PaymentGateway)
+                }
                 name="paymentMethod"
               >
                 <SelectTrigger id="paymentMethod">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="card">Credit Card •••• 4242</SelectItem>
-                  <SelectItem value="paypal">PayPal</SelectItem>
-                  <SelectItem value="cash">Cash</SelectItem>
+                  <SelectItem value={PaymentGateway.SSLCOMMERZ}>
+                    SSLCOMMERZ
+                  </SelectItem>
+                  <SelectItem value={PaymentGateway.CASH} defaultChecked>
+                    Cash
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -214,7 +239,7 @@ const RideRequestForm = () => {
             {error && <p className="text-sm text-red-500">{error}</p>}
 
             <Button
-              className="w-full"
+              className="w-full cursor-pointer"
               type="submit"
               disabled={!pickup || !destination || loading}
             >
@@ -276,7 +301,7 @@ const RideRequestForm = () => {
             </p>
             <Button
               type="button"
-              className="w-full"
+              className="w-full cursor-pointer"
               onClick={() => {
                 setPickup("");
                 setDestination("");

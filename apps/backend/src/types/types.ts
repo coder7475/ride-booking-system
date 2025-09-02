@@ -78,7 +78,7 @@ export enum PaymentStatus {
 export enum PaymentGateway {
   STRIPE = "STRIPE",
   PAYPAL = "PAYPAL",
-  BKASH = "BKASH",
+  CASH = "CASH",
   SSLCOMMERZ = "SSLCOMMERZ",
 }
 

@@ -65,7 +65,7 @@ export function RegisterForm({
 
     try {
       const result = await register(userInfo).unwrap();
-      console.log(result);
+      // console.log(result);
       if (result?.success) {
         toast.success("User created successfully");
         navigate("/verify", { state: data.email });
