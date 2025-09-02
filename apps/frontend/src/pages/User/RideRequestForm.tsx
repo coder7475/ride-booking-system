@@ -16,10 +16,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Clock, DollarSign, MapPin } from "lucide-react";
+import { useEstimateFareQuery } from "@/redux/features/rider/rides.api";
+import { DollarSign, MapPin } from "lucide-react";
 
 const API_KEY = import.meta.env.VITE_GEOCODING_API_KEY;
-const base_url = import.meta.env.VITE_BASE_URL;
+// const base_url = import.meta.env.VITE_BASE_URL;
 
 const RideRequestForm = () => {
   const [pickup, setPickup] = useState("");
@@ -37,11 +38,21 @@ const RideRequestForm = () => {
   const [estimatedFare, setEstimatedFare] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // call the query hook
+  const {
+    data: fareData,
+    error: fareError,
+    isLoading: fareLoading,
+  } = useEstimateFareQuery({
+    pickupLat: pickupCoords?.lat,
+    pickupLng: pickupCoords?.lng,
+    destLat: destinationCoords?.lat,
+    destLng: destinationCoords?.lng,
+  });
 
   const [step, setStep] = useState<"form" | "estimate" | "confirm" | "success">(
     "form",
   );
-  //   console.log(destinationCoords);
 
   // Helper: Fetch lat/lng from address
   const fetchCoordinates = async (address: string) => {
@@ -53,13 +64,15 @@ const RideRequestForm = () => {
       )}&api_key=${API_KEY}`,
     );
     const data = await res.json();
-    console.log(data[0]);
+    // console.log(data[0]);
+
     if (data && data.length > 0) {
       return {
         lat: data[0].lat,
         lng: data[0].lon,
       };
     }
+
     return null;
   };
 
@@ -84,26 +97,30 @@ const RideRequestForm = () => {
 
       let fare = 0;
       try {
-        const response = await fetch(
-          `${base_url}/rides/fare?pickupLat=${pickupResult.lat}&pickupLng=${pickupResult.lng}&destLat=${destResult.lat}&destLng=${destResult.lng}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
-        );
-        const data = await response.json();
+        // const response = await fetch(
+        //   `${base_url}/rides/fare?pickupLat=${pickupResult.lat}&pickupLng=${pickupResult.lng}&destLat=${destResult.lat}&destLng=${destResult.lng}`,
+        //   {
+        //     method: "GET",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //   },
+        // );
+        // const data = await response.json();
+
         // console.log("fare: ", data);
-        if (data?.success) {
-          fare = data?.data?.fare;
+        // No action needed here for fareLoading, so this block is removed.
+        if (fareData?.success && !fareLoading) {
+          fare = fareData?.data?.fare;
         } else {
           setError("Failed to estimate fare. Please try again.");
           setLoading(false);
           return;
         }
       } catch {
-        setError("Failed to estimate fare. Please try again.");
+        setError(
+          `Failed to estimate fare. Please try again. Error: ${fareError}`,
+        );
         setLoading(false);
         return;
       }
@@ -162,7 +179,7 @@ const RideRequestForm = () => {
   };
 
   return (
-    <Card className="animate-slide-up">
+    <Card className="animate-slide-up max-w-2xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="h-5 w-5" />
@@ -255,13 +272,6 @@ const RideRequestForm = () => {
                   {estimatedFare}
                 </span>
               </div>
-              <div className="text-muted-foreground flex items-center justify-between text-sm">
-                <span className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Estimated Time
-                </span>
-                <span>15-20 mins</span>
-              </div>
             </div>
             {pickupCoords && destinationCoords && (
               <div className="mt-2 text-xs text-gray-500">
@@ -278,7 +288,7 @@ const RideRequestForm = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-1/2"
+                className="w-1/2 cursor-pointer"
                 onClick={handleBackToForm}
                 disabled={loading}
               >
@@ -286,7 +296,7 @@ const RideRequestForm = () => {
               </Button>
               <Button
                 type="button"
-                className="w-1/2"
+                className="w-1/2 cursor-pointer"
                 onClick={handleConfirm}
                 disabled={loading}
               >
