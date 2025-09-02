@@ -17,16 +17,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEstimateFareQuery } from "@/redux/features/rider/rides.api";
+import { fetchCoordinates } from "@/utils/fetchCoordinates";
 import { DollarSign, MapPin } from "lucide-react";
-
-const API_KEY = import.meta.env.VITE_GEOCODING_API_KEY;
-// const base_url = import.meta.env.VITE_BASE_URL;
 
 const RideRequestForm = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
   const [vehicleType, setVehicleType] = useState("economy");
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [paymentMethod, setPaymentMethod] = useState("cash");
   const [pickupCoords, setPickupCoords] = useState<{
     lat: number;
     lng: number;
@@ -38,6 +36,10 @@ const RideRequestForm = () => {
   const [estimatedFare, setEstimatedFare] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [step, setStep] = useState<"form" | "estimate" | "confirm" | "success">(
+    "form",
+  );
+
   // call the query hook
   const {
     data: fareData,
@@ -50,33 +52,7 @@ const RideRequestForm = () => {
     destLng: destinationCoords?.lng,
   });
 
-  const [step, setStep] = useState<"form" | "estimate" | "confirm" | "success">(
-    "form",
-  );
-
-  // Helper: Fetch lat/lng from address
-  const fetchCoordinates = async (address: string) => {
-    // Wait 1 second before each geocoding request for rate limiting
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    const res = await fetch(
-      `https://geocode.maps.co/search?q=${encodeURIComponent(
-        address,
-      )}&api_key=${API_KEY}`,
-    );
-    const data = await res.json();
-    // console.log(data[0]);
-
-    if (data && data.length > 0) {
-      return {
-        lat: data[0].lat,
-        lng: data[0].lon,
-      };
-    }
-
-    return null;
-  };
-
-  // Step 1: Estimate Fare
+  //  Estimate Fare
   const handleEstimate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoading(true);
@@ -97,19 +73,6 @@ const RideRequestForm = () => {
 
       let fare = 0;
       try {
-        // const response = await fetch(
-        //   `${base_url}/rides/fare?pickupLat=${pickupResult.lat}&pickupLng=${pickupResult.lng}&destLat=${destResult.lat}&destLng=${destResult.lng}`,
-        //   {
-        //     method: "GET",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //   },
-        // );
-        // const data = await response.json();
-
-        // console.log("fare: ", data);
-        // No action needed here for fareLoading, so this block is removed.
         if (fareData?.success && !fareLoading) {
           fare = fareData?.data?.fare;
         } else {
