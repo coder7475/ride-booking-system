@@ -1,5 +1,5 @@
 import AppError from "@/configs/AppError";
-import { RideStatus, type ILocation } from "@/types/types";
+import { PaymentGateway, RideStatus, type ILocation } from "@/types/types";
 import { calculateFareEstimate } from "@/utils/calculateFare";
 import { generateTransactionId } from "@repo/utils";
 
@@ -8,7 +8,10 @@ import { TransactionModel } from "../transaction/transaction.model";
 import type { IRide } from "./ride.interface";
 import { RideModel } from "./ride.model";
 
-const createRideRequest = async (rideData: Partial<IRide>) => {
+const createRideRequest = async (
+  rideData: Partial<IRide>,
+  paymentGateway: PaymentGateway,
+) => {
   // Validate required fields
   if (!rideData.riderId) {
     throw new Error("riderId is required");
@@ -29,7 +32,29 @@ const createRideRequest = async (rideData: Partial<IRide>) => {
     transactionId,
   };
 
-  return await RideModel.create(newRideRequest);
+  // create new ride request
+  const rideRequest = await RideModel.create(newRideRequest);
+
+  // Calculate Final Fare
+  const finalFare = calculateFareEstimate(
+    rideData.pickupLocation,
+    rideData.destinationLocation,
+  );
+
+  rideData.fareFinal = finalFare;
+
+  const FinalTransaction = {
+    transactionId,
+    amount: finalFare,
+    paymentGateway,
+  };
+
+  const transaction = await TransactionModel.create(FinalTransaction);
+
+  return {
+    rideRequest,
+    transaction,
+  };
 };
 
 const cancelRide = async (riderId: string, rideId: string) => {
@@ -192,25 +217,10 @@ const completedRide = async (userId: string, rideId: string) => {
     completed: new Date().toISOString(),
   };
 
-  // Calculate Final Fare
-  const finalFare = calculateFareEstimate(
-    ride.pickupLocation,
-    driver.driverLocation,
-  );
-  ride.fareFinal = finalFare;
-
   await ride.save();
-
-  const FinalTransaction = {
-    transactionId: ride.transactionId,
-    amount: finalFare,
-  };
-
-  const transaction = await TransactionModel.create(FinalTransaction);
 
   return {
     ride,
-    transaction,
   };
 };
 

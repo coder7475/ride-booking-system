@@ -8,19 +8,19 @@ import { RideServices } from "./ride.services";
 const handleRequestRide = catchAsync(async (req: Request, res: Response) => {
   const body = req.body;
   const riderId = req.user.id;
-
-  const requestData = {
+  const { paymentGateway, ...rest } = body;
+  const rideData = {
     riderId,
-    ...body,
+    ...rest,
   };
 
-  const ride = await RideServices.createRideRequest(requestData);
+  const data = await RideServices.createRideRequest(rideData, paymentGateway);
 
   sendResponse(res, {
     statusCode: 201,
     success: true,
     message: "Ride request created successfully",
-    data: ride,
+    data,
   });
 });
 

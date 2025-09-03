@@ -145,10 +145,10 @@ const RideRequestForm = () => {
         timestamps: {
           requested: new Date().toISOString(),
         },
-        // paymentMethod,
+        paymentGateway: paymentMethod,
       };
       // console.log(rideInfo);
-      // return;
+
       const result = await rideRequest(rideInfo).unwrap();
       if (result?.success) {
         setStep("success");
