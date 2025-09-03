@@ -217,10 +217,29 @@ const completedRide = async (userId: string, rideId: string) => {
     completed: new Date().toISOString(),
   };
 
+  // Calculate Final Fare
+  const finalFare = calculateFareEstimate(
+    ride.pickupLocation,
+    driver.driverLocation,
+  );
+
+  ride.fareFinal = finalFare;
+
   await ride.save();
+
+  const FinalTransaction = {
+    amount: finalFare,
+  };
+
+  const transaction = await TransactionModel.findOneAndUpdate(
+    { transactionId: ride.transactionId },
+    FinalTransaction,
+    { new: true },
+  );
 
   return {
     ride,
+    transaction,
   };
 };
 
