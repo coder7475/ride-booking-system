@@ -22,6 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRideHistoryQuery } from "@/redux/features/rider/rides.api";
+import type { IRide } from "@/types/ride.types";
 import { format } from "date-fns";
 import {
   Calendar as CalendarIcon,
@@ -29,102 +31,36 @@ import {
   Filter,
   MapPin,
   Search,
-  Star,
 } from "lucide-react";
 
 const RideHistory = () => {
+  const rideHistoryResult = useRideHistoryQuery(undefined);
+  const rideHistory = rideHistoryResult?.data?.data ?? [];
+  // console.log(rideHistory);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState<Date>();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const rides = [
-    {
-      id: 1,
-      date: "2024-01-15",
-      time: "2:30 PM",
-      from: "Home",
-      to: "Downtown Office",
-      driver: "John Smith",
-      cost: "$12.50",
-      status: "completed",
-      rating: 5,
-      duration: "25 mins",
-    },
-    {
-      id: 2,
-      date: "2024-01-14",
-      time: "6:45 PM",
-      from: "Downtown Office",
-      to: "Restaurant District",
-      driver: "Maria Garcia",
-      cost: "$8.75",
-      status: "completed",
-      rating: 4,
-      duration: "18 mins",
-    },
-    {
-      id: 3,
-      date: "2024-01-14",
-      time: "10:20 AM",
-      from: "Airport",
-      to: "Hotel Central",
-      driver: "David Chen",
-      cost: "$35.20",
-      status: "completed",
-      rating: 5,
-      duration: "42 mins",
-    },
-    {
-      id: 4,
-      date: "2024-01-13",
-      time: "3:15 PM",
-      from: "Shopping Mall",
-      to: "Home",
-      driver: "Sarah Johnson",
-      cost: "$15.40",
-      status: "cancelled",
-      rating: null,
-      duration: null,
-    },
-    {
-      id: 5,
-      date: "2024-01-12",
-      time: "9:00 AM",
-      from: "Home",
-      to: "Medical Center",
-      driver: "Robert Wilson",
-      cost: "$22.80",
-      status: "completed",
-      rating: 4,
-      duration: "35 mins",
-    },
-    {
-      id: 6,
-      date: "2024-01-11",
-      time: "7:30 PM",
-      from: "Cinema Complex",
-      to: "Home",
-      driver: "Lisa Anderson",
-      cost: "$11.20",
-      status: "completed",
-      rating: 5,
-      duration: "22 mins",
-    },
-  ];
+  const filteredRides = rideHistory.filter((ride: IRide) => {
+    const pickup = `${ride.pickupLocation.latitude}, ${ride.pickupLocation.longitude}`;
+    const destination = `${ride.destinationLocation.latitude}, ${ride.destinationLocation.longitude}`;
+    const driver = ride.driverId ?? "Unassigned";
 
-  const filteredRides = rides.filter((ride) => {
     const matchesSearch =
-      ride.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ride.to.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ride.driver.toLowerCase().includes(searchTerm.toLowerCase());
+      pickup.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      destination.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      driver.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus =
-      statusFilter === "all" || ride.status === statusFilter;
+      statusFilter === "all" || ride.rideStatus.toLowerCase() === statusFilter;
 
     const matchesDate =
-      !dateFilter || ride.date === format(dateFilter, "yyyy-MM-dd");
+      !dateFilter ||
+      format(new Date(ride.timestamps?.requested ?? ""), "yyyy-MM-dd") ===
+        format(dateFilter, "yyyy-MM-dd");
 
     return matchesSearch && matchesStatus && matchesDate;
   });
@@ -136,7 +72,7 @@ const RideHistory = () => {
   );
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "completed":
         return <Badge variant="secondary">Completed</Badge>;
       case "cancelled":
@@ -175,6 +111,8 @@ const RideHistory = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Rides</SelectItem>
+              <SelectItem value="requested">Requested</SelectItem>
+              <SelectItem value="ongoing">Ongoing</SelectItem>
               <SelectItem value="completed">Completed</SelectItem>
               <SelectItem value="cancelled">Cancelled</SelectItem>
             </SelectContent>
@@ -201,47 +139,48 @@ const RideHistory = () => {
 
         {/* Ride List */}
         <div className="space-y-3">
-          {paginatedRides.map((ride) => (
+          {paginatedRides.map((ride: IRide) => (
             <div
-              key={ride.id}
+              key={ride._id}
               className="border-border hover:bg-muted/50 rounded-lg border p-4 transition-colors"
             >
               <div className="mb-3 flex items-start justify-between">
                 <div>
                   <div className="mb-1 flex items-center gap-2">
-                    <span className="font-medium">{ride.date}</span>
-                    <span className="text-muted-foreground text-sm">
-                      {ride.time}
+                    <span className="font-medium">
+                      {format(
+                        new Date(ride?.timestamps?.requested ?? ""),
+                        "PPP",
+                      )}
                     </span>
-                    {getStatusBadge(ride.status)}
+                    <span className="text-muted-foreground text-sm">
+                      {format(new Date(ride.timestamps?.requested ?? ""), "p")}
+                    </span>
+                    {getStatusBadge(ride.rideStatus)}
                   </div>
                   <div className="text-muted-foreground flex items-center gap-2 text-sm">
                     <MapPin className="h-4 w-4" />
                     <span>
-                      {ride.from} → {ride.to}
+                      {ride.pickupLocation.latitude},
+                      {ride.pickupLocation.longitude} →{" "}
+                      {ride.destinationLocation.latitude},
+                      {ride.destinationLocation.longitude}
                     </span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-primary font-semibold">{ride.cost}</div>
-                  {ride.duration && (
-                    <div className="text-muted-foreground text-sm">
-                      {ride.duration}
-                    </div>
-                  )}
+                  <div className="text-primary font-semibold">
+                    ৳{ride.fareFinal > 0 ? ride.fareFinal : ride.fareEstimated}
+                  </div>
                 </div>
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground text-sm">Driver:</span>
-                  <span className="text-sm font-medium">{ride.driver}</span>
-                  {ride.rating && (
-                    <div className="flex items-center gap-1">
-                      <Star className="h-3 w-3 fill-current text-yellow-500" />
-                      <span className="text-xs">{ride.rating}</span>
-                    </div>
-                  )}
+                  <span className="text-sm font-medium">
+                    {ride.driverId ?? "Unassigned"}
+                  </span>
                 </div>
                 <Button variant="outline" size="sm">
                   View Details

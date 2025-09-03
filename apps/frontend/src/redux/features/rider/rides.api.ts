@@ -13,7 +13,12 @@ export const ridesApi = baseApi.injectEndpoints({
           destLng,
         },
       }),
-      // Remove providesTags if not used, or provide a relevant tag if needed
+    }),
+    rideHistory: builder.query({
+      query: () => ({
+        url: "/rides/me",
+        method: "GET",
+      }),
     }),
     rideRequest: builder.mutation({
       query: (rideInfo) => ({
@@ -21,9 +26,12 @@ export const ridesApi = baseApi.injectEndpoints({
         method: "POST",
         data: rideInfo,
       }),
-      // Add invalidatesTags if you want to refetch queries after mutation
     }),
   }),
 });
 
-export const { useEstimateFareQuery, useRideRequestMutation } = ridesApi;
+export const {
+  useEstimateFareQuery,
+  useRideHistoryQuery,
+  useRideRequestMutation,
+} = ridesApi;
