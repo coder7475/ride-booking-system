@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { useRideHistoryQuery } from "@/redux/features/rider/rides.api";
 import type { IRide } from "@/types/ride.types";
+import { fetchAddress } from "@/utils/fetchAddress";
 import { format } from "date-fns";
 import {
   Calendar as CalendarIcon,
@@ -35,18 +36,57 @@ import {
 
 const RideHistory = () => {
   const rideHistoryResult = useRideHistoryQuery(undefined);
-  const rideHistory = rideHistoryResult?.data?.data ?? [];
-  // console.log(rideHistory);
+  const rideHistory: IRide[] = rideHistoryResult?.data?.data || [];
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState<Date>();
   const [currentPage, setCurrentPage] = useState(1);
+  const [addressCache, setAddressCache] = useState<Record<string, string>>({});
   const itemsPerPage = 5;
 
+  // Fetch human-readable addresses for pickup/destination
+  useEffect(() => {
+    if (rideHistory.length > 0) {
+      const fetchAllAddresses = async () => {
+        for (const ride of rideHistory) {
+          const pickupKey = `${ride.pickupLocation.latitude},${ride.pickupLocation.longitude}`;
+          const destKey = `${ride.destinationLocation.latitude},${ride.destinationLocation.longitude}`;
+
+          // Only fetch if not cached
+          if (!addressCache[pickupKey]) {
+            const addr = await fetchAddress(
+              ride.pickupLocation.latitude,
+              ride.pickupLocation.longitude,
+            );
+            setAddressCache((prev) => ({
+              ...prev,
+              [pickupKey]: addr ?? pickupKey,
+            }));
+          }
+
+          if (!addressCache[destKey]) {
+            const addr = await fetchAddress(
+              ride.destinationLocation.latitude,
+              ride.destinationLocation.longitude,
+            );
+            setAddressCache((prev) => ({
+              ...prev,
+              [destKey]: addr ?? destKey,
+            }));
+          }
+        }
+      };
+
+      fetchAllAddresses();
+    }
+  }, [rideHistory, addressCache]);
+
   const filteredRides = rideHistory.filter((ride: IRide) => {
-    const pickup = `${ride.pickupLocation.latitude}, ${ride.pickupLocation.longitude}`;
-    const destination = `${ride.destinationLocation.latitude}, ${ride.destinationLocation.longitude}`;
+    const pickupKey = `${ride?.pickupLocation?.latitude},${ride?.pickupLocation.longitude}`;
+    const destKey = `${ride?.destinationLocation?.latitude},${ride?.destinationLocation.longitude}`;
+    const pickup = addressCache[pickupKey] ?? pickupKey;
+    const destination = addressCache[destKey] ?? destKey;
     const driver = ride.driverId ?? "Unassigned";
 
     const matchesSearch =
@@ -139,55 +179,65 @@ const RideHistory = () => {
 
         {/* Ride List */}
         <div className="space-y-3">
-          {paginatedRides.map((ride: IRide) => (
-            <div
-              key={ride._id}
-              className="border-border hover:bg-muted/50 rounded-lg border p-4 transition-colors"
-            >
-              <div className="mb-3 flex items-start justify-between">
-                <div>
-                  <div className="mb-1 flex items-center gap-2">
-                    <span className="font-medium">
-                      {format(
-                        new Date(ride?.timestamps?.requested ?? ""),
-                        "PPP",
-                      )}
-                    </span>
-                    <span className="text-muted-foreground text-sm">
-                      {format(new Date(ride.timestamps?.requested ?? ""), "p")}
-                    </span>
-                    {getStatusBadge(ride.rideStatus)}
-                  </div>
-                  <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                    <MapPin className="h-4 w-4" />
-                    <span>
-                      {ride.pickupLocation.latitude},
-                      {ride.pickupLocation.longitude} →{" "}
-                      {ride.destinationLocation.latitude},
-                      {ride.destinationLocation.longitude}
-                    </span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-primary font-semibold">
-                    ৳{ride.fareFinal > 0 ? ride.fareFinal : ride.fareEstimated}
-                  </div>
-                </div>
-              </div>
+          {paginatedRides?.map((ride: IRide) => {
+            const pickupKey = `${ride.pickupLocation.latitude},${ride.pickupLocation.longitude}`;
+            const destKey = `${ride.destinationLocation.latitude},${ride.destinationLocation.longitude}`;
+            const pickup = addressCache[pickupKey] ?? pickupKey;
+            const destination = addressCache[destKey] ?? destKey;
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-sm">Driver:</span>
-                  <span className="text-sm font-medium">
-                    {ride.driverId ?? "Unassigned"}
-                  </span>
+            return (
+              <div
+                key={ride._id}
+                className="border-border hover:bg-muted/50 rounded-lg border p-4 transition-colors"
+              >
+                <div className="mb-3 flex items-start justify-between">
+                  <div>
+                    <div className="mb-1 flex items-center gap-2">
+                      <span className="font-medium">
+                        {format(
+                          new Date(ride?.timestamps?.requested ?? ""),
+                          "PPP",
+                        )}
+                      </span>
+                      <span className="text-muted-foreground text-sm">
+                        {format(
+                          new Date(ride.timestamps?.requested ?? ""),
+                          "p",
+                        )}
+                      </span>
+                      {getStatusBadge(ride.rideStatus)}
+                    </div>
+                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                      <MapPin className="h-4 w-4" />
+                      <span>
+                        {pickup} → {destination}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-primary font-semibold">
+                      $
+                      {ride.fareFinal > 0 ? ride.fareFinal : ride.fareEstimated}
+                    </div>
+                  </div>
                 </div>
-                <Button variant="outline" size="sm">
-                  View Details
-                </Button>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground text-sm">
+                      Driver:
+                    </span>
+                    <span className="text-sm font-medium">
+                      {ride.driverId ?? "Unassigned"}
+                    </span>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    View Details
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Pagination */}

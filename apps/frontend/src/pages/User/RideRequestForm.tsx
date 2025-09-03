@@ -42,9 +42,10 @@ const RideRequestForm = () => {
   const [step, setStep] = useState<"form" | "estimate" | "confirm" | "success">(
     "form",
   );
+
   // ride request endpoint
   const [rideRequest] = useRideRequestMutation();
-  // console.log(rideRequest);
+
   // call the query hook
   const {
     data: fareData,
