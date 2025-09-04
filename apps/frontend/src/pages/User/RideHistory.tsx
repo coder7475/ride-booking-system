@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -36,7 +36,10 @@ import {
 
 const RideHistory = () => {
   const rideHistoryResult = useRideHistoryQuery(undefined);
-  const rideHistory: IRide[] = rideHistoryResult?.data?.data || [];
+  const rideHistory: IRide[] = useMemo(
+    () => rideHistoryResult?.data?.data || [],
+    [rideHistoryResult?.data?.data],
+  );
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -170,7 +173,6 @@ const RideHistory = () => {
                 mode="single"
                 selected={dateFilter}
                 onSelect={setDateFilter}
-                initialFocus
                 className="pointer-events-auto"
               />
             </PopoverContent>
