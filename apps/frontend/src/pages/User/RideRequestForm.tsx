@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import LoadingCircle from "@/components/ui/loading";
 import {
   Select,
   SelectContent,
@@ -59,7 +60,7 @@ const RideRequestForm = () => {
   });
 
   if (fareLoading) {
-    return <div>Loading</div>;
+    return <LoadingCircle />;
   }
 
   //  Estimate Fare
@@ -71,6 +72,8 @@ const RideRequestForm = () => {
     try {
       const pickupResult = await fetchCoordinates(pickup);
       const destResult = await fetchCoordinates(destination);
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       if (!pickupResult || !destResult) {
         setError("Could not validate one or both locations. Try again.");
