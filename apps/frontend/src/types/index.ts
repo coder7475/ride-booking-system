@@ -1,5 +1,7 @@
 import type { ComponentType } from "react";
 
+import type { AccountStatus, IAuthProvider, Role } from "./auth.types";
+
 export type { ISendOtp, IVerifyOtp, ILogin } from "./auth.types";
 
 export interface IResponse<T> {
@@ -16,4 +18,17 @@ export interface ISidebarRoutes {
     url: string;
     component: ComponentType;
   }[];
+}
+
+export interface IUser {
+  userName: string;
+  email: string;
+  password?: string;
+  phone: string;
+  role: Role;
+  isVerified: boolean;
+  accountStatus: AccountStatus;
+  authProviders: IAuthProvider[];
+  createdAt?: string;
+  updatedAt?: string;
 }

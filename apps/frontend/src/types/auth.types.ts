@@ -13,6 +13,16 @@ export enum AccountStatus {
   DEACTIVATED = "deactivated",
 }
 
+export enum AuthProviderNames {
+  LOCAL = "local",
+  GOOGLE = "google",
+}
+
+export interface IAuthProvider {
+  provider: AuthProviderNames;
+  providerId: string;
+}
+
 // otp
 export interface ISendOtp {
   email: string;
