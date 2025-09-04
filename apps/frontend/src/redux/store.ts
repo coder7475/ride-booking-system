@@ -1,10 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { baseApi } from "./baseApi";
 import { setupListeners } from "@reduxjs/toolkit/query";
+
+import { baseApi } from "./baseApi";
+import addressReducer from "./slices/addressSlice";
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
+    addressCache: addressReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

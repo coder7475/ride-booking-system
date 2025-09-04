@@ -33,3 +33,14 @@ export interface IRideStatusTimestamps {
   completed?: string;
   canceled?: string;
 }
+
+export interface AddressCacheState {
+  [key: string]: string; // "lat,long" -> "Human readable address"
+}
+
+export interface RideState {
+  rides: IRide[];
+  addressCache: AddressCacheState;
+  loading: boolean;
+  error: string | null;
+}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -23,8 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRideHistoryQuery } from "@/redux/features/rider/rides.api";
+import { useAppSelector } from "@/redux/hook";
 import type { IRide } from "@/types/ride.types";
-import { fetchAddress } from "@/utils/fetchAddress";
 import { format } from "date-fns";
 import {
   Calendar as CalendarIcon,
@@ -35,55 +35,20 @@ import {
 } from "lucide-react";
 
 const RideHistory = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState<Date>();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const itemsPerPage = 5;
+
   const rideHistoryResult = useRideHistoryQuery(undefined);
   const rideHistory: IRide[] = useMemo(
     () => rideHistoryResult?.data?.data || [],
     [rideHistoryResult?.data?.data],
   );
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [dateFilter, setDateFilter] = useState<Date>();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [addressCache, setAddressCache] = useState<Record<string, string>>({});
-  const itemsPerPage = 5;
-
-  // Fetch human-readable addresses for pickup/destination
-  useEffect(() => {
-    if (rideHistory.length > 0) {
-      const fetchAllAddresses = async () => {
-        for (const ride of rideHistory) {
-          const pickupKey = `${ride.pickupLocation.latitude},${ride.pickupLocation.longitude}`;
-          const destKey = `${ride.destinationLocation.latitude},${ride.destinationLocation.longitude}`;
-
-          // Only fetch if not cached
-          if (!addressCache[pickupKey]) {
-            const addr = await fetchAddress(
-              ride.pickupLocation.latitude,
-              ride.pickupLocation.longitude,
-            );
-            setAddressCache((prev) => ({
-              ...prev,
-              [pickupKey]: addr ?? pickupKey,
-            }));
-          }
-
-          if (!addressCache[destKey]) {
-            const addr = await fetchAddress(
-              ride.destinationLocation.latitude,
-              ride.destinationLocation.longitude,
-            );
-            setAddressCache((prev) => ({
-              ...prev,
-              [destKey]: addr ?? destKey,
-            }));
-          }
-        }
-      };
-
-      fetchAllAddresses();
-    }
-  }, [rideHistory, addressCache]);
+  const addressCache = useAppSelector((state) => state.addressCache);
 
   const filteredRides = rideHistory.filter((ride: IRide) => {
     const pickupKey = `${ride?.pickupLocation?.latitude},${ride?.pickupLocation.longitude}`;

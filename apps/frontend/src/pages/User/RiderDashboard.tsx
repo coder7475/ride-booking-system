@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import RideDetailsModal from "@/components/RideDetailsModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,14 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import { Car, Clock, CreditCard, MapPin, Star, User } from "lucide-react";
+import { useRideHistoryQuery } from "@/redux/features/rider/rides.api";
+import { useAppSelector } from "@/redux/hook";
+import { setAddress } from "@/redux/slices/addressSlice";
+import { RideStatus, type IRide } from "@/types/ride.types";
+import { fetchAddress } from "@/utils/fetchAddress";
+import { format } from "date-fns";
+import { Car, CreditCard, MapPin, Star, User } from "lucide-react";
+import { useDispatch } from "react-redux";
 
 import LiveRideTracking from "./LiveRideTracking";
 import ProfileManagement from "./ProfileManagement";
@@ -22,39 +29,49 @@ const RiderDashboard = () => {
   const [showRideDetails, setShowRideDetails] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
 
-  const currentRides = [
-    {
-      id: 1,
-      driver: "John Smith",
-      car: "Toyota Camry",
-      pickup: "Downtown Mall",
-      destination: "Airport",
-      status: "On the way",
-      eta: "8 mins",
-      rating: 4.8,
-    },
-  ];
-
-  const rideHistory = [
-    {
-      id: 1,
-      date: "Today",
-      from: "Home",
-      to: "Office",
-      cost: "$12.50",
-      rating: 5,
-    },
-    {
-      id: 2,
-      date: "Yesterday",
-      from: "Restaurant",
-      to: "Home",
-      cost: "$8.75",
-      rating: 4,
-    },
-  ];
+  // axios call
   const { data: userInfo } = useUserInfoQuery(undefined);
-  //   console.log(userInfo);
+  const rideHistoryResult = useRideHistoryQuery(undefined);
+  const rideHistory: IRide[] = useMemo(
+    () => rideHistoryResult?.data?.data || [],
+    [rideHistoryResult?.data?.data],
+  );
+
+  const addressCache = useAppSelector((state) => state.addressCache);
+  const dispatch = useDispatch();
+  const currentRides = rideHistory.filter(
+    (ride) => ride.rideStatus === RideStatus.REQUESTED,
+  );
+
+  useEffect(() => {
+    const fetchAllAddresses = async () => {
+      for (const ride of rideHistory) {
+        const pickupKey = `${ride.pickupLocation.latitude},${ride.pickupLocation.longitude}`;
+        const destKey = `${ride.destinationLocation.latitude},${ride.destinationLocation.longitude}`;
+
+        if (!addressCache[pickupKey]) {
+          const addr = await fetchAddress(
+            ride.pickupLocation.latitude,
+            ride.pickupLocation.longitude,
+          );
+          dispatch(setAddress({ key: pickupKey, value: addr ?? pickupKey }));
+        }
+
+        if (!addressCache[destKey]) {
+          const addr = await fetchAddress(
+            ride.destinationLocation.latitude,
+            ride.destinationLocation.longitude,
+          );
+          dispatch(setAddress({ key: destKey, value: addr ?? destKey }));
+        }
+      }
+    };
+
+    if (rideHistory.length > 0) {
+      fetchAllAddresses();
+    }
+  }, [rideHistory, addressCache, dispatch]);
+
   return (
     <div className="bg-background min-h-screen">
       <main className="container mx-auto px-4 pb-8">
@@ -145,45 +162,44 @@ const RiderDashboard = () => {
                 <CardContent>
                   {currentRides.length > 0 ? (
                     <div className="space-y-4">
-                      {currentRides.map((ride) => (
-                        <div
-                          key={ride.id}
-                          className="border-border rounded-lg border p-4"
-                        >
-                          <div className="mb-3 flex items-start justify-between">
-                            <div>
-                              <h4 className="font-semibold">{ride.driver}</h4>
-                              <p className="text-muted-foreground text-sm">
-                                {ride.car}
-                              </p>
-                            </div>
-                            <Badge variant="secondary">{ride.status}</Badge>
-                          </div>
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-sm">
-                              <MapPin className="text-primary h-4 w-4" />
-                              <span>
-                                {ride.pickup} → {ride.destination}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm">
-                              <Clock className="text-primary h-4 w-4" />
-                              <span>ETA: {ride.eta}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm">
-                              <Star className="h-4 w-4 text-yellow-500" />
-                              <span>{ride.rating}</span>
-                            </div>
-                          </div>
-                          <Button
-                            className="mt-3 w-full"
-                            variant="outline"
-                            onClick={() => setActiveTab("tracking")}
+                      {currentRides.map((ride) => {
+                        const pickupKey = `${ride.pickupLocation.latitude},${ride.pickupLocation.longitude}`;
+                        const destKey = `${ride.destinationLocation.latitude},${ride.destinationLocation.longitude}`;
+                        const pickup = addressCache[pickupKey] ?? pickupKey;
+                        const destination = addressCache[destKey] ?? destKey;
+                        return (
+                          <div
+                            key={ride._id}
+                            className="border-border rounded-lg border p-4"
                           >
-                            Track Ride
-                          </Button>
-                        </div>
-                      ))}
+                            <div className="mb-3 flex items-start justify-between">
+                              <div>
+                                <h4 className="font-semibold">
+                                  {ride.driverId}
+                                </h4>
+                              </div>
+                              <Badge variant="secondary">
+                                {ride.rideStatus}
+                              </Badge>
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2 text-sm">
+                                <MapPin className="text-primary h-4 w-4" />
+                                <span>
+                                  {pickup} → {destination}
+                                </span>
+                              </div>
+                            </div>
+                            <Button
+                              className="mt-3 w-full"
+                              variant="outline"
+                              onClick={() => setActiveTab("tracking")}
+                            >
+                              Track Ride
+                            </Button>
+                          </div>
+                        );
+                      })}
                     </div>
                   ) : (
                     <div className="py-8 text-center">
@@ -210,38 +226,48 @@ const RiderDashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {rideHistory.slice(0, 3).map((ride) => (
-                      <div
-                        key={ride.id}
-                        className="border-border rounded-lg border p-4"
-                      >
-                        <div className="mb-2 flex items-start justify-between">
-                          <div>
-                            <p className="font-medium">
-                              {ride.from} → {ride.to}
-                            </p>
-                            <p className="text-muted-foreground text-sm">
-                              {ride.date}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-medium">{ride.cost}</p>
-                            <div className="flex items-center gap-1">
-                              <Star className="h-4 w-4 text-yellow-500" />
-                              <span className="text-sm">{ride.rating}</span>
+                    {rideHistory.slice(0, 3).map((ride) => {
+                      const pickupKey = `${ride.pickupLocation.latitude},${ride.pickupLocation.longitude}`;
+                      const destKey = `${ride.destinationLocation.latitude},${ride.destinationLocation.longitude}`;
+                      const pickup = addressCache[pickupKey] ?? pickupKey;
+                      const destination = addressCache[destKey] ?? destKey;
+                      return (
+                        <div
+                          key={ride._id}
+                          className="border-border rounded-lg border p-4"
+                        >
+                          <div className="mb-2 flex items-start justify-between">
+                            <div>
+                              <p className="font-small">
+                                {pickup} → {destination}
+                              </p>
+                              <p className="text-muted-foreground text-sm">
+                                {format(
+                                  new Date(ride?.timestamps?.requested ?? ""),
+                                  "PPP",
+                                )}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-medium">
+                                $
+                                {ride.fareFinal
+                                  ? ride.fareFinal
+                                  : ride.fareEstimated}
+                              </p>
                             </div>
                           </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => setShowRideDetails(true)}
+                          >
+                            View Details
+                          </Button>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full"
-                          onClick={() => setShowRideDetails(true)}
-                        >
-                          View Details
-                        </Button>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                   <Button
                     variant="outline"
