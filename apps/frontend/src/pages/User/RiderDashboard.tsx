@@ -17,7 +17,7 @@ import { setAddress } from "@/redux/slices/addressSlice";
 import { RideStatus, type IRide } from "@/types/ride.types";
 import { fetchAddress } from "@/utils/fetchAddress";
 import { format } from "date-fns";
-import { Car, CreditCard, MapPin, Star, User } from "lucide-react";
+import { Car, CreditCard, MapPin, User } from "lucide-react";
 import { useDispatch } from "react-redux";
 
 import LiveRideTracking from "./LiveRideTracking";
@@ -36,7 +36,39 @@ const RiderDashboard = () => {
     () => rideHistoryResult?.data?.data || [],
     [rideHistoryResult?.data?.data],
   );
+  // Count rides created in the current month
+  const rideHistoryThisMonth = rideHistory.filter((ride) => {
+    if (!ride.createdAt) return false;
+    const rideDate = new Date(ride.createdAt);
+    const now = new Date();
+    return (
+      rideDate.getFullYear() === now.getFullYear() &&
+      rideDate.getMonth() === now.getMonth()
+    );
+  });
+  const rideThisMonth = rideHistoryThisMonth.length;
 
+  // spent calculation
+  const totalSpent = rideHistory.reduce(
+    (sum, ride) =>
+      sum +
+      (typeof ride.fareFinal === "number" &&
+      ride.rideStatus === RideStatus.COMPLETED
+        ? ride.fareFinal
+        : 0),
+    0,
+  );
+  const spentThisMonth = rideHistoryThisMonth.reduce(
+    (sum, ride) =>
+      sum +
+      (typeof ride.fareFinal === "number" &&
+      ride.rideStatus === RideStatus.COMPLETED
+        ? ride.fareFinal
+        : 0),
+    0,
+  );
+
+  // address of lng,lat
   const addressCache = useAppSelector((state) => state.addressCache);
   const dispatch = useDispatch();
   const currentRides = rideHistory.filter(
@@ -105,9 +137,11 @@ const RiderDashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-primary text-3xl font-bold">247</div>
+                  <div className="text-primary text-3xl font-bold">
+                    {rideHistory.length}
+                  </div>
                   <p className="text-muted-foreground text-sm">
-                    This month: 23
+                    This month: {rideThisMonth}
                   </p>
                 </CardContent>
               </Card>
@@ -123,27 +157,11 @@ const RiderDashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-primary text-3xl font-bold">$1,247</div>
+                  <div className="text-primary text-3xl font-bold">
+                    ${totalSpent}
+                  </div>
                   <p className="text-muted-foreground text-sm">
-                    This month: $156
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card
-                className="animate-slide-up"
-                style={{ animationDelay: "0.2s" }}
-              >
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Star className="h-5 w-5" />
-                    Average Rating
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-primary text-3xl font-bold">4.9</div>
-                  <p className="text-muted-foreground text-sm">
-                    Based on your rides
+                    This month: ${spentThisMonth}
                   </p>
                 </CardContent>
               </Card>

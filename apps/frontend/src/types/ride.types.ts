@@ -9,6 +9,8 @@ export interface IRide {
   fareEstimated: number;
   fareFinal: number;
   timestamps: IRideStatusTimestamps;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export enum RideStatus {
