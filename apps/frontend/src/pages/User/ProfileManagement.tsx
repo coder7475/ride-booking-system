@@ -19,7 +19,11 @@ import { Input } from "@/components/ui/input";
 import LoadingCircle from "@/components/ui/loading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import {
+  useUpdateUserMutation,
+  useUserInfoQuery,
+} from "@/redux/features/auth/auth.api";
+import { profileSchema, type ProfileFormValues } from "@/types/profile.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, Mail, Phone, User } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -28,19 +32,7 @@ import { z } from "zod";
 
 const ProfileManagement = () => {
   const { data: userInfo, isLoading } = useUserInfoQuery(undefined);
-
-  // Profile form schema and setup
-  const profileSchema = z.object({
-    userName: z.string().min(2, "Full Name is required"),
-    phone: z
-      .string()
-      .min(7, "Phone number is too short")
-      .max(20, "Phone number is too long"),
-    email: z.string().email("Invalid email address"),
-  });
-
-  type ProfileFormValues = z.infer<typeof profileSchema>;
-
+  const [userUpdate] = useUpdateUserMutation();
   // Use state to store initial values and update form when userInfo loads
   const [profileDefaults, setProfileDefaults] = useState<ProfileFormValues>({
     userName: "",
@@ -67,13 +59,18 @@ const ProfileManagement = () => {
         email: userInfo.data.email || "",
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userInfo]);
+  }, [userInfo.data]);
 
-  const onSubmit = (data: ProfileFormValues) => {
-    // TODO: call api with data
-    console.log(data);
-    toast.success("Profile Update");
+  const onSubmit = async (data: ProfileFormValues) => {
+    try {
+      const res = await userUpdate(data).unwrap();
+      // console.log(res);
+      if (res.success) {
+        toast.success("Profile Update Successfully!");
+      }
+    } catch {
+      toast.error("Profile Update Failed!");
+    }
   };
 
   // Password change form
@@ -221,7 +218,7 @@ const ProfileManagement = () => {
                   </div>
                   <Button
                     type="submit"
-                    className="mt-4 w-full md:w-auto"
+                    className="mt-4 w-full cursor-pointer md:w-auto"
                     disabled={profileForm.formState.isSubmitting}
                   >
                     Save Changes
