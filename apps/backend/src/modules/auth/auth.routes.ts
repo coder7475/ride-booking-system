@@ -6,6 +6,7 @@ import { Router } from "express";
 import { CreateUserSchema } from "../user/user.schema";
 import { AuthController } from "./auth.controller";
 import {
+  changePasswordSchema,
   forgetPasswordSchema,
   LoginSchema,
   resetPasswordSchema,
@@ -36,6 +37,13 @@ authRoutes.post(
   validateZod(resetPasswordSchema),
   checkAuth(...Object.values(Role)),
   AuthController.resetPassword,
+);
+
+authRoutes.post(
+  "/change-password",
+  validateZod(changePasswordSchema),
+  checkAuth(...Object.values(Role)),
+  AuthController.changePassword,
 );
 
 export default authRoutes;

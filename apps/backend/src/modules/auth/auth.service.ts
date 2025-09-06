@@ -8,7 +8,7 @@ import { JwtPayload } from "jsonwebtoken";
 
 import type { IUser } from "../user/user.interface";
 import { UserModel } from "../user/user.model";
-import { IResetPassword } from "./auth.interface";
+import { IChangePassword, IResetPassword } from "./auth.interface";
 
 export const login = async (credentials: Partial<IUser>) => {
   const { email, password } = credentials;
@@ -109,7 +109,7 @@ const forgetPassword = async (email: string) => {
 
   const resetLink = `${env.FRONTEND_LINK}/reset-password?id=${payload.id}&token=${token}`;
 
-  console.log(resetLink);
+  // console.log(resetLink);
 
   await sendEmail({
     to: email,
@@ -131,8 +131,8 @@ const resetPassword = async (
   userData: IResetPassword,
   decodedUser: JwtPayload,
 ) => {
-  console.log("user: ", userData);
-  console.log("decodedUser: ", decodedUser);
+  // console.log("user: ", userData);
+  // console.log("decodedUser: ", decodedUser);
   if (userData.id !== decodedUser.id) {
     throw new AppError(400, "Id doesn't match");
   }
@@ -168,9 +168,59 @@ const resetPassword = async (
   return null;
 };
 
+const changePassword = async (
+  userData: IChangePassword,
+  decodedUser: JwtPayload,
+) => {
+  // console.log("user: ", userData);
+  // console.log("decodedUser: ", decodedUser);
+  if (userData.id !== decodedUser.id) {
+    throw new AppError(400, "Id doesn't match");
+  }
+  const userExisting = await UserModel.findById(userData.id);
+
+  if (!userExisting) {
+    throw new AppError(400, "User does not exits");
+  }
+  if (!userExisting.isVerified) {
+    throw new AppError(400, "User is not verified");
+  }
+  // deny if user is suspended, blocked, or deactivate(deleted)
+  if (userExisting.accountStatus !== "active") {
+    throw new AppError(400, "User is not active");
+  }
+  const compareOld = verifyPassword(
+    userData.oldPassword,
+    userExisting.password,
+  );
+
+  if (!compareOld) {
+    throw new AppError(400, "Your old password does not match!");
+  }
+
+  const compare = verifyPassword(userData.password, userExisting.password);
+
+  if (compare) {
+    throw new AppError(400, "You are giving old Password, give new password!");
+  }
+
+  const hashedPassword = hashPassword(userData.password);
+
+  await UserModel.findByIdAndUpdate(
+    userData.id,
+    {
+      password: hashedPassword,
+    },
+    { new: true },
+  );
+
+  return null;
+};
+
 export const AuthServices = {
   login,
   reissueAccessToken,
   forgetPassword,
   resetPassword,
+  changePassword,
 };

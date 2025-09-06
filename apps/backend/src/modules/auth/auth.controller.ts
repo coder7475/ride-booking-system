@@ -6,7 +6,7 @@ import type { NextFunction, Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
 
 import { UserServices } from "../user/user.service";
-import { IResetPassword } from "./auth.interface";
+import { IChangePassword, IResetPassword } from "./auth.interface";
 import { AuthServices } from "./auth.service";
 
 const registerUser = catchAsync(
@@ -123,6 +123,22 @@ const resetPassword = catchAsync(
   },
 );
 
+const changePassword = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    const userData: IChangePassword = req.body;
+    const decodedUser: JwtPayload = req.user;
+
+    const data = await AuthServices.changePassword(userData, decodedUser);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Password Changed successfully!",
+      data,
+    });
+  },
+);
+
 export const AuthController = {
   registerUser,
   login,
@@ -130,4 +146,5 @@ export const AuthController = {
   logout,
   forgetPassword,
   resetPassword,
+  changePassword,
 };
