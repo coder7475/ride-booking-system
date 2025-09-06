@@ -4,7 +4,6 @@ export interface IResetPassword {
 }
 
 export interface IChangePassword {
-  id: string;
   oldPassword: string;
   password: string;
 }

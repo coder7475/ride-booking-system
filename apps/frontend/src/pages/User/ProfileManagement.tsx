@@ -25,14 +25,16 @@ import {
 } from "@/redux/features/auth/auth.api";
 import { profileSchema, type ProfileFormValues } from "@/types/profile.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock, Mail, Phone, User } from "lucide-react";
+import { Mail, Phone, User } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+
+import ChangePasswordForm from "./ChangePasswordForm";
 
 const ProfileManagement = () => {
   const { data: userInfo, isLoading } = useUserInfoQuery(undefined);
   const [userUpdate] = useUpdateUserMutation();
+
   // Use state to store initial values and update form when userInfo loads
   const [profileDefaults, setProfileDefaults] = useState<ProfileFormValues>({
     userName: "",
@@ -59,7 +61,7 @@ const ProfileManagement = () => {
         email: userInfo.data.email || "",
       });
     }
-  }, [userInfo.data]);
+  }, [userInfo]);
 
   const onSubmit = async (data: ProfileFormValues) => {
     try {
@@ -71,42 +73,6 @@ const ProfileManagement = () => {
     } catch {
       toast.error("Profile Update Failed!");
     }
-  };
-
-  // Password change form
-  const passwordSchema = z
-    .object({
-      current: z.string().min(1, "Current password is required"),
-      new: z
-        .string()
-        .min(8, "Password must be at least 8 characters")
-        .regex(/[A-Z]/, "Must contain uppercase letter")
-        .regex(/[a-z]/, "Must contain lowercase letter")
-        .regex(/[0-9]/, "Must contain a number")
-        .regex(/[^A-Za-z0-9]/, "Must contain a special character"),
-      confirm: z.string().min(1, "Please confirm your new password"),
-    })
-    .refine((data) => data.new === data.confirm, {
-      message: "Passwords do not match",
-      path: ["confirm"],
-    });
-
-  type PasswordFormValues = z.infer<typeof passwordSchema>;
-
-  const passwordForm = useForm<PasswordFormValues>({
-    resolver: zodResolver(passwordSchema),
-    defaultValues: {
-      current: "",
-      new: "",
-      confirm: "",
-    },
-  });
-
-  const handlePasswordChange = (data: PasswordFormValues) => {
-    // TODO: call password change API
-    console.log(data);
-    toast.success("Password Changed");
-    passwordForm.reset();
   };
 
   if (isLoading) {
@@ -229,117 +195,7 @@ const ProfileManagement = () => {
           </TabsContent>
 
           <TabsContent value="security" className="space-y-4">
-            <FormProvider {...passwordForm}>
-              <Form {...passwordForm}>
-                <form
-                  onSubmit={passwordForm.handleSubmit(handlePasswordChange)}
-                  className="space-y-4"
-                >
-                  <FormField
-                    control={passwordForm.control}
-                    name="current"
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <FormLabel htmlFor="current-password">
-                          Current Password
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-                            <Input
-                              id="current-password"
-                              type="password"
-                              className={cn(
-                                "pl-10",
-                                fieldState.error ? "border-destructive" : "",
-                              )}
-                              placeholder="Enter current password"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={passwordForm.control}
-                    name="new"
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <FormLabel htmlFor="new-password">
-                          New Password
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-                            <Input
-                              id="new-password"
-                              type="password"
-                              className={cn(
-                                "pl-10",
-                                fieldState.error ? "border-destructive" : "",
-                              )}
-                              placeholder="Enter new password"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={passwordForm.control}
-                    name="confirm"
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <FormLabel htmlFor="confirm-password">
-                          Confirm New Password
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-                            <Input
-                              id="confirm-password"
-                              type="password"
-                              className={cn(
-                                "pl-10",
-                                fieldState.error ? "border-destructive" : "",
-                              )}
-                              placeholder="Confirm new password"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="bg-muted rounded-lg p-4">
-                    <h4 className="mb-2 font-medium">Password Requirements:</h4>
-                    <ul className="text-muted-foreground space-y-1 text-sm">
-                      <li>• At least 8 characters long</li>
-                      <li>• Contains uppercase and lowercase letters</li>
-                      <li>• Contains at least one number</li>
-                      <li>• Contains at least one special character</li>
-                    </ul>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full md:w-auto"
-                    disabled={passwordForm.formState.isSubmitting}
-                  >
-                    Change Password
-                  </Button>
-                </form>
-              </Form>
-            </FormProvider>
+            <ChangePasswordForm />
           </TabsContent>
         </Tabs>
       </CardContent>
