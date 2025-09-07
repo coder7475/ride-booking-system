@@ -14,17 +14,26 @@ export const ridesApi = baseApi.injectEndpoints({
         },
       }),
     }),
+
     rideHistory: builder.query({
       query: () => ({
         url: "/rides/me",
         method: "GET",
       }),
     }),
+
     rideRequest: builder.mutation({
       query: (rideInfo) => ({
         url: "/rides/request",
         method: "POST",
         data: rideInfo,
+      }),
+    }),
+
+    rideDetails: builder.query({
+      query: (id: string) => ({
+        url: `/rides/${id}`,
+        method: "GET",
       }),
     }),
   }),
@@ -34,4 +43,5 @@ export const {
   useEstimateFareQuery,
   useRideHistoryQuery,
   useRideRequestMutation,
+  useRideDetailsQuery,
 } = ridesApi;
