@@ -27,6 +27,7 @@ import RideRequestForm from "./RideRequestForm";
 
 const RiderDashboard = () => {
   const [showRideDetails, setShowRideDetails] = useState(false);
+  const [rideId, setRideId] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
 
   // axios call
@@ -279,7 +280,10 @@ const RiderDashboard = () => {
                             variant="outline"
                             size="sm"
                             className="w-full"
-                            onClick={() => setShowRideDetails(true)}
+                            onClick={() => {
+                              setRideId(ride._id);
+                              setShowRideDetails(true);
+                            }}
                           >
                             View Details
                           </Button>
@@ -317,6 +321,7 @@ const RiderDashboard = () => {
         </Tabs>
 
         <RideDetailsModal
+          rideId={rideId}
           isOpen={showRideDetails}
           onClose={() => setShowRideDetails(false)}
         />

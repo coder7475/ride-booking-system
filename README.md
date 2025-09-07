@@ -126,18 +126,22 @@ The backend provides a comprehensive REST API with the following endpoints:
 
 ### 🔐 **Authentication APIs**
 
-| Method | Endpoint              | Description             |
-| ------ | --------------------- | ----------------------- |
-| POST   | `/auth/register`      | Register a new user     |
-| POST   | `/auth/login`         | Login and receive JWTs  |
-| POST   | `/auth/refresh-token` | Refresh access token    |
-| POST   | `/auth/logout`        | Invalidate token/logout |
+| Method | Endpoint                | Description                     |
+| ------ | ----------------------- | ------------------------------- |
+| POST   | `/auth/register`        | Register a new user             |
+| POST   | `/auth/login`           | Login and receive JWTs          |
+| POST   | `/auth/refresh-token`   | Refresh access token            |
+| POST   | `/auth/logout`          | Invalidate token/logout         |
+| POST   | `/auth/forgot-password` | Request password reset email    |
+| POST   | `/auth/reset-password`  | Reset password with token       |
+| POST   | `/auth/change-password` | Change password (authenticated) |
 
-### 🔑 OTP APIs
+### 🔑 **OTP APIs**
 
-Method Endpoint Description
-POST /api/otp/send Send OTP to email or SMS
-POST /api/otp/verify Verify OTP provided by the user
+| Method | Endpoint      | Description                     |
+| ------ | ------------- | ------------------------------- |
+| POST   | `/otp/send`   | Send OTP to email or SMS        |
+| POST   | `/otp/verify` | Verify OTP provided by the user |
 
 ### 👤 **User APIs**
 

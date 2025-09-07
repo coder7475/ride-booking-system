@@ -19,11 +19,17 @@ import {
 } from "lucide-react";
 
 interface RideDetailsModalProps {
+  rideId: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const RideDetailsModal = ({ isOpen, onClose }: RideDetailsModalProps) => {
+const RideDetailsModal = ({
+  rideId,
+  isOpen,
+  onClose,
+}: RideDetailsModalProps) => {
+  console.log(rideId);
   const rideDetails = {
     id: "RID-12345",
     date: "January 15, 2024",
