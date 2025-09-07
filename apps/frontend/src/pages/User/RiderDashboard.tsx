@@ -212,7 +212,10 @@ const RiderDashboard = () => {
                             <Button
                               className="mt-3 w-full"
                               variant="outline"
-                              onClick={() => setActiveTab("tracking")}
+                              onClick={() => {
+                                setRideId(ride._id);
+                                setActiveTab("tracking");
+                              }}
                             >
                               Track Ride
                             </Button>
@@ -308,7 +311,7 @@ const RiderDashboard = () => {
           </TabsContent>
 
           <TabsContent value="tracking">
-            <LiveRideTracking />
+            <LiveRideTracking rideId={rideId} />
           </TabsContent>
 
           <TabsContent value="history">

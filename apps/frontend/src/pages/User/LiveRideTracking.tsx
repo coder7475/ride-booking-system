@@ -8,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useRideDetailsQuery } from "@/redux/features/rider/rides.api";
+import { useAppSelector } from "@/redux/hook";
 import {
   Car,
   MapPin,
@@ -16,8 +18,29 @@ import {
   Phone,
   Star,
 } from "lucide-react";
+import { getRideDetails } from "@/utils/getRideDetails";
 
-const LiveRideTracking = () => {
+const LiveRideTracking = ({ rideId }) => {
+  const { data, isLoading, isError } = useRideDetailsQuery(rideId);
+  // address of lng,lat
+  const addressCache = useAppSelector((state) => state.addressCache);
+  // Extract ride details from API response
+  const {
+    ride,
+    // pickupKey,
+    // destKey,
+    // requestedAt,
+    dateStr,
+    timeStr,
+    pickup,
+    destination,
+    // fareEstimated,
+    // fareFinal,
+    fareDisplay,
+    status,
+    timeline,
+  } = getRideDetails(data.data, addressCache);
+
   const [eta, setEta] = useState("8 mins");
   const [status, setStatus] = useState("Driver en route");
 
