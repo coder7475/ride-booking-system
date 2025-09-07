@@ -1,11 +1,14 @@
+import { env } from "@/configs/envConfig";
 import type { ILocation } from "@/types/types";
 import { catchAsync } from "@/utils/asyncHandler";
 import sendResponse from "@/utils/sendResponse";
+import { mongoConnector } from "@repo/db";
 import type { Request, Response } from "express";
 
 import { RideServices } from "./ride.services";
 
 const handleRequestRide = catchAsync(async (req: Request, res: Response) => {
+  await mongoConnector(env.DB_URI);
   const body = req.body;
   const riderId = req.user.id;
   const { paymentGateway, ...rest } = body;
@@ -25,6 +28,7 @@ const handleRequestRide = catchAsync(async (req: Request, res: Response) => {
 });
 
 const handleCancelRide = catchAsync(async (req: Request, res: Response) => {
+  await mongoConnector(env.DB_URI);
   const riderId = req.user.id;
   const rideId = req.params.id;
 
@@ -43,6 +47,7 @@ const handleCancelRide = catchAsync(async (req: Request, res: Response) => {
 });
 
 const singleRideRequest = catchAsync(async (req: Request, res: Response) => {
+  await mongoConnector(env.DB_URI);
   const rideId = req.params.id;
 
   if (!rideId) {
@@ -60,6 +65,7 @@ const singleRideRequest = catchAsync(async (req: Request, res: Response) => {
 });
 
 const listMyRides = catchAsync(async (req: Request, res: Response) => {
+  await mongoConnector(env.DB_URI);
   const riderId = req.user.id;
 
   const rides = await RideServices.findRidesByRiderId(riderId);
@@ -91,6 +97,7 @@ const handleAcceptRide = catchAsync(async (req: Request, res: Response) => {
 });
 
 const handlePickedUp = catchAsync(async (req: Request, res: Response) => {
+  await mongoConnector(env.DB_URI);
   const driverId = req.user.id;
   const rideId = req.params.id;
 
@@ -127,6 +134,7 @@ const handleInTransit = catchAsync(async (req: Request, res: Response) => {
 });
 
 const handleCompleted = catchAsync(async (req: Request, res: Response) => {
+  await mongoConnector(env.DB_URI);
   const userId = req.user.id;
 
   const rideId = req.params.id;
@@ -146,6 +154,7 @@ const handleCompleted = catchAsync(async (req: Request, res: Response) => {
 });
 
 const estimateFare = catchAsync(async (req: Request, res: Response) => {
+  await mongoConnector(env.DB_URI);
   // Get locations from params and create pickup and destination location
   const { pickupLat, pickupLng, destLat, destLng } = req.query;
 

@@ -12,7 +12,9 @@ import sendResponse from "./utils/sendResponse";
 const app: Express = express();
 
 // Connect to Database
-mongoConnector(env.DB_URI as string).catch((err: Error) => console.error(err));
+(async () => {
+  await mongoConnector(env.DB_URI);
+})();
 
 // Middlewares
 app.use(

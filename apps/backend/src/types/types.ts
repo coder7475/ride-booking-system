@@ -79,3 +79,14 @@ export type FareConfig = {
   perKmRate: number;
   minimumFare?: number;
 };
+
+export interface IVehicleInfo {
+  make: string;
+  model: string;
+  year: number;
+  color: string;
+  licensePlate: string;
+  registrationNumber?: string;
+  insuranceNumber?: string;
+  [key: string]: any; // For any additional vehicle-specific fields
+}
