@@ -1,4 +1,4 @@
-import LiveRideTracking from "@/pages/User/LiveRideTracking";
+// import LiveRideTracking from "@/pages/User/LiveRideTracking";
 import ProfileManagement from "@/pages/User/ProfileManagement";
 import RideHistory from "@/pages/User/RideHistory";
 import RiderDashboard from "@/pages/User/RiderDashboard";
@@ -6,7 +6,7 @@ import RideRequestForm from "@/pages/User/RideRequestForm";
 
 export const userSideRoutes = [
   {
-    title: "Dashboard",
+    title: "Rider Dashboard",
     items: [
       {
         title: "Overview",
@@ -18,11 +18,11 @@ export const userSideRoutes = [
         url: "/user/booking",
         component: RideRequestForm,
       },
-      {
-        title: "Live Tracking",
-        url: "/user/live-tracking",
-        component: LiveRideTracking,
-      },
+      // {
+      //   title: "Live Tracking",
+      //   url: "/user/live-tracking",
+      //   component: LiveRideTracking,
+      // },
       {
         title: "Ride History",
         url: "/user/history",

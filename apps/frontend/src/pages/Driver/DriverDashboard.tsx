@@ -106,63 +106,7 @@ const DriverDashboard = () => {
           </Card>
         </div>
 
-        {/* Main Content Tabs */}
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="space-y-6"
-        >
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="requests" className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              Requests
-            </TabsTrigger>
-            <TabsTrigger value="active" className="flex items-center gap-2">
-              <Car className="h-4 w-4" />
-              Active
-            </TabsTrigger>
-            <TabsTrigger value="earnings" className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
-              Earnings
-            </TabsTrigger>
-            <TabsTrigger value="history" className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              History
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              Profile
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="space-y-6">
-            <Overview />
-          </TabsContent>
-
-          <TabsContent value="requests">
-            <IncomingRequests />
-          </TabsContent>
-
-          <TabsContent value="active">
-            <ActiveRideManagement />
-          </TabsContent>
-
-          <TabsContent value="earnings">
-            <EarningsDashboard />
-          </TabsContent>
-
-          <TabsContent value="history">
-            <DriverRideHistory />
-          </TabsContent>
-
-          <TabsContent value="profile">
-            <DriverProfileManagement />
-          </TabsContent>
-        </Tabs>
+        <Overview />
       </main>
     </div>
   );
