@@ -1,4 +1,4 @@
-import DriverAnalytics from "@/pages/Driver/DriverAnalytics";
+import DriverDashboard from "@/pages/Driver/DriverDashboard";
 import RidePickup from "@/pages/Driver/RidePickup";
 
 export const driverSideRoutes = [
@@ -8,7 +8,7 @@ export const driverSideRoutes = [
       {
         title: "Analytics",
         url: "/driver/analytics",
-        component: DriverAnalytics,
+        component: DriverDashboard,
       },
       {
         title: "Bookings",
