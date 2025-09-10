@@ -47,17 +47,30 @@ const RideRequestForm = () => {
   // ride request endpoint
   const [rideRequest] = useRideRequestMutation();
 
-  // call the query hook
+  // Only call the query hook when both pickup and destination coordinates are available
   const {
     data: fareData,
-    error: fareError,
+    // error: fareError,
     isLoading: fareLoading,
-  } = useEstimateFareQuery({
-    pickupLat: pickupCoords?.lat,
-    pickupLng: pickupCoords?.lng,
-    destLat: destinationCoords?.lat,
-    destLng: destinationCoords?.lng,
-  });
+  } = useEstimateFareQuery(
+    pickupCoords && destinationCoords
+      ? {
+          pickupLat: pickupCoords.lat,
+          pickupLng: pickupCoords.lng,
+          destLat: destinationCoords.lat,
+          destLng: destinationCoords.lng,
+        }
+      : // Pass skip token if not ready
+        {
+          pickupLat: undefined,
+          pickupLng: undefined,
+          destLat: undefined,
+          destLng: undefined,
+        },
+    {
+      skip: !pickupCoords || !destinationCoords,
+    },
+  );
 
   if (fareLoading) {
     return <LoadingCircle />;
@@ -84,22 +97,8 @@ const RideRequestForm = () => {
       setPickupCoords(pickupResult);
       setDestinationCoords(destResult);
 
-      let fare = 0;
-      try {
-        if (fareData?.success && !fareLoading) {
-          fare = fareData?.data?.fare;
-        } else {
-          setError("Failed to estimate fare. Please try again.");
-          setLoading(false);
-          return;
-        }
-      } catch {
-        setError(
-          `Failed to estimate fare. Please try again. Error: ${fareError}`,
-        );
-        setLoading(false);
-        return;
-      }
+      const fare = fareData?.data?.fare;
+
       setEstimatedFare(`$${fare}`);
       setStep("estimate");
     } catch {
