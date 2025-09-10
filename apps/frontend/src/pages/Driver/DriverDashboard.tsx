@@ -1,25 +1,18 @@
-import { useState } from "react";
 import Overview from "@/components/driver/Overview";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, Car, Clock, DollarSign, Star, User } from "lucide-react";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { Car, DollarSign } from "lucide-react";
 
-import ActiveRideManagement from "./ActiveRideManagement";
 import AvailabilityControl from "./AvailabilityControl";
-import DriverProfileManagement from "./DriverProfileManagement";
-import DriverRideHistory from "./DriverRideHistory";
-import EarningsDashboard from "./EarningsDashboard";
-import IncomingRequests from "./IncomingRequests";
 
 const DriverDashboard = () => {
-  const [activeTab, setActiveTab] = useState("overview");
-
   const todayStats = {
     rides: 12,
     earnings: "$247.50",
     hours: "8.5",
     rating: 4.9,
   };
+  const { data: userInfo } = useUserInfoQuery(undefined);
 
   return (
     <div className="bg-background min-h-screen">
@@ -32,7 +25,9 @@ const DriverDashboard = () => {
             <h1 className="text-foreground text-3xl font-bold">
               Driver Dashboard
             </h1>
-            <p className="text-muted-foreground">Welcome back, Alex!</p>
+            <p className="text-muted-foreground">
+              Welcome back, {userInfo?.data?.userName}!
+            </p>
           </div>
           <div className="ml-auto">
             <AvailabilityControl />
@@ -69,38 +64,6 @@ const DriverDashboard = () => {
               </div>
               <p className="text-muted-foreground text-xs">
                 +$47 from yesterday
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-sm">
-                <Clock className="h-4 w-4" />
-                Hours Online
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-primary text-2xl font-bold">
-                {todayStats.hours}
-              </div>
-              <p className="text-muted-foreground text-xs">Target: 10 hours</p>
-            </CardContent>
-          </Card>
-
-          <Card className="animate-fade-in" style={{ animationDelay: "0.3s" }}>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-sm">
-                <Star className="h-4 w-4" />
-                Rating
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-primary text-2xl font-bold">
-                {todayStats.rating}
-              </div>
-              <p className="text-muted-foreground text-xs">
-                Based on 247 rides
               </p>
             </CardContent>
           </Card>

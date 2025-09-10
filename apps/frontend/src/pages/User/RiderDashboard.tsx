@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import RideDetailsModal from "@/components/RideDetailsModal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +45,10 @@ const RiderDashboard = () => {
   const [rideId, setRideId] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
   const [cancelRide] = useCancelRideMutation();
+
+  // For AlertDialog cancel ride
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [rideIdToCancel, setRideIdToCancel] = useState<string | null>(null);
 
   // axios call
   const { data: userInfo } = useUserInfoQuery(undefined);
@@ -243,13 +257,8 @@ const RiderDashboard = () => {
                               className="mt-3 w-full cursor-pointer"
                               variant="destructive"
                               onClick={() => {
-                                if (
-                                  window.confirm(
-                                    "Are you sure you want to cancel this ride?",
-                                  )
-                                ) {
-                                  handleCancelRide(ride._id);
-                                }
+                                setRideIdToCancel(ride._id);
+                                setCancelDialogOpen(true);
                               }}
                             >
                               Cancel Ride
@@ -257,6 +266,45 @@ const RiderDashboard = () => {
                           </div>
                         );
                       })}
+                      {/* Cancel Ride AlertDialog */}
+                      <AlertDialog
+                        open={cancelDialogOpen}
+                        onOpenChange={setCancelDialogOpen}
+                      >
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you sure you want to cancel this ride?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will cancel
+                              your ride request.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel
+                              onClick={() => {
+                                setCancelDialogOpen(false);
+                                setRideIdToCancel(null);
+                              }}
+                            >
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              className="cursor-pointer"
+                              onClick={async () => {
+                                if (rideIdToCancel) {
+                                  await handleCancelRide(rideIdToCancel);
+                                }
+                                setCancelDialogOpen(false);
+                                setRideIdToCancel(null);
+                              }}
+                            >
+                              Yes, Cancel Ride
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   ) : (
                     <div className="py-8 text-center">

@@ -97,7 +97,12 @@ const RideRequestForm = () => {
       setPickupCoords(pickupResult);
       setDestinationCoords(destResult);
 
-      const fare = fareData?.data?.fare;
+      const fare = Number(fareData?.data?.fare);
+      if (isNaN(fare) || fare < 0) {
+        setError("Could not estimate fare. Please try again.");
+        setLoading(false);
+        return;
+      }
 
       setEstimatedFare(`$${fare}`);
       setStep("estimate");
