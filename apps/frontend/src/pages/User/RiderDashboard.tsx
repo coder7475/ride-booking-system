@@ -12,6 +12,7 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import {
+  ridesApi,
   useCancelRideMutation,
   useRideHistoryQuery,
 } from "@/redux/features/rider/rides.api";
@@ -115,6 +116,7 @@ const RiderDashboard = () => {
       const res = await cancelRide(id).unwrap();
 
       if (res?.success) {
+        dispatch(ridesApi.util.resetApiState());
         toast.success("Ride Cancel Successfully!");
       }
     } catch (err) {
@@ -261,7 +263,7 @@ const RiderDashboard = () => {
                       <Car className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
                       <p className="text-muted-foreground">No active rides</p>
                       <Button
-                        className="mt-4"
+                        className="mt-4 cursor-pointer"
                         onClick={() => setActiveTab("book")}
                       >
                         Book a Ride
