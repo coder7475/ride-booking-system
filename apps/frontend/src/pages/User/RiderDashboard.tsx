@@ -11,7 +11,10 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import { useRideHistoryQuery } from "@/redux/features/rider/rides.api";
+import {
+  useCancelRideMutation,
+  useRideHistoryQuery,
+} from "@/redux/features/rider/rides.api";
 import { useAppSelector } from "@/redux/hook";
 import { setAddress } from "@/redux/slices/addressSlice";
 import { RideStatus, type IRide } from "@/types/ride.types";
@@ -19,6 +22,7 @@ import { fetchAddress } from "@/utils/fetchAddress";
 import { format } from "date-fns";
 import { Car, CreditCard, MapPin, User } from "lucide-react";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 import LiveRideTracking from "./LiveRideTracking";
 import ProfileManagement from "./ProfileManagement";
@@ -29,6 +33,7 @@ const RiderDashboard = () => {
   const [showRideDetails, setShowRideDetails] = useState(false);
   const [rideId, setRideId] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
+  const [cancelRide] = useCancelRideMutation();
 
   // axios call
   const { data: userInfo } = useUserInfoQuery(undefined);
@@ -104,6 +109,19 @@ const RiderDashboard = () => {
       fetchAllAddresses();
     }
   }, [rideHistory, addressCache, dispatch]);
+
+  const handleCancelRide = async (id: string) => {
+    try {
+      const res = await cancelRide(id).unwrap();
+
+      if (res?.success) {
+        toast.success("Ride Cancel Successfully!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to cancel ride");
+    }
+  };
 
   return (
     <div className="bg-background min-h-screen">
@@ -210,7 +228,7 @@ const RiderDashboard = () => {
                               </div>
                             </div>
                             <Button
-                              className="mt-3 w-full"
+                              className="mt-3 w-full cursor-pointer"
                               variant="outline"
                               onClick={() => {
                                 setRideId(ride._id);
@@ -218,6 +236,21 @@ const RiderDashboard = () => {
                               }}
                             >
                               Track Ride
+                            </Button>
+                            <Button
+                              className="mt-3 w-full cursor-pointer"
+                              variant="destructive"
+                              onClick={() => {
+                                if (
+                                  window.confirm(
+                                    "Are you sure you want to cancel this ride?",
+                                  )
+                                ) {
+                                  handleCancelRide(ride._id);
+                                }
+                              }}
+                            >
+                              Cancel Ride
                             </Button>
                           </div>
                         );

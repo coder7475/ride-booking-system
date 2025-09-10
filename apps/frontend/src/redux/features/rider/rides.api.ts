@@ -36,6 +36,13 @@ export const ridesApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    cancelRide: builder.mutation({
+      query: (id: string) => ({
+        url: `/rides/${id}/cancel`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
@@ -44,4 +51,5 @@ export const {
   useRideHistoryQuery,
   useRideRequestMutation,
   useRideDetailsQuery,
+  useCancelRideMutation,
 } = ridesApi;

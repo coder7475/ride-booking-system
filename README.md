@@ -171,7 +171,7 @@ The backend provides a comprehensive REST API with the following endpoints:
 | PATCH  | `/rides/:id/picked`   | Update ride status to PICKED_UP    |
 | PATCH  | `/rides/:id/transit`  | Update ride status to IN_TRANSIT   |
 | PATCH  | `/rides/:id/complete` | Update ride status to COMPLETED    |
-| POST   | `/rides/:id/cancel`   | Cancel ride before pickup          |
+| PATCH  | `/rides/:id/cancel`   | Cancel ride before pickup          |
 | GET    | `/rides/me`           | List ride history for current user |
 | GET    | `/rides/:id`          | Get ride details                   |
 

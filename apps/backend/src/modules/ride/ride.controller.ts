@@ -31,7 +31,7 @@ const handleCancelRide = catchAsync(async (req: Request, res: Response) => {
   await mongoConnector(env.DB_URI);
   const riderId = req.user.id;
   const rideId = req.params.id;
-
+  console.log(rideId);
   if (!rideId) {
     throw new Error("Ride ID is required");
   }
