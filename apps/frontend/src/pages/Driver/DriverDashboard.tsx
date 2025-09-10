@@ -1,7 +1,9 @@
 import Overview from "@/components/driver/Overview";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import { Car, DollarSign } from "lucide-react";
+import { AlertTriangle, Car, DollarSign } from "lucide-react";
+import { useNavigate } from "react-router";
 
 import AvailabilityControl from "./AvailabilityControl";
 
@@ -13,10 +15,38 @@ const DriverDashboard = () => {
     rating: 4.9,
   };
   const { data: userInfo } = useUserInfoQuery(undefined);
+  const navigate = useNavigate();
+
+  // Assume userInfo?.data?.isDriver is a boolean indicating driver registration
+  const isDriver = userInfo?.data?.isDriver;
 
   return (
     <div className="bg-background min-h-screen">
       <main className="container mx-auto px-4 pb-8">
+        {/* Show driver application prompt if not registered */}
+        {!isDriver && (
+          <div className="mb-6 flex items-center justify-between rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-3">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="h-6 w-6 text-yellow-500" />
+              <div>
+                <p className="font-medium text-yellow-800">
+                  You are not registered as a driver.
+                </p>
+                <p className="text-sm text-yellow-700">
+                  Complete your application to start driving and earning.
+                </p>
+              </div>
+            </div>
+            <Button
+              className="ml-4"
+              variant="default"
+              onClick={() => navigate("/driver/apply")}
+            >
+              Apply as Driver
+            </Button>
+          </div>
+        )}
+
         <div className="mb-8 flex items-center gap-4">
           <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-full">
             <Car className="text-primary-foreground h-6 w-6" />
