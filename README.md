@@ -163,17 +163,18 @@ The backend provides a comprehensive REST API with the following endpoints:
 
 ### 🚕 Ride Management
 
-| Method | Endpoint              | Description                        |
-| ------ | --------------------- | ---------------------------------- |
-| GET    | `/rides/fare`         | Estimate fare of a ride            |
-| POST   | `/rides/request`      | Rider requests a new ride          |
-| PATCH  | `/rides/:id/accept`   | Driver accepts ride                |
-| PATCH  | `/rides/:id/picked`   | Update ride status to PICKED_UP    |
-| PATCH  | `/rides/:id/transit`  | Update ride status to IN_TRANSIT   |
-| PATCH  | `/rides/:id/complete` | Update ride status to COMPLETED    |
-| PATCH  | `/rides/:id/cancel`   | Cancel ride before pickup          |
-| GET    | `/rides/me`           | List ride history for current user |
-| GET    | `/rides/:id`          | Get ride details                   |
+| Method | Endpoint               | Description                                            |
+| ------ | ---------------------- | ------------------------------------------------------ |
+| GET    | `/rides/fare`          | Estimate fare of a ride                                |
+| POST   | `/rides/request`       | Rider requests a new ride                              |
+| PATCH  | `/rides/:id/accept`    | Driver accepts ride                                    |
+| PATCH  | `/rides/:id/picked`    | Update ride status to PICKED_UP                        |
+| PATCH  | `/rides/:id/transit`   | Update ride status to IN_TRANSIT                       |
+| PATCH  | `/rides/:id/complete`  | Update ride status to COMPLETED                        |
+| PATCH  | `/rides/:id/cancel`    | Cancel ride before pickup                              |
+| GET    | `/rides/me`            | List ride history for current user                     |
+| GET    | `/rides/:id`           | Get ride details                                       |
+| PATCH  | `/drivers/me/location` | Updates the driver’s real-time location via WebSocket. |
 
 ### 💰 Transactions
 
