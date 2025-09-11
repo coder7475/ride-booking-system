@@ -68,7 +68,7 @@ const RideRequestForm = () => {
           destLng: undefined,
         },
     {
-      skip: !pickupCoords || !destinationCoords,
+      skip: !pickupCoords && !destinationCoords,
     },
   );
 

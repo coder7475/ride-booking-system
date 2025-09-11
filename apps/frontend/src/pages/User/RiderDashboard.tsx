@@ -243,7 +243,7 @@ const RiderDashboard = () => {
                                 </span>
                               </div>
                             </div>
-                            <Button
+                            {/* <Button
                               className="mt-3 w-full cursor-pointer"
                               variant="outline"
                               onClick={() => {
@@ -252,7 +252,7 @@ const RiderDashboard = () => {
                               }}
                             >
                               Track Ride
-                            </Button>
+                            </Button> */}
                             <Button
                               className="mt-3 w-full cursor-pointer"
                               variant="destructive"
