@@ -365,7 +365,7 @@ const RiderDashboard = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="w-full"
+                            className="w-full cursor-pointer"
                             onClick={() => {
                               setRideId(ride._id);
                               setShowRideDetails(true);
@@ -379,7 +379,7 @@ const RiderDashboard = () => {
                   </div>
                   <Button
                     variant="outline"
-                    className="mt-4 w-full"
+                    className="mt-4 w-full cursor-pointer"
                     onClick={() => setActiveTab("history")}
                   >
                     View All History

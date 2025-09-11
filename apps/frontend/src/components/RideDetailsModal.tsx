@@ -32,7 +32,9 @@ const RideDetailsModal = ({
   isOpen,
   onClose,
 }: RideDetailsModalProps) => {
-  const { data, isLoading, isError } = useRideDetailsQuery(rideId);
+  const { data, isLoading, isError } = useRideDetailsQuery(rideId, {
+    skip: !rideId,
+  });
   // address of lng,lat
   const addressCache = useAppSelector((state) => state.addressCache);
 
@@ -41,6 +43,12 @@ const RideDetailsModal = ({
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="flex max-h-[90vh] max-w-2xl items-center justify-center overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Loading Ride Details</DialogTitle>
+            <DialogDescription>
+              Please wait while we load your ride details.
+            </DialogDescription>
+          </DialogHeader>
           <span className="text-muted-foreground">Loading ride details...</span>
         </DialogContent>
       </Dialog>
@@ -52,6 +60,13 @@ const RideDetailsModal = ({
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="flex max-h-[90vh] max-w-2xl items-center justify-center overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Failed to Load Ride Details</DialogTitle>
+            <DialogDescription>
+              There was an error loading your ride details. Please try again
+              later.
+            </DialogDescription>
+          </DialogHeader>
           <span className="text-destructive">Failed to load ride details.</span>
         </DialogContent>
       </Dialog>
