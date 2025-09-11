@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import RideDetailsModal from "@/components/RideDetailsModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -35,6 +36,8 @@ import {
 } from "lucide-react";
 
 const RideHistory = () => {
+  const [showRideDetails, setShowRideDetails] = useState(false);
+  const [rideId, setRideId] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState<Date>();
@@ -198,7 +201,14 @@ const RideHistory = () => {
                       {ride.driverId ?? "Unassigned"}
                     </span>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setRideId(ride._id);
+                      setShowRideDetails(true);
+                    }}
+                  >
                     View Details
                   </Button>
                 </div>
@@ -241,6 +251,12 @@ const RideHistory = () => {
           </div>
         )}
       </CardContent>
+
+      <RideDetailsModal
+        rideId={rideId}
+        isOpen={showRideDetails}
+        onClose={() => setShowRideDetails(false)}
+      />
     </Card>
   );
 };

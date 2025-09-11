@@ -20,7 +20,8 @@ import {
 } from "@/components/ui/sidebar";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { getSideBarLinks } from "@/utils/getSideBarLinks";
-import { Minus, Plus, TestTube2 } from "lucide-react";
+import { Car, Minus, Plus } from "lucide-react";
+import { Link } from "react-router";
 
 import { NavUser } from "./layout/NavUser";
 
@@ -39,7 +40,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <TestTube2 className="mx-2 flex h-6 w-6 items-center justify-center" />
+        <Link to="/" className="flex items-center space-x-2 text-xl font-bold">
+          <div className="bg-gradient-primary flex h-8 w-8 items-center justify-center rounded-lg">
+            <Car className="text-primary h-5 w-5" />
+          </div>
+          <span className="from-primary to-accent bg-gradient-to-r bg-clip-text">
+            RideBook
+          </span>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

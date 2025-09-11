@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import RideDetailsModal from "@/components/RideDetailsModal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +21,11 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import { useRideHistoryQuery } from "@/redux/features/rider/rides.api";
+import {
+  ridesApi,
+  useCancelRideMutation,
+  useRideHistoryQuery,
+} from "@/redux/features/rider/rides.api";
 import { useAppSelector } from "@/redux/hook";
 import { setAddress } from "@/redux/slices/addressSlice";
 import { RideStatus, type IRide } from "@/types/ride.types";
@@ -19,6 +33,7 @@ import { fetchAddress } from "@/utils/fetchAddress";
 import { format } from "date-fns";
 import { Car, CreditCard, MapPin, User } from "lucide-react";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 import LiveRideTracking from "./LiveRideTracking";
 import ProfileManagement from "./ProfileManagement";
@@ -27,7 +42,13 @@ import RideRequestForm from "./RideRequestForm";
 
 const RiderDashboard = () => {
   const [showRideDetails, setShowRideDetails] = useState(false);
+  const [rideId, setRideId] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
+  const [cancelRide] = useCancelRideMutation();
+
+  // For AlertDialog cancel ride
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [rideIdToCancel, setRideIdToCancel] = useState<string | null>(null);
 
   // axios call
   const { data: userInfo } = useUserInfoQuery(undefined);
@@ -103,6 +124,20 @@ const RiderDashboard = () => {
       fetchAllAddresses();
     }
   }, [rideHistory, addressCache, dispatch]);
+
+  const handleCancelRide = async (id: string) => {
+    try {
+      const res = await cancelRide(id).unwrap();
+
+      if (res?.success) {
+        dispatch(ridesApi.util.resetApiState());
+        toast.success("Ride Cancel Successfully!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to cancel ride");
+    }
+  };
 
   return (
     <div className="bg-background min-h-screen">
@@ -209,22 +244,74 @@ const RiderDashboard = () => {
                               </div>
                             </div>
                             <Button
-                              className="mt-3 w-full"
+                              className="mt-3 w-full cursor-pointer"
                               variant="outline"
-                              onClick={() => setActiveTab("tracking")}
+                              onClick={() => {
+                                setRideId(ride._id);
+                                setActiveTab("tracking");
+                              }}
                             >
                               Track Ride
+                            </Button>
+                            <Button
+                              className="mt-3 w-full cursor-pointer"
+                              variant="destructive"
+                              onClick={() => {
+                                setRideIdToCancel(ride._id);
+                                setCancelDialogOpen(true);
+                              }}
+                            >
+                              Cancel Ride
                             </Button>
                           </div>
                         );
                       })}
+                      {/* Cancel Ride AlertDialog */}
+                      <AlertDialog
+                        open={cancelDialogOpen}
+                        onOpenChange={setCancelDialogOpen}
+                      >
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you sure you want to cancel this ride?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will cancel
+                              your ride request.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel
+                              onClick={() => {
+                                setCancelDialogOpen(false);
+                                setRideIdToCancel(null);
+                              }}
+                            >
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              className="cursor-pointer"
+                              onClick={async () => {
+                                if (rideIdToCancel) {
+                                  await handleCancelRide(rideIdToCancel);
+                                }
+                                setCancelDialogOpen(false);
+                                setRideIdToCancel(null);
+                              }}
+                            >
+                              Yes, Cancel Ride
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   ) : (
                     <div className="py-8 text-center">
                       <Car className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
                       <p className="text-muted-foreground">No active rides</p>
                       <Button
-                        className="mt-4"
+                        className="mt-4 cursor-pointer"
                         onClick={() => setActiveTab("book")}
                       >
                         Book a Ride
@@ -279,7 +366,10 @@ const RiderDashboard = () => {
                             variant="outline"
                             size="sm"
                             className="w-full"
-                            onClick={() => setShowRideDetails(true)}
+                            onClick={() => {
+                              setRideId(ride._id);
+                              setShowRideDetails(true);
+                            }}
                           >
                             View Details
                           </Button>
@@ -304,7 +394,7 @@ const RiderDashboard = () => {
           </TabsContent>
 
           <TabsContent value="tracking">
-            <LiveRideTracking />
+            <LiveRideTracking rideId={rideId} />
           </TabsContent>
 
           <TabsContent value="history">
@@ -317,6 +407,7 @@ const RiderDashboard = () => {
         </Tabs>
 
         <RideDetailsModal
+          rideId={rideId}
           isOpen={showRideDetails}
           onClose={() => setShowRideDetails(false)}
         />

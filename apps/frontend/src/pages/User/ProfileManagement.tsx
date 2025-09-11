@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,39 +7,77 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import LoadingCircle from "@/components/ui/loading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, Lock, Mail, Phone, User } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  useUpdateUserMutation,
+  useUserInfoQuery,
+} from "@/redux/features/auth/auth.api";
+import { profileSchema, type ProfileFormValues } from "@/types/profile.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Mail, Phone, User } from "lucide-react";
+import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import ChangePasswordForm from "./ChangePasswordForm";
+
 const ProfileManagement = () => {
-  const [profile, setProfile] = useState({
-    name: "Sarah Johnson",
-    email: "sarah.johnson@email.com",
-    phone: "+1-234-567-8900",
+  const { data: userInfo, isLoading } = useUserInfoQuery(undefined);
+  const [userUpdate] = useUpdateUserMutation();
+
+  // Use state to store initial values and update form when userInfo loads
+  const [profileDefaults, setProfileDefaults] = useState<ProfileFormValues>({
+    userName: "",
+    phone: "",
+    email: "",
   });
 
-  const [passwords, setPasswords] = useState({
-    current: "",
-    new: "",
-    confirm: "",
+  const profileForm = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: profileDefaults,
   });
 
-  const handleProfileUpdate = () => {
-    toast.success("Profile Update");
-  };
-
-  const handlePasswordChange = () => {
-    if (passwords.new !== passwords.confirm) {
-      toast.error("Password Mismatch");
-      return;
+  // Update form values when userInfo loads
+  useEffect(() => {
+    if (userInfo?.data) {
+      setProfileDefaults({
+        userName: userInfo.data.userName || "",
+        phone: userInfo.data.phone || "",
+        email: userInfo.data.email || "",
+      });
+      profileForm.reset({
+        userName: userInfo.data.userName || "",
+        phone: userInfo.data.phone || "",
+        email: userInfo.data.email || "",
+      });
     }
+  }, [userInfo]);
 
-    toast.error("Password Changed");
-
-    setPasswords({ current: "", new: "", confirm: "" });
+  const onSubmit = async (data: ProfileFormValues) => {
+    try {
+      const res = await userUpdate(data).unwrap();
+      // console.log(res);
+      if (res.success) {
+        toast.success("Profile Update Successfully!");
+      }
+    } catch {
+      toast.error("Profile Update Failed!");
+    }
   };
+
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
 
   return (
     <Card className="animate-slide-up">
@@ -61,149 +98,104 @@ const ProfileManagement = () => {
           </TabsList>
 
           <TabsContent value="profile" className="space-y-4">
-            {/* Profile Picture */}
-            <div className="flex items-center gap-4">
-              <Avatar className="h-20 w-20">
-                <AvatarFallback className="text-lg">SJ</AvatarFallback>
-              </Avatar>
-              <div>
-                <Button variant="outline" size="sm">
-                  <Camera className="mr-2 h-4 w-4" />
-                  Change Photo
-                </Button>
-                <p className="text-muted-foreground mt-1 text-xs">
-                  JPG, PNG or GIF. Max size 5MB.
-                </p>
-              </div>
-            </div>
-
-            {/* Profile Form */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <div className="relative">
-                  <User className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-                  <Input
-                    id="name"
-                    value={profile.name}
-                    onChange={(e) =>
-                      setProfile({ ...profile, name: e.target.value })
-                    }
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <div className="relative">
-                  <Phone className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-                  <Input
-                    id="phone"
-                    value={profile.phone}
-                    onChange={(e) =>
-                      setProfile({ ...profile, phone: e.target.value })
-                    }
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="email">Email Address</Label>
-                <div className="relative">
-                  <Mail className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-                  <Input
-                    id="email"
-                    type="email"
-                    value={profile.email}
-                    onChange={(e) =>
-                      setProfile({ ...profile, email: e.target.value })
-                    }
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <Button onClick={handleProfileUpdate} className="w-full md:w-auto">
-              Save Changes
-            </Button>
+            <FormProvider {...profileForm}>
+              <Form {...profileForm}>
+                <form
+                  onSubmit={profileForm.handleSubmit(onSubmit)}
+                  className="space-y-0"
+                >
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <FormField
+                      control={profileForm.control}
+                      name="userName"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel htmlFor="name">Full Name</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <User className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
+                              <Input
+                                id="name"
+                                className={cn(
+                                  "pl-10",
+                                  fieldState.error ? "border-destructive" : "",
+                                )}
+                                autoComplete="off"
+                                {...field}
+                                value={field.value || ""}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={profileForm.control}
+                      name="phone"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel htmlFor="phone">Phone Number</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Phone className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
+                              <Input
+                                id="phone"
+                                className={cn(
+                                  "pl-10",
+                                  fieldState.error ? "border-destructive" : "",
+                                )}
+                                autoComplete="off"
+                                {...field}
+                                value={field.value || ""}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={profileForm.control}
+                      name="email"
+                      render={({ field, fieldState }) => (
+                        <FormItem className="md:col-span-2">
+                          <FormLabel htmlFor="email">Email Address</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Mail className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
+                              <Input
+                                id="email"
+                                type="email"
+                                className={cn(
+                                  "pl-10",
+                                  fieldState.error ? "border-destructive" : "",
+                                )}
+                                autoComplete="off"
+                                {...field}
+                                value={field.value || ""}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="mt-4 w-full cursor-pointer md:w-auto"
+                    disabled={profileForm.formState.isSubmitting}
+                  >
+                    Save Changes
+                  </Button>
+                </form>
+              </Form>
+            </FormProvider>
           </TabsContent>
 
           <TabsContent value="security" className="space-y-4">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="current-password">Current Password</Label>
-                <div className="relative">
-                  <Lock className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-                  <Input
-                    id="current-password"
-                    type="password"
-                    value={passwords.current}
-                    onChange={(e) =>
-                      setPasswords({ ...passwords, current: e.target.value })
-                    }
-                    className="pl-10"
-                    placeholder="Enter current password"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="new-password">New Password</Label>
-                <div className="relative">
-                  <Lock className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-                  <Input
-                    id="new-password"
-                    type="password"
-                    value={passwords.new}
-                    onChange={(e) =>
-                      setPasswords({ ...passwords, new: e.target.value })
-                    }
-                    className="pl-10"
-                    placeholder="Enter new password"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm New Password</Label>
-                <div className="relative">
-                  <Lock className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-                  <Input
-                    id="confirm-password"
-                    type="password"
-                    value={passwords.confirm}
-                    onChange={(e) =>
-                      setPasswords({ ...passwords, confirm: e.target.value })
-                    }
-                    className="pl-10"
-                    placeholder="Confirm new password"
-                  />
-                </div>
-              </div>
-
-              <div className="bg-muted rounded-lg p-4">
-                <h4 className="mb-2 font-medium">Password Requirements:</h4>
-                <ul className="text-muted-foreground space-y-1 text-sm">
-                  <li>• At least 8 characters long</li>
-                  <li>• Contains uppercase and lowercase letters</li>
-                  <li>• Contains at least one number</li>
-                  <li>• Contains at least one special character</li>
-                </ul>
-              </div>
-
-              <Button
-                onClick={handlePasswordChange}
-                className="w-full md:w-auto"
-                disabled={
-                  !passwords.current || !passwords.new || !passwords.confirm
-                }
-              >
-                Change Password
-              </Button>
-            </div>
+            <ChangePasswordForm />
           </TabsContent>
         </Tabs>
       </CardContent>

@@ -27,7 +27,7 @@ RidesRouter.post(
 );
 
 // Cancel ride before pickup - user
-RidesRouter.post(
+RidesRouter.patch(
   "/:id/cancel",
   checkAuth(Role.USER),
   RidesController.handleCancelRide,

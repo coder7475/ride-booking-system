@@ -14,17 +14,33 @@ export const ridesApi = baseApi.injectEndpoints({
         },
       }),
     }),
+
     rideHistory: builder.query({
       query: () => ({
         url: "/rides/me",
         method: "GET",
       }),
     }),
+
     rideRequest: builder.mutation({
       query: (rideInfo) => ({
         url: "/rides/request",
         method: "POST",
         data: rideInfo,
+      }),
+    }),
+
+    rideDetails: builder.query({
+      query: (id: string) => ({
+        url: `/rides/${id}`,
+        method: "GET",
+      }),
+    }),
+
+    cancelRide: builder.mutation({
+      query: (id: string) => ({
+        url: `/rides/${id}/cancel`,
+        method: "PATCH",
       }),
     }),
   }),
@@ -34,4 +50,6 @@ export const {
   useEstimateFareQuery,
   useRideHistoryQuery,
   useRideRequestMutation,
+  useRideDetailsQuery,
+  useCancelRideMutation,
 } = ridesApi;

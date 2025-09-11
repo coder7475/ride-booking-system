@@ -1,19 +1,43 @@
-import DriverAnalytics from "@/pages/Driver/DriverAnalytics";
-import RidePickup from "@/pages/Driver/RidePickup";
+import ActiveRideManagement from "@/pages/Driver/ActiveRideManagement";
+import DriverDashboard from "@/pages/Driver/DriverDashboard";
+import DriverRideHistory from "@/pages/Driver/DriverRideHistory";
+import EarningsDashboard from "@/pages/Driver/EarningsDashboard";
+import IncomingRequests from "@/pages/Driver/IncomingRequests";
+import ProfileManagement from "@/pages/User/ProfileManagement";
 
 export const driverSideRoutes = [
   {
-    title: "Dashboard",
+    title: "Driver Dashboard",
     items: [
       {
         title: "Analytics",
         url: "/driver/analytics",
-        component: DriverAnalytics,
+        component: DriverDashboard,
       },
       {
-        title: "Bookings",
-        url: "/driver/rides",
-        component: RidePickup,
+        title: "Incoming Requests",
+        url: "/driver/incoming",
+        component: IncomingRequests,
+      },
+      {
+        title: "Active Rides",
+        url: "/driver/active",
+        component: ActiveRideManagement,
+      },
+      {
+        title: "Earnings",
+        url: "/driver/earnings",
+        component: EarningsDashboard,
+      },
+      {
+        title: "History",
+        url: "/driver/history",
+        component: DriverRideHistory,
+      },
+      {
+        title: "Profile Management",
+        url: "/driver/profile",
+        component: ProfileManagement,
       },
     ],
   },

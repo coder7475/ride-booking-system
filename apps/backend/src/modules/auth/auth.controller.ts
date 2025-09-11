@@ -1,7 +1,9 @@
 import AppError from "@/configs/AppError";
+import { env } from "@/configs/envConfig";
 import { catchAsync } from "@/utils/asyncHandler";
 import { setAuthCookies } from "@/utils/cookieHelpers";
 import sendResponse from "@/utils/sendResponse";
+import { mongoConnector } from "@repo/db";
 import type { NextFunction, Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
 
@@ -11,6 +13,7 @@ import { AuthServices } from "./auth.service";
 
 const registerUser = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
+    await mongoConnector(env.DB_URI);
     const user = await UserServices.createUser(req.body);
 
     sendResponse(res, {
@@ -24,6 +27,7 @@ const registerUser = catchAsync(
 
 const login = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
+    await mongoConnector(env.DB_URI);
     const generatedTokens = await AuthServices.login(req.body);
 
     setAuthCookies(res, generatedTokens);
@@ -43,6 +47,7 @@ const login = catchAsync(
 // Refresh token function
 const reissueAccessToken = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
+    await mongoConnector(env.DB_URI);
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -94,8 +99,8 @@ const logout = catchAsync(
 
 const forgetPassword = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
+    await mongoConnector(env.DB_URI);
     const email = req.body.email;
-
     const result = await AuthServices.forgetPassword(email);
 
     sendResponse(res, {
@@ -109,6 +114,7 @@ const forgetPassword = catchAsync(
 
 const resetPassword = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
+    await mongoConnector(env.DB_URI);
     const userData: IResetPassword = req.body;
     const decodedUser: JwtPayload = req.user;
 
@@ -123,6 +129,28 @@ const resetPassword = catchAsync(
   },
 );
 
+const changePassword = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    await mongoConnector(env.DB_URI);
+    const userId = req.user.id;
+    const userData = req.body;
+    const userInfo = {
+      id: userId,
+      ...userData,
+    };
+    const decodedUser: JwtPayload = req.user;
+
+    const data = await AuthServices.changePassword(userInfo, decodedUser);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Password Changed successfully!",
+      data,
+    });
+  },
+);
+
 export const AuthController = {
   registerUser,
   login,
@@ -130,4 +158,5 @@ export const AuthController = {
   logout,
   forgetPassword,
   resetPassword,
+  changePassword,
 };
