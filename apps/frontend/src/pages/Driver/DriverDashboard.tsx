@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { useDriverProfileQuery } from "@/redux/features/driver/driver.api";
+import { DriverApprovalStatus } from "@/types/driver.types";
 import { AlertTriangle, Car, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router";
 
@@ -15,6 +16,8 @@ const DriverDashboard = () => {
   const navigate = useNavigate();
 
   const isDriver = driverProfile?.data;
+  const approvalStatus = driverProfile?.data?.approvalStatus;
+
   const todayStats = {
     rides: 12,
     earnings: "$247.50",
@@ -25,6 +28,21 @@ const DriverDashboard = () => {
   return (
     <div className="bg-background min-h-screen">
       <main className="container mx-auto px-4 pb-8">
+        {approvalStatus === DriverApprovalStatus.PENDING && (
+          <div className="mb-6 flex items-center justify-between rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-3">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="h-6 w-6 text-yellow-500" />
+              <div>
+                <p className="font-medium text-yellow-800">
+                  Your driver application is pending admin verification.
+                </p>
+                <p className="text-sm text-yellow-700">
+                  Please wait for approval before you can start driving.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Show driver application prompt if not registered */}
         {!isDriver && (
           <div className="mb-6 flex items-center justify-between rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-3">

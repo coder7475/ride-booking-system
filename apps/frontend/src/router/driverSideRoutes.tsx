@@ -1,5 +1,5 @@
-import { DriverForm } from "@/modules/driver/DriverForm";
 import ActiveRideManagement from "@/pages/Driver/ActiveRideManagement";
+import DriverApplication from "@/pages/Driver/DriverApplication";
 import DriverDashboard from "@/pages/Driver/DriverDashboard";
 import DriverRideHistory from "@/pages/Driver/DriverRideHistory";
 import EarningsDashboard from "@/pages/Driver/EarningsDashboard";
@@ -43,7 +43,7 @@ export const driverSideRoutes = [
       {
         title: "Driver Application",
         url: "/driver/apply",
-        component: DriverForm,
+        component: DriverApplication,
       },
     ],
   },
