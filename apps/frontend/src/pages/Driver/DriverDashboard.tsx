@@ -43,6 +43,29 @@ const DriverDashboard = () => {
             </div>
           </div>
         )}
+
+        {approvalStatus === DriverApprovalStatus.REJECTED && (
+          <div className="mb-6 flex items-center justify-between rounded-lg border border-red-300 bg-red-50 px-4 py-3">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="h-6 w-6 text-red-500" />
+              <div>
+                <p className="font-medium text-red-800">
+                  Your driver application was rejected.
+                </p>
+                <p className="text-sm text-red-700">
+                  Please review your information and try again.
+                </p>
+              </div>
+            </div>
+            <Button
+              className="ml-4"
+              variant="destructive"
+              onClick={() => navigate("/driver/apply")}
+            >
+              Try Again
+            </Button>
+          </div>
+        )}
         {/* Show driver application prompt if not registered */}
         {!isDriver && (
           <div className="mb-6 flex items-center justify-between rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-3">
