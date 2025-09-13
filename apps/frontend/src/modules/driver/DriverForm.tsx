@@ -15,6 +15,7 @@ import { DriverFormSchema, type DriverFormValues } from "@/types/driver.schema";
 import { getGeoLocation } from "@/utils/getGeoLocation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 export function DriverForm({
@@ -22,6 +23,7 @@ export function DriverForm({
   ...props
 }: Readonly<React.HTMLAttributes<HTMLDivElement>>) {
   const [applyForDriver] = useApplyForDriverMutation();
+
   const form = useForm<DriverFormValues>({
     resolver: zodResolver(DriverFormSchema),
     defaultValues: {
@@ -39,6 +41,7 @@ export function DriverForm({
     },
   });
 
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit: SubmitHandler<DriverFormValues> = async (data) => {
@@ -52,11 +55,10 @@ export function DriverForm({
         longitude,
       };
 
-      console.log(data);
-
       const res = await applyForDriver(data).unwrap();
       if (res.success) {
         toast.success("Driver application submitted!");
+        navigate("/driver/analytics");
         form.reset();
       }
     } catch (err: unknown) {
