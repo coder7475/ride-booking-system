@@ -10,7 +10,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useApplyForDriverMutation } from "@/redux/features/driver/driver.api";
 import { DriverFormSchema, type DriverFormValues } from "@/types/driver.schema";
+import { getGeoLocation } from "@/utils/getGeoLocation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,6 +21,7 @@ export function DriverForm({
   className,
   ...props
 }: Readonly<React.HTMLAttributes<HTMLDivElement>>) {
+  const [applyForDriver] = useApplyForDriverMutation();
   const form = useForm<DriverFormValues>({
     resolver: zodResolver(DriverFormSchema),
     defaultValues: {
@@ -41,40 +44,32 @@ export function DriverForm({
   const onSubmit: SubmitHandler<DriverFormValues> = async (data) => {
     setIsSubmitting(true);
     try {
-      // Use Geolocation API to get driver's current location
-      if ("geolocation" in navigator) {
-        const position = await new Promise<GeolocationPosition>(
-          (resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(
-              (pos) => resolve(pos),
-              (error) => {
-                toast.error(
-                  "Failed to get your location. Please allow location access.",
-                );
-                reject(error);
-              },
-            );
-          },
-        );
-        const { latitude, longitude } = position.coords;
-        // Attach location to data
-        data.driverLocation = {
-          latitude,
-          longitude,
-        };
-      } else {
-        toast.error("Geolocation is not supported by your browser.");
-        setIsSubmitting(false);
-        return;
-      }
+      const position = await getGeoLocation();
+      const { latitude, longitude } = position;
+      // Attach location to data
+      data.driverLocation = {
+        latitude,
+        longitude,
+      };
+
       console.log(data);
-      // Here you would send data (including driverLocation) to your backend API for driver application
-      // For demonstration, just show a toast and reset
-      toast.success("Driver application submitted!");
-      form.reset();
-    } catch (err) {
-      console.log(err);
-      toast.error("Failed to submit application.");
+
+      const res = await applyForDriver(data).unwrap();
+      if (res.success) {
+        toast.success("Driver application submitted!");
+        form.reset();
+      }
+    } catch (err: unknown) {
+      const status =
+        typeof err === "object" && err !== null && "status" in err
+          ? (err as { status?: number }).status
+          : undefined;
+      if (status === 409) {
+        toast.warning("You already applied! Wait for admin approval!");
+        form.reset();
+      } else {
+        toast.error("Failed to submit application.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -112,8 +107,6 @@ export function DriverForm({
                           <option value="Motorcycle">Motorcycle</option>
                           <option value="Van">Van</option>
                           <option value="Truck">Truck</option>
-                          <option value="Bicycle">Bicycle</option>
-                          {/* Add more options as needed */}
                         </select>
                       </FormControl>
                       <FormMessage />
@@ -177,6 +170,11 @@ export function DriverForm({
                           placeholder="e.g. 2020"
                           {...field}
                           value={field.value ?? ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            // Only set as number if not empty, else set as empty string
+                            field.onChange(val === "" ? "" : Number(val));
+                          }}
                           className={
                             fieldState.error ? "border-destructive" : ""
                           }

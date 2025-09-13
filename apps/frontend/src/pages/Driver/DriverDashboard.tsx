@@ -11,6 +11,7 @@ import AvailabilityControl from "./AvailabilityControl";
 const DriverDashboard = () => {
   const { data: userInfo } = useUserInfoQuery(undefined);
   const { data: driverProfile } = useDriverProfileQuery(undefined);
+
   const navigate = useNavigate();
 
   const isDriver = driverProfile?.data;
