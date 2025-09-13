@@ -2,23 +2,24 @@ import Overview from "@/components/driver/Overview";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { useDriverProfileQuery } from "@/redux/features/driver/driver.api";
 import { AlertTriangle, Car, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router";
 
 import AvailabilityControl from "./AvailabilityControl";
 
 const DriverDashboard = () => {
+  const { data: userInfo } = useUserInfoQuery(undefined);
+  const { data: driverProfile } = useDriverProfileQuery(undefined);
+  const navigate = useNavigate();
+
+  const isDriver = driverProfile?.data;
   const todayStats = {
     rides: 12,
     earnings: "$247.50",
     hours: "8.5",
     rating: 4.9,
   };
-  const { data: userInfo } = useUserInfoQuery(undefined);
-  const navigate = useNavigate();
-
-  // Assume userInfo?.data?.isDriver is a boolean indicating driver registration
-  const isDriver = userInfo?.data?.isDriver;
 
   return (
     <div className="bg-background min-h-screen">
