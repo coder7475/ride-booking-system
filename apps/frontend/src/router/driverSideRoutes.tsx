@@ -1,3 +1,4 @@
+import { DriverForm } from "@/modules/driver/DriverForm";
 import ActiveRideManagement from "@/pages/Driver/ActiveRideManagement";
 import DriverDashboard from "@/pages/Driver/DriverDashboard";
 import DriverRideHistory from "@/pages/Driver/DriverRideHistory";
@@ -38,6 +39,11 @@ export const driverSideRoutes = [
         title: "Profile Management",
         url: "/driver/profile",
         component: ProfileManagement,
+      },
+      {
+        title: "Driver Application",
+        url: "/driver/apply",
+        component: DriverForm,
       },
     ],
   },
