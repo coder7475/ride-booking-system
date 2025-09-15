@@ -21,8 +21,8 @@ RidesRouter.get(
 // Rider requests a new ride - user request rides
 RidesRouter.post(
   "/request",
-  validateZod(CreateRideSchema),
   checkAuth(Role.USER),
+  validateZod(CreateRideSchema),
   RidesController.handleRequestRide,
 );
 
