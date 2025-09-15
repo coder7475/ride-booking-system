@@ -190,6 +190,42 @@ const estimateFare = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getNearbyRideRequests = catchAsync(
+  async (req: Request, res: Response) => {
+    await mongoConnector(env.DB_URI);
+
+    const { lat, lon, radius } = req.query;
+
+    if (
+      typeof lat !== "string" ||
+      typeof lon !== "string" ||
+      (radius !== undefined && typeof radius !== "string")
+    ) {
+      throw new Error("Missing or invalid query parameters: lat, lon, radius");
+    }
+
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lon);
+    const searchRadius = radius ? parseFloat(radius) : 3; // default 3km
+
+    if (isNaN(latitude) || isNaN(longitude) || isNaN(searchRadius)) {
+      throw new Error("Invalid latitude, longitude, or radius value");
+    }
+
+    const nearbyRides = await RideServices.getNearbyRideRequests(
+      { latitude, longitude },
+      searchRadius,
+    );
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Nearby ride requests fetched successfully",
+      data: nearbyRides,
+    });
+  },
+);
+
 export const RidesController = {
   handleRequestRide,
   handleCancelRide,
@@ -200,4 +236,5 @@ export const RidesController = {
   handleInTransit,
   handleCompleted,
   estimateFare,
+  getNearbyRideRequests,
 };

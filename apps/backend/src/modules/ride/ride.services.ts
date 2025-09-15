@@ -1,6 +1,9 @@
 import AppError from "@/configs/AppError";
 import { PaymentGateway, RideStatus, type ILocation } from "@/types/types";
-import { calculateFareEstimate } from "@/utils/calculateFare";
+import {
+  calculateFareEstimate,
+  calculateHaversineDistance,
+} from "@/utils/calculateFare";
 import { generateTransactionId } from "@repo/utils";
 
 import { DriverModel } from "../driver/driver.model";
@@ -254,6 +257,29 @@ const estimateFare = async (
   return estimatedFare;
 };
 
+/**
+ * Get all active ride requests near a given location within a radius (in km).
+ * Only returns rides with status "REQUESTED".
+ */
+const getNearbyRideRequests = async (
+  location: ILocation,
+  radius: number = 3,
+) => {
+  // Find rides with status "REQUESTED" and pickupLocation within radius
+  const rides = await RideModel.find({
+    rideStatus: RideStatus.REQUESTED,
+  })
+    .sort({ createdAt: -1 })
+    .lean();
+
+  const nearbyRides = rides.filter((ride) => {
+    const distance = calculateHaversineDistance(location, ride.pickupLocation);
+    return distance <= radius;
+  });
+
+  return nearbyRides;
+};
+
 export const RideServices = {
   createRideRequest,
   cancelRide,
@@ -264,4 +290,5 @@ export const RideServices = {
   inTransit,
   completedRide,
   estimateFare,
+  getNearbyRideRequests,
 };
