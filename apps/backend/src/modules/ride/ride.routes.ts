@@ -26,6 +26,14 @@ RidesRouter.post(
   RidesController.handleRequestRide,
 );
 
+// Get list of active ride request for
+// ?lat=_&lon=_?&radius=_
+RidesRouter.get(
+  "/requests/nearby",
+  checkAuth(Role.DRIVER),
+  RidesController.getNearbyRideRequests,
+);
+
 // Cancel ride before pickup - user
 RidesRouter.patch(
   "/:id/cancel",
