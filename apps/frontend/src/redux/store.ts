@@ -3,11 +3,13 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 
 import { baseApi } from "./baseApi";
 import addressReducer from "./slices/addressSlice";
+import driverReducer from "./slices/driverSlice";
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     addressCache: addressReducer,
+    driverStates: driverReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

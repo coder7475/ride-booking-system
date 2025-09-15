@@ -1,12 +1,10 @@
-// import { useEffect, useState } from "react";
 import Overview from "@/components/driver/Overview";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { useDriverProfileQuery } from "@/redux/features/driver/driver.api";
-// import { useGetNearbyRideRequestsQuery } from "@/redux/features/rider/rides.api";
-import { DriverApprovalStatus } from "@/types/driver.types";
-// import { getGeoLocation } from "@/utils/getGeoLocation";
+import { useAppSelector } from "@/redux/hook";
+import { DriverApprovalStatus, DriverOnlineStatus } from "@/types/driver.types";
 import { AlertTriangle, Car, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router";
 
@@ -16,6 +14,10 @@ const DriverDashboard = () => {
   const { data: userInfo } = useUserInfoQuery(undefined);
   const { data: driverProfile } = useDriverProfileQuery(undefined);
 
+  const onlineStatus = useAppSelector(
+    (state) => state.driverStates.onlineStatus,
+  );
+  const isOnline = onlineStatus === DriverOnlineStatus.ONLINE;
   const navigate = useNavigate();
 
   const isDriver = driverProfile?.data;
@@ -108,7 +110,7 @@ const DriverDashboard = () => {
             </p>
           </div>
           <div className="ml-auto">
-            <AvailabilityControl />
+            <AvailabilityControl isOnline={isOnline} />
           </div>
         </div>
 

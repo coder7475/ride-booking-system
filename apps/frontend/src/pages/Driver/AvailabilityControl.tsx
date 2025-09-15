@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -8,15 +8,38 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+// import { useUpdateDriverStatusMutation } from "@/redux/features/driver/driver.api";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { setOnlineStatus } from "@/redux/slices/driverSlice";
+import { DriverOnlineStatus } from "@/types/driver.types";
 import { Car, Clock, DollarSign } from "lucide-react";
 
-const AvailabilityControl = () => {
-  const [isOnline, setIsOnline] = useState(false);
+const AvailabilityControl = ({ isOnline }) => {
+  const dispatch = useAppDispatch();
+  // const [updateDriverStatus] = useUpdateDriverStatusMutation();
 
+  // Get online status directly from redux store
   const stats = {
     hoursOnline: "4.5",
     earnings: "$125.80",
     completedRides: 8,
+  };
+
+  // When online status changes, update backend
+
+  // Handler for switch toggle
+  const handleToggle = (checked: boolean) => {
+    dispatch(
+      setOnlineStatus(
+        checked ? DriverOnlineStatus.ONLINE : DriverOnlineStatus.OFFLINE,
+      ),
+    );
+
+    // updateDriverStatus({
+    //   onlineStatus: isOnline
+    //     ? DriverOnlineStatus.ONLINE
+    //     : DriverOnlineStatus.OFFLINE,
+    // });
   };
 
   return (
@@ -47,7 +70,7 @@ const AvailabilityControl = () => {
             </Badge>
             <Switch
               checked={isOnline}
-              onCheckedChange={setIsOnline}
+              onCheckedChange={handleToggle}
               className="data-[state=checked]:bg-green-500"
             />
           </div>

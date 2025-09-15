@@ -1,4 +1,5 @@
 import { baseApi } from "@/redux/baseApi";
+import type { DriverOnlineStatus } from "@/types/driver.types";
 
 export const driverApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,7 +19,19 @@ export const driverApi = baseApi.injectEndpoints({
       }),
     }),
     ///
+    updateDriverStatus: builder.mutation({
+      query: (status: { onlineStatus: DriverOnlineStatus }) => ({
+        url: "/drivers/me/status",
+        method: "PATCH",
+        data: status,
+      }),
+    }),
+    ///
   }),
 });
 
-export const { useDriverProfileQuery, useApplyForDriverMutation } = driverApi;
+export const {
+  useDriverProfileQuery,
+  useApplyForDriverMutation,
+  useUpdateDriverStatusMutation,
+} = driverApi;

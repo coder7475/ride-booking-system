@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { useDriverProfileQuery } from "@/redux/features/driver/driver.api";
 import { useGetNearbyRideRequestsQuery } from "@/redux/features/rider/rides.api";
+import { useAppSelector } from "@/redux/hook";
 import { DriverOnlineStatus } from "@/types/driver.types";
 import { getGeoLocation } from "@/utils/getGeoLocation";
 import { Clock, MapPin, Phone, User } from "lucide-react";
@@ -17,7 +18,7 @@ import { toast } from "sonner";
 
 const IncomingRequests = () => {
   // Use ridesApi hooks for driver ride requests
-  const { data: driverProfile } = useDriverProfileQuery(undefined);
+  // const { data: driverProfile } = useDriverProfileQuery(undefined);
 
   const [location, setLocation] = useState<{
     latitude: number;
@@ -28,9 +29,12 @@ const IncomingRequests = () => {
     lon: location?.longitude,
     radius: 10,
   };
-  const isOnline =
-    driverProfile?.data?.onlineStatus === DriverOnlineStatus.ONLINE;
 
+  // Get online status directly from redux store
+  const isOnline = useAppSelector((state) => state.driverStates.onlineStatus);
+  // const isOnline =
+  //   driverProfile?.data?.onlineStatus === DriverOnlineStatus.ONLINE;
+  console.log(isOnline);
   const { data: IncomingRequests } = useGetNearbyRideRequestsQuery(
     rideRequestParams,
     {
@@ -50,6 +54,8 @@ const IncomingRequests = () => {
     };
     fetchLocation();
   }, []);
+
+  console.log(IncomingRequests);
 
   const handleAccept = (requestId: number, riderName: string) => {
     // setRequests(requests.filter((req) => req.id !== requestId));
@@ -85,9 +91,9 @@ const IncomingRequests = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {requests.map((request) => (
+            {IncomingRequests?.data?.map((request) => (
               <div
-                key={request.id}
+                key={request._id}
                 className="border-border space-y-4 rounded-lg border p-4"
               >
                 {/* Request Header */}
