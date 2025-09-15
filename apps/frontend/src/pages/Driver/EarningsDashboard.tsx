@@ -9,10 +9,40 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Car, Clock, DollarSign, TrendingUp } from "lucide-react";
 
-const EarningsDashboard = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState("daily");
+// Define breakdown types for each period
+type DailyBreakdown = { time: string; amount: string; rides: number };
+type WeeklyBreakdown = { day: string; amount: string; rides: number };
+type MonthlyBreakdown = { week: string; amount: string; rides: number };
 
-  const earningsData = {
+type EarningsData = {
+  daily: {
+    total: string;
+    rides: number;
+    hours: string;
+    average: string;
+    breakdown: DailyBreakdown[];
+  };
+  weekly: {
+    total: string;
+    rides: number;
+    hours: string;
+    average: string;
+    breakdown: WeeklyBreakdown[];
+  };
+  monthly: {
+    total: string;
+    rides: number;
+    hours: string;
+    average: string;
+    breakdown: MonthlyBreakdown[];
+  };
+};
+
+const EarningsDashboard = () => {
+  const [selectedPeriod, setSelectedPeriod] =
+    useState<keyof EarningsData>("daily");
+
+  const earningsData: EarningsData = {
     daily: {
       total: "$125.80",
       rides: 8,
@@ -58,7 +88,42 @@ const EarningsDashboard = () => {
     },
   };
 
-  const currentData = earningsData[selectedPeriod as keyof typeof earningsData];
+  const currentData = earningsData[selectedPeriod];
+
+  // Helper to get label for breakdown item
+  function getBreakdownLabel(
+    item: DailyBreakdown | WeeklyBreakdown | MonthlyBreakdown,
+    period: keyof EarningsData,
+  ): string {
+    if (period === "daily") {
+      return (item as DailyBreakdown).time;
+    } else if (period === "weekly") {
+      return (item as WeeklyBreakdown).day;
+    } else {
+      return (item as MonthlyBreakdown).week;
+    }
+  }
+
+  // Helper to get best earning label
+  function getBestEarningLabel(
+    breakdown: DailyBreakdown[] | WeeklyBreakdown[] | MonthlyBreakdown[],
+    period: keyof EarningsData,
+  ): string | undefined {
+    if (breakdown.length === 0) return undefined;
+    const bestItem = breakdown.reduce((max, item) =>
+      parseFloat(item.amount.replace("$", "").replace(",", "")) >
+      parseFloat(max.amount.replace("$", "").replace(",", ""))
+        ? item
+        : max,
+    );
+    if (period === "daily") {
+      return (bestItem as DailyBreakdown).time;
+    } else if (period === "weekly") {
+      return (bestItem as WeeklyBreakdown).day;
+    } else {
+      return (bestItem as MonthlyBreakdown).week;
+    }
+  }
 
   return (
     <Card className="animate-slide-up">
@@ -74,7 +139,7 @@ const EarningsDashboard = () => {
       <CardContent>
         <Tabs
           value={selectedPeriod}
-          onValueChange={setSelectedPeriod}
+          onValueChange={(v) => setSelectedPeriod(v as keyof EarningsData)}
           className="space-y-4"
         >
           <TabsList className="grid w-full grid-cols-3">
@@ -126,13 +191,7 @@ const EarningsDashboard = () => {
               <h4 className="font-medium">Earnings Breakdown</h4>
               <div className="space-y-2">
                 {currentData.breakdown.map((item, index) => {
-                  const label =
-                    selectedPeriod === "daily"
-                      ? (item as any).time
-                      : selectedPeriod === "weekly"
-                        ? (item as any).day
-                        : (item as any).week;
-
+                  const label = getBreakdownLabel(item, selectedPeriod);
                   return (
                     <div
                       key={index}
@@ -165,22 +224,7 @@ const EarningsDashboard = () => {
                       ? "day"
                       : "week"}{" "}
                   was{" "}
-                  {(() => {
-                    const bestItem = currentData.breakdown.reduce(
-                      (max, item) =>
-                        parseFloat(
-                          item.amount.replace("$", "").replace(",", ""),
-                        ) >
-                        parseFloat(max.amount.replace("$", "").replace(",", ""))
-                          ? item
-                          : max,
-                    );
-                    return selectedPeriod === "daily"
-                      ? (bestItem as any).time
-                      : selectedPeriod === "weekly"
-                        ? bestItem.day
-                        : bestItem?.week;
-                  })()}
+                  {getBestEarningLabel(currentData.breakdown, selectedPeriod)}
                 </li>
                 <li>
                   • You've maintained a {currentData.average} average per ride
