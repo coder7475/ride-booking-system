@@ -43,6 +43,18 @@ export const ridesApi = baseApi.injectEndpoints({
         method: "PATCH",
       }),
     }),
+
+    getNearbyRideRequests: builder.query({
+      query: ({ lat, lon, radius }) => ({
+        url: "/rides/requests/nearby",
+        method: "GET",
+        params: {
+          lat,
+          lon,
+          radius,
+        },
+      }),
+    }),
   }),
 });
 
@@ -52,4 +64,5 @@ export const {
   useRideRequestMutation,
   useRideDetailsQuery,
   useCancelRideMutation,
+  useGetNearbyRideRequestsQuery,
 } = ridesApi;

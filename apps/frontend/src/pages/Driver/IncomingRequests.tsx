@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,42 +8,56 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useDriverProfileQuery } from "@/redux/features/driver/driver.api";
+import { useGetNearbyRideRequestsQuery } from "@/redux/features/rider/rides.api";
+import { DriverOnlineStatus } from "@/types/driver.types";
+import { getGeoLocation } from "@/utils/getGeoLocation";
 import { Clock, MapPin, Phone, User } from "lucide-react";
 import { toast } from "sonner";
 
 const IncomingRequests = () => {
-  const [requests, setRequests] = useState([
+  // Use ridesApi hooks for driver ride requests
+  const { data: driverProfile } = useDriverProfileQuery(undefined);
+
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+  const rideRequestParams = {
+    lat: location?.latitude,
+    lon: location?.longitude,
+    radius: 10,
+  };
+  const isOnline =
+    driverProfile?.data?.onlineStatus === DriverOnlineStatus.ONLINE;
+
+  const { data: IncomingRequests } = useGetNearbyRideRequestsQuery(
+    rideRequestParams,
     {
-      id: 1,
-      rider: "Sarah Johnson",
-      pickup: "123 Main St, Downtown",
-      destination: "456 Oak Ave, Uptown",
-      fare: "$15.50",
-      distance: "3.2 miles",
-      estimatedTime: "12 mins",
-      riderRating: 4.8,
-      requestTime: "2 mins ago",
+      skip: !isOnline,
     },
-    {
-      id: 2,
-      rider: "Michael Chen",
-      pickup: "Airport Terminal 2",
-      destination: "Grand Hotel Central",
-      fare: "$28.75",
-      distance: "8.1 miles",
-      estimatedTime: "25 mins",
-      riderRating: 4.9,
-      requestTime: "5 mins ago",
-    },
-  ]);
+  );
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const loc = await getGeoLocation();
+        setLocation(loc);
+      } catch (error) {
+        console.error("Failed to get geolocation:", error);
+        setLocation(null);
+      }
+    };
+    fetchLocation();
+  }, []);
 
   const handleAccept = (requestId: number, riderName: string) => {
-    setRequests(requests.filter((req) => req.id !== requestId));
+    // setRequests(requests.filter((req) => req.id !== requestId));
     toast.success(`You've accepted the ride request from ${riderName}.`);
   };
 
   const handleReject = (requestId: number, riderName: string) => {
-    setRequests(requests.filter((req) => req.id !== requestId));
+    // setRequests(requests.filter((req) => req.id !== requestId));
     toast.error(`You've declined the ride request from ${riderName}.`);
   };
 
@@ -59,7 +73,7 @@ const IncomingRequests = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {requests.length === 0 ? (
+        {!IncomingRequests ? (
           <div className="py-8 text-center">
             <Phone className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
             <p className="text-muted-foreground">

@@ -1,9 +1,12 @@
+// import { useEffect, useState } from "react";
 import Overview from "@/components/driver/Overview";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { useDriverProfileQuery } from "@/redux/features/driver/driver.api";
+// import { useGetNearbyRideRequestsQuery } from "@/redux/features/rider/rides.api";
 import { DriverApprovalStatus } from "@/types/driver.types";
+// import { getGeoLocation } from "@/utils/getGeoLocation";
 import { AlertTriangle, Car, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router";
 
@@ -18,6 +21,7 @@ const DriverDashboard = () => {
   const isDriver = driverProfile?.data;
   const approvalStatus = driverProfile?.data?.approvalStatus;
 
+  // console.log(IncomingRequests);
   const todayStats = {
     rides: 12,
     earnings: "$247.50",
@@ -66,6 +70,7 @@ const DriverDashboard = () => {
             </Button>
           </div>
         )}
+
         {/* Show driver application prompt if not registered */}
         {!isDriver && (
           <div className="mb-6 flex items-center justify-between rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-3">
