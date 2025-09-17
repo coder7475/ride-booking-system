@@ -14,6 +14,7 @@ import {
 } from "@/redux/features/driver/driver.api";
 import { DriverOnlineStatus } from "@/types/driver.types";
 import { Car, Clock, DollarSign } from "lucide-react";
+import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 
 const AvailabilityControl = () => {
@@ -42,11 +43,14 @@ const AvailabilityControl = () => {
           fallbackStats.completedRides,
       }
     : fallbackStats;
-
-  const [online, setOnline] = useState(false);
-  // Handler for switch toggle
+  const [cookie, setCookie] = useCookies(["driverOnlineStatus"]);
+  const [online, setOnline] = useState(() => {
+    // Use cookie value if present, otherwise default to false
+    return cookie.driverOnlineStatus === true;
+  });
   const handleToggle = async (checked: boolean) => {
     setOnline(!online);
+    setCookie("driverOnlineStatus", !online);
     // if (isUpdating) return;
     try {
       await updateDriverStatus({
