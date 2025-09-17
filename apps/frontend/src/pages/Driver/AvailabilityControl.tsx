@@ -12,8 +12,6 @@ import {
   useDriverProfileQuery,
   useUpdateDriverStatusMutation,
 } from "@/redux/features/driver/driver.api";
-import { ridesApi } from "@/redux/features/rider/rides.api";
-import { useAppDispatch } from "@/redux/hook";
 import { DriverOnlineStatus } from "@/types/driver.types";
 import { Car, Clock, DollarSign } from "lucide-react";
 import { useCookies } from "react-cookie";
