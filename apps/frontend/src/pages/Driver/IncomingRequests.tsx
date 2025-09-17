@@ -8,18 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// import { useDriverProfileQuery } from "@/redux/features/driver/driver.api";
 import { useGetNearbyRideRequestsQuery } from "@/redux/features/rider/rides.api";
-import { useAppSelector } from "@/redux/hook";
-// import { DriverOnlineStatus } from "@/types/driver.types";
 import { getGeoLocation } from "@/utils/getGeoLocation";
 import { Clock, MapPin, Phone, User } from "lucide-react";
+import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 
 const IncomingRequests = () => {
-  // Use ridesApi hooks for driver ride requests
-  // const { data: driverProfile } = useDriverProfileQuery(undefined);
-
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -30,11 +25,10 @@ const IncomingRequests = () => {
     radius: 10,
   };
 
-  // Get online status directly from redux store
-  const isOnline = useAppSelector((state) => state.driverStates.onlineStatus);
-  // const isOnline =
-  //   driverProfile?.data?.onlineStatus === DriverOnlineStatus.ONLINE;
-  // console.log(isOnline);
+  const [cookie] = useCookies(["driverOnlineStatus"]);
+
+  const isOnline = cookie.driverOnlineStatus;
+
   const { data: IncomingRequests } = useGetNearbyRideRequestsQuery(
     rideRequestParams,
     {
@@ -79,7 +73,7 @@ const IncomingRequests = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {!IncomingRequests ? (
+        {!isOnline ? (
           <div className="py-8 text-center">
             <Phone className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
             <p className="text-muted-foreground">

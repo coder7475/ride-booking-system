@@ -12,10 +12,19 @@ import {
   useDriverProfileQuery,
   useUpdateDriverStatusMutation,
 } from "@/redux/features/driver/driver.api";
+import { ridesApi } from "@/redux/features/rider/rides.api";
+import { useAppDispatch } from "@/redux/hook";
 import { DriverOnlineStatus } from "@/types/driver.types";
 import { Car, Clock, DollarSign } from "lucide-react";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
+
+// Fallback stats in case data is not available
+const fallbackStats = {
+  hoursOnline: "0.0",
+  earnings: "$0.00",
+  completedRides: 0,
+};
 
 const AvailabilityControl = () => {
   const [updateDriverStatus] = useUpdateDriverStatusMutation();
@@ -24,13 +33,6 @@ const AvailabilityControl = () => {
     isLoading: isProfileLoading,
     isError,
   } = useDriverProfileQuery(undefined);
-
-  // Fallback stats in case data is not available
-  const fallbackStats = {
-    hoursOnline: "0.0",
-    earnings: "$0.00",
-    completedRides: 0,
-  };
 
   // Use stats from profile if available, else fallback
   const stats = driverProfile?.data?.stats
@@ -43,15 +45,19 @@ const AvailabilityControl = () => {
           fallbackStats.completedRides,
       }
     : fallbackStats;
+
   const [cookie, setCookie] = useCookies(["driverOnlineStatus"]);
   const [online, setOnline] = useState(() => {
-    // Use cookie value if present, otherwise default to false
     return cookie.driverOnlineStatus === true;
   });
+  // const dispatch = useAppDispatch();
   const handleToggle = async (checked: boolean) => {
     setOnline(!online);
     setCookie("driverOnlineStatus", !online);
-    // if (isUpdating) return;
+
+    // if (!checked) {
+    //   dispatch(ridesApi.util.resetApiState());
+    // }
     try {
       await updateDriverStatus({
         onlineStatus: checked
