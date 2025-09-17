@@ -8,10 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useDriverProfileQuery } from "@/redux/features/driver/driver.api";
+// import { useDriverProfileQuery } from "@/redux/features/driver/driver.api";
 import { useGetNearbyRideRequestsQuery } from "@/redux/features/rider/rides.api";
 import { useAppSelector } from "@/redux/hook";
-import { DriverOnlineStatus } from "@/types/driver.types";
+// import { DriverOnlineStatus } from "@/types/driver.types";
 import { getGeoLocation } from "@/utils/getGeoLocation";
 import { Clock, MapPin, Phone, User } from "lucide-react";
 import { toast } from "sonner";
@@ -34,7 +34,7 @@ const IncomingRequests = () => {
   const isOnline = useAppSelector((state) => state.driverStates.onlineStatus);
   // const isOnline =
   //   driverProfile?.data?.onlineStatus === DriverOnlineStatus.ONLINE;
-  console.log(isOnline);
+  // console.log(isOnline);
   const { data: IncomingRequests } = useGetNearbyRideRequestsQuery(
     rideRequestParams,
     {

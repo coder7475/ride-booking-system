@@ -1,4 +1,4 @@
-// import { useEffect } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -8,38 +8,56 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-// import { useUpdateDriverStatusMutation } from "@/redux/features/driver/driver.api";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { setOnlineStatus } from "@/redux/slices/driverSlice";
+import {
+  useDriverProfileQuery,
+  useUpdateDriverStatusMutation,
+} from "@/redux/features/driver/driver.api";
 import { DriverOnlineStatus } from "@/types/driver.types";
 import { Car, Clock, DollarSign } from "lucide-react";
+import { toast } from "sonner";
 
-const AvailabilityControl = ({ isOnline }) => {
-  const dispatch = useAppDispatch();
-  // const [updateDriverStatus] = useUpdateDriverStatusMutation();
+const AvailabilityControl = () => {
+  const [updateDriverStatus] = useUpdateDriverStatusMutation();
+  const {
+    data: driverProfile,
+    isLoading: isProfileLoading,
+    isError,
+  } = useDriverProfileQuery(undefined);
 
-  // Get online status directly from redux store
-  const stats = {
-    hoursOnline: "4.5",
-    earnings: "$125.80",
-    completedRides: 8,
+  // Fallback stats in case data is not available
+  const fallbackStats = {
+    hoursOnline: "0.0",
+    earnings: "$0.00",
+    completedRides: 0,
   };
 
-  // When online status changes, update backend
+  // Use stats from profile if available, else fallback
+  const stats = driverProfile?.data?.stats
+    ? {
+        hoursOnline:
+          driverProfile.data.stats.hoursOnline ?? fallbackStats.hoursOnline,
+        earnings: driverProfile.data.stats.earnings ?? fallbackStats.earnings,
+        completedRides:
+          driverProfile.data.stats.completedRides ??
+          fallbackStats.completedRides,
+      }
+    : fallbackStats;
 
+  const [online, setOnline] = useState(false);
   // Handler for switch toggle
-  const handleToggle = (checked: boolean) => {
-    dispatch(
-      setOnlineStatus(
-        checked ? DriverOnlineStatus.ONLINE : DriverOnlineStatus.OFFLINE,
-      ),
-    );
-
-    // updateDriverStatus({
-    //   onlineStatus: isOnline
-    //     ? DriverOnlineStatus.ONLINE
-    //     : DriverOnlineStatus.OFFLINE,
-    // });
+  const handleToggle = async (checked: boolean) => {
+    setOnline(!online);
+    // if (isUpdating) return;
+    try {
+      await updateDriverStatus({
+        onlineStatus: checked
+          ? DriverOnlineStatus.ONLINE
+          : DriverOnlineStatus.OFFLINE,
+      }).unwrap();
+    } catch (error: unknown) {
+      console.error(error);
+      toast.success("Failed to update Online Status!");
+    }
   };
 
   return (
@@ -59,19 +77,27 @@ const AvailabilityControl = ({ isOnline }) => {
           <div>
             <h3 className="font-medium">Availability Status</h3>
             <p className="text-muted-foreground text-sm">
-              {isOnline
-                ? "You're online and can receive ride requests"
-                : "You're offline and won't receive ride requests"}
+              {isProfileLoading
+                ? "Loading status..."
+                : online
+                  ? "You're online and can receive ride requests"
+                  : "You're offline and won't receive ride requests"}
             </p>
+            {isError && (
+              <p className="mt-1 text-xs text-red-500">
+                Failed to load driver status.
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-3">
-            <Badge variant={isOnline ? "secondary" : "outline"}>
-              {isOnline ? "Online" : "Offline"}
+            <Badge variant={online ? "secondary" : "outline"}>
+              {online ? "Online" : "Offline"}
             </Badge>
             <Switch
-              checked={isOnline}
+              checked={online}
               onCheckedChange={handleToggle}
               className="data-[state=checked]:bg-green-500"
+              // disabled={isProfileLoading || isUpdating}
             />
           </div>
         </div>
@@ -98,16 +124,6 @@ const AvailabilityControl = ({ isOnline }) => {
             <div className="text-muted-foreground text-sm">Completed Rides</div>
           </div>
         </div>
-
-        {/* Status Message */}
-        {isOnline && (
-          <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950">
-            <p className="text-sm text-green-800 dark:text-green-200">
-              🚗 You're now online! Ride requests will appear in the Incoming
-              Requests tab.
-            </p>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
