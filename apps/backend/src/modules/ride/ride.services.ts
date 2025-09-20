@@ -280,6 +280,11 @@ const getNearbyRideRequests = async (
   return nearbyRides;
 };
 
+const allActiveRides = async (driverId: string) => {
+  const rides = await RideModel.find({ driverId });
+  return rides;
+};
+
 export const RideServices = {
   createRideRequest,
   cancelRide,
@@ -291,4 +296,5 @@ export const RideServices = {
   completedRide,
   estimateFare,
   getNearbyRideRequests,
+  allActiveRides,
 };

@@ -26,12 +26,18 @@ RidesRouter.post(
   RidesController.handleRequestRide,
 );
 
-// Get list of active ride request for
+// Get list of requested ride request for
 // ?lat=_&lon=_?&radius=_
 RidesRouter.get(
   "/requests/nearby",
   checkAuth(Role.DRIVER),
   RidesController.getNearbyRideRequests,
+);
+// Get list of rides driver accepted
+RidesRouter.get(
+  "/activeRides",
+  checkAuth(Role.DRIVER),
+  RidesController.getActiveRides,
 );
 
 // Cancel ride before pickup - user

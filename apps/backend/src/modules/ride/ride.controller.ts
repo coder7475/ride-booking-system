@@ -226,6 +226,19 @@ const getNearbyRideRequests = catchAsync(
   },
 );
 
+const getActiveRides = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
+  const data = await RideServices.allActiveRides(user.id);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "All active rides fetched successfully",
+    data,
+  });
+});
+
 export const RidesController = {
   handleRequestRide,
   handleCancelRide,
@@ -237,4 +250,5 @@ export const RidesController = {
   handleCompleted,
   estimateFare,
   getNearbyRideRequests,
+  getActiveRides,
 };

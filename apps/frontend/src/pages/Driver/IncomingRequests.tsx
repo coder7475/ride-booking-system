@@ -7,18 +7,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useGetNearbyRideRequestsQuery } from "@/redux/features/rider/rides.api";
-import { useAppSelector } from "@/redux/hook";
+import {
+  ridesApi,
+  useAcceptRideMutation,
+  useGetNearbyRideRequestsQuery,
+} from "@/redux/features/rider/rides.api";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setAddress } from "@/redux/slices/addressSlice";
 import type { IRide } from "@/types/ride.types";
 import { fetchAddress } from "@/utils/fetchAddress";
 import { getGeoLocation } from "@/utils/getGeoLocation";
 import { MapPin, Phone, User } from "lucide-react";
 import { useCookies } from "react-cookie";
-import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 const IncomingRequests = () => {
+  const [acceptRide] = useAcceptRideMutation();
+
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -40,7 +45,7 @@ const IncomingRequests = () => {
       skip: !isOnline || !location?.latitude || !location?.longitude,
     },
   );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const addressCache = useAppSelector((state) => state.addressCache);
   const rides: IRide[] = incomingRequestsData?.data || [];
 
@@ -85,15 +90,17 @@ const IncomingRequests = () => {
       fetchAllAddresses();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, rides]);
+  }, [dispatch, addressCache]);
 
-  // console.log(incomingRequestsData);
-  // console.log(addressCache);
+  const handleAccept = async (requestId: string) => {
+    try {
+      const res = await acceptRide(requestId).unwrap();
 
-  const handleAccept = (requestId: string, riderName: string) => {
-    toast.success(
-      `You've accepted the ride request from ${riderName} - ${requestId}.`,
-    );
+      dispatch(ridesApi.util.resetApiState());
+      toast.success(`${res.message}`);
+    } catch {
+      toast.error(`You've failed to accept the ride.`);
+    }
   };
 
   // const handleReject = (requestId: string, riderName: string) => {
@@ -140,9 +147,6 @@ const IncomingRequests = () => {
               const destKey = `${request.destinationLocation.latitude},${request.destinationLocation.longitude}`;
               const pickup = addressCache[pickupKey] || pickupKey || "Unknown";
               const destination = addressCache[destKey] || destKey || "Unknown";
-
-              // No rider name/rating in API, so show riderId and placeholder
-              const riderName = request.riderId || "Unknown Rider";
 
               return (
                 <div
@@ -201,7 +205,7 @@ const IncomingRequests = () => {
                       variant="default"
                       size="sm"
                       className="flex-1"
-                      onClick={() => handleAccept(request._id, riderName)}
+                      onClick={() => handleAccept(request._id)}
                     >
                       Accept Ride
                     </Button>
