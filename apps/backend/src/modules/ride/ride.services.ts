@@ -281,8 +281,11 @@ const getNearbyRideRequests = async (
 };
 
 const allActiveRides = async (driverId: string) => {
-  const rides = await RideModel.find({ driverId });
-  return rides;
+  const rides = await RideModel.find({ driverId }).lean();
+
+  const activeRides = rides.filter((ride) => ride.rideStatus != "COMPLETED");
+
+  return activeRides;
 };
 
 export const RideServices = {

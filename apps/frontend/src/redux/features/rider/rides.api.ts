@@ -83,6 +83,13 @@ export const ridesApi = baseApi.injectEndpoints({
         method: "PATCH",
       }),
     }),
+
+    getActiveRides: builder.query({
+      query: () => ({
+        url: "/rides/activeRides",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -97,4 +104,5 @@ export const {
   useInTransitRideMutation,
   usePickedUpRideMutation,
   useCompleteRideMutation,
+  useGetActiveRidesQuery,
 } = ridesApi;
