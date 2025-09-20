@@ -11,9 +11,8 @@ export const fetchAddress = async (lat: number, lng: number) => {
 
   const data = await res.json();
 
-  if (data && data.display_name) {
-    const displayAddress = `${data?.address?.road}, ${data?.address?.city}`;
-    return displayAddress;
+  if (data?.display_name) {
+    return `${data?.address?.road ?? ""}, ${data?.address?.city ?? ""}`;
   }
 
   return null;

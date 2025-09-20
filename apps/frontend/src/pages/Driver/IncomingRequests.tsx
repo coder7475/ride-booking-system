@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +13,7 @@ import { setAddress } from "@/redux/slices/addressSlice";
 import type { IRide } from "@/types/ride.types";
 import { fetchAddress } from "@/utils/fetchAddress";
 import { getGeoLocation } from "@/utils/getGeoLocation";
-import { Clock, MapPin, Phone, User } from "lucide-react";
+import { MapPin, Phone, User } from "lucide-react";
 import { useCookies } from "react-cookie";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
@@ -92,12 +91,16 @@ const IncomingRequests = () => {
   // console.log(addressCache);
 
   const handleAccept = (requestId: string, riderName: string) => {
-    toast.success(`You've accepted the ride request from ${riderName}.`);
+    toast.success(
+      `You've accepted the ride request from ${riderName} - ${requestId}.`,
+    );
   };
 
-  const handleReject = (requestId: string, riderName: string) => {
-    toast.error(`You've declined the ride request from ${riderName}.`);
-  };
+  // const handleReject = (requestId: string, riderName: string) => {
+  //   toast.error(
+  //     `You've declined the ride request from ${riderName} - ${requestId}.`,
+  //   );
+  // };
 
   return (
     <Card className="animate-slide-up">
@@ -138,12 +141,9 @@ const IncomingRequests = () => {
               const pickup = addressCache[pickupKey] || pickupKey || "Unknown";
               const destination = addressCache[destKey] || destKey || "Unknown";
 
-              // No distance/ETA in API, so show placeholders
-              const distance = "N/A";
-              const estimatedTime = "N/A";
               // No rider name/rating in API, so show riderId and placeholder
               const riderName = request.riderId || "Unknown Rider";
-              const riderRating = "—";
+
               return (
                 <div
                   key={request._id}
@@ -189,14 +189,14 @@ const IncomingRequests = () => {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2 pt-2">
-                    <Button
+                    {/* <Button
                       variant="destructive"
                       size="sm"
                       className="flex-1"
                       onClick={() => handleReject(request._id, riderName)}
                     >
                       Decline
-                    </Button>
+                    </Button> */}
                     <Button
                       variant="default"
                       size="sm"

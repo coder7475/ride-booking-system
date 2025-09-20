@@ -55,6 +55,34 @@ export const ridesApi = baseApi.injectEndpoints({
         },
       }),
     }),
+
+    acceptRide: builder.mutation({
+      query: (id: string) => ({
+        url: `/rides/${id}/accept`,
+        method: "PATCH",
+      }),
+    }),
+
+    pickedUpRide: builder.mutation({
+      query: (id: string) => ({
+        url: `/rides/${id}/picked`,
+        method: "PATCH",
+      }),
+    }),
+
+    inTransitRide: builder.mutation({
+      query: (id: string) => ({
+        url: `/rides/${id}/transit`,
+        method: "PATCH",
+      }),
+    }),
+
+    completeRide: builder.mutation({
+      query: (id: string) => ({
+        url: `/rides/${id}/complete`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
@@ -65,4 +93,8 @@ export const {
   useRideDetailsQuery,
   useCancelRideMutation,
   useGetNearbyRideRequestsQuery,
+  useAcceptRideMutation,
+  useInTransitRideMutation,
+  usePickedUpRideMutation,
+  useCompleteRideMutation,
 } = ridesApi;
