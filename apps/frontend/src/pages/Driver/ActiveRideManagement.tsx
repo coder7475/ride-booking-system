@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,7 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useGetActiveRidesQuery } from "@/redux/features/rider/rides.api";
+import {
+  useCompleteRideMutation,
+  useGetActiveRidesQuery,
+  useInTransitRideMutation,
+  usePickedUpRideMutation,
+} from "@/redux/features/rider/rides.api";
 import { RideStatus, type IRide } from "@/types/ride.types";
 import {
   formatDateTime,
@@ -38,7 +43,12 @@ const getStatusBadge = (status: string) => {
 };
 
 const ActiveRideManagement = () => {
-  const { data, isLoading, isError } = useGetActiveRidesQuery(undefined);
+  const { data, isLoading, isError, refetch } =
+    useGetActiveRidesQuery(undefined);
+  const [pickedUpRide, { isLoading: isPickingUp }] = usePickedUpRideMutation();
+  const [inTransitRide, { isLoading: isInTransit }] =
+    useInTransitRideMutation();
+  const [completeRide, { isLoading: isCompleting }] = useCompleteRideMutation();
 
   // Pick the first active ride (if any)
   const activeRide = useMemo(() => {
@@ -52,12 +62,8 @@ const ActiveRideManagement = () => {
     return ongoing || data.data[0];
   }, [data]);
 
-  // Local status for UI transitions (simulate status changes)
-  const [uiStatus, setUiStatus] = useState<string | null>(null);
-
-  // For demo: allow local status transitions, but fallback to backend status
-  const rideStatus =
-    uiStatus || (activeRide ? mapRideStatus(activeRide.rideStatus) : null);
+  // Use backend status only
+  const rideStatus = activeRide ? mapRideStatus(activeRide.rideStatus) : null;
 
   const getNextStatus = () => {
     if (!rideStatus) return null;
@@ -74,16 +80,29 @@ const ActiveRideManagement = () => {
     return statusSteps.find((step) => step.key === nextStatus)?.label;
   };
 
-  // Simulate status update (in real app, call mutation)
-  const handleStatusUpdate = () => {
+  // Update status using mutation
+  const handleStatusUpdate = async () => {
+    if (!activeRide) return;
     const nextStatus = getNextStatus();
     if (!nextStatus) return;
-    setUiStatus(nextStatus);
-    toast.success("Status Updated");
-    if (nextStatus === "completed") {
-      setTimeout(() => {
+
+    try {
+      if (nextStatus === RideStatus.PICKED_UP.toLowerCase()) {
+        await pickedUpRide(activeRide._id).unwrap();
+
+        toast.success("Marked as Picked Up");
+      } else if (nextStatus === RideStatus.IN_TRANSIT.toLowerCase()) {
+        await inTransitRide(activeRide._id).unwrap();
+        toast.success("Marked as In Transit");
+      } else if (nextStatus === RideStatus.COMPLETED.toLowerCase()) {
+        await completeRide(activeRide._id).unwrap();
         toast.success("Ride Completed");
-      }, 2000);
+      }
+      // Refetch to update UI
+      refetch();
+    } catch (err: unknown) {
+      console.error(err);
+      toast.error("Failed to update ride status. Please try again.");
     }
   };
 
@@ -264,8 +283,11 @@ const ActiveRideManagement = () => {
                 size="sm"
                 className="flex-1"
                 onClick={handleStatusUpdate}
+                disabled={isPickingUp || isInTransit || isCompleting}
               >
-                Mark as {getNextStatusLabel()}
+                {isPickingUp || isInTransit || isCompleting
+                  ? "Updating..."
+                  : `Mark as ${getNextStatusLabel()}`}
               </Button>
             )}
           </div>
