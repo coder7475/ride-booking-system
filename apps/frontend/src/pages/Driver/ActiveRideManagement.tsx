@@ -9,38 +9,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useGetActiveRidesQuery } from "@/redux/features/rider/rides.api";
-import type { IRide } from "@/types/ride.types";
-import { CheckCircle, MapPin, Navigation, Phone, User } from "lucide-react";
+import { RideStatus, type IRide } from "@/types/ride.types";
+import {
+  formatDateTime,
+  formatFare,
+  getStatusIndex,
+  mapRideStatus,
+  statusSteps,
+} from "@/utils/activeRideHelpers";
+import { MapPin, Navigation, Phone, User } from "lucide-react";
 import { toast } from "sonner";
-
-// Utility: Map backend rideStatus to UI status keys
-const mapRideStatus = (rideStatus: string) => {
-  switch (rideStatus) {
-    case "ACCEPTED":
-      return "accepted";
-    case "PICKED_UP":
-      return "picked_up";
-    case "IN_TRANSIT":
-      return "in_transit";
-    case "COMPLETED":
-      return "completed";
-    case "CANCELLED":
-      return "cancelled";
-    default:
-      return rideStatus.toLowerCase();
-  }
-};
-
-const statusSteps = [
-  { key: "accepted", label: "Accepted", icon: CheckCircle },
-  { key: "picked_up", label: "Picked Up", icon: User },
-  { key: "in_transit", label: "In Transit", icon: Navigation },
-  { key: "completed", label: "Completed", icon: CheckCircle },
-];
-
-const getStatusIndex = (status: string) => {
-  return statusSteps.findIndex((step) => step.key === status);
-};
 
 const getStatusBadge = (status: string) => {
   switch (status) {
@@ -59,35 +37,17 @@ const getStatusBadge = (status: string) => {
   }
 };
 
-const formatDateTime = (isoString?: string) => {
-  if (!isoString) return "-";
-  const date = new Date(isoString);
-  return date.toLocaleString(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-};
-
-const formatFare = (fare: number) => {
-  // Assuming fare is in cents or integer currency
-  if (typeof fare !== "number") return "-";
-  // If fare is in cents, divide by 100. Here, we assume it's in BDT or similar.
-  return `$${fare.toLocaleString()}`;
-};
-
 const ActiveRideManagement = () => {
   const { data, isLoading, isError } = useGetActiveRidesQuery(undefined);
 
   // Pick the first active ride (if any)
   const activeRide = useMemo(() => {
-    if (!data?.data || !Array.isArray(data.data) || data.data.length === 0)
+    if (!data?.data || !Array.isArray(data?.data) || data.data.length === 0)
       return null;
     // Only show rides that are not completed/cancelled
     const ongoing = data.data.find(
-      (ride: IRide) => !["COMPLETED", "CANCELLED"].includes(ride.rideStatus),
+      (ride: IRide) =>
+        ![RideStatus.COMPLETED, RideStatus.CANCELLED].includes(ride.rideStatus),
     );
     return ongoing || data.data[0];
   }, [data]);
@@ -125,12 +85,6 @@ const ActiveRideManagement = () => {
         toast.success("Ride Completed");
       }, 2000);
     }
-  };
-
-  // Simulate cancel (in real app, call mutation)
-  const handleCancelRide = () => {
-    setUiStatus("cancelled");
-    toast.error("Ride Cancelled");
   };
 
   if (isLoading) {
@@ -304,14 +258,6 @@ const ActiveRideManagement = () => {
         {/* Action Buttons */}
         {rideStatus !== "completed" && rideStatus !== "cancelled" && (
           <div className="flex gap-2">
-            <Button
-              variant="destructive"
-              size="sm"
-              className="flex-1"
-              onClick={handleCancelRide}
-            >
-              Cancel Ride
-            </Button>
             {getNextStatus() && (
               <Button
                 variant="default"
