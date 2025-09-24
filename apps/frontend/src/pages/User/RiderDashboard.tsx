@@ -92,8 +92,15 @@ const RiderDashboard = () => {
   // address of lng,lat
   const addressCache = useAppSelector((state) => state.addressCache);
   const dispatch = useDispatch();
-  const currentRides = rideHistory.filter(
-    (ride) => ride.rideStatus === RideStatus.REQUESTED,
+
+  const activeStatuses = [
+    RideStatus.REQUESTED,
+    RideStatus.ACCEPTED,
+    RideStatus.PICKED_UP,
+    RideStatus.IN_TRANSIT,
+  ];
+  const currentRides = rideHistory.filter((ride) =>
+    activeStatuses.includes(ride.rideStatus),
   );
 
   useEffect(() => {
@@ -220,49 +227,78 @@ const RiderDashboard = () => {
                         const destKey = `${ride.destinationLocation.latitude},${ride.destinationLocation.longitude}`;
                         const pickup = addressCache[pickupKey] ?? pickupKey;
                         const destination = addressCache[destKey] ?? destKey;
+
                         return (
                           <div
                             key={ride._id}
                             className="border-border rounded-lg border p-4"
                           >
-                            <div className="mb-3 flex items-start justify-between">
-                              <div>
-                                <h4 className="font-semibold">
-                                  {ride.driverId}
-                                </h4>
+                            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                              <div className="flex flex-col">
+                                <span className="text-muted-foreground text-xs font-medium tracking-wide">
+                                  Trip ID
+                                </span>
+                                <span className="text-primary font-mono text-sm">
+                                  {ride._id}
+                                </span>
                               </div>
-                              <Badge variant="secondary">
-                                {ride.rideStatus}
+                              <Badge
+                                variant={
+                                  ride.rideStatus === RideStatus.COMPLETED
+                                    ? "default"
+                                    : ride.rideStatus === RideStatus.CANCELLED
+                                      ? "destructive"
+                                      : "secondary"
+                                }
+                                className="capitalize"
+                              >
+                                {ride.rideStatus
+                                  .replace(/_/g, " ")
+                                  .toLowerCase()}
                               </Badge>
-                            </div>
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2 text-sm">
-                                <MapPin className="text-primary h-4 w-4" />
-                                <span>
-                                  {pickup} → {destination}
+                              <div className="flex flex-col items-end">
+                                <span className="text-muted-foreground text-xs font-medium tracking-wide">
+                                  Estimated Fare
+                                </span>
+                                <span className="text-lg font-semibold text-green-600">
+                                  ${ride.fareEstimated}
                                 </span>
                               </div>
                             </div>
-                            {/* <Button
-                              className="mt-3 w-full cursor-pointer"
-                              variant="outline"
-                              onClick={() => {
-                                setRideId(ride._id);
-                                setActiveTab("tracking");
-                              }}
-                            >
-                              Track Ride
-                            </Button> */}
-                            <Button
-                              className="mt-3 w-full cursor-pointer"
-                              variant="destructive"
-                              onClick={() => {
-                                setRideIdToCancel(ride._id);
-                                setCancelDialogOpen(true);
-                              }}
-                            >
-                              Cancel Ride
-                            </Button>
+                            <div className="mb-4 flex items-center gap-3 text-sm">
+                              <MapPin className="text-primary h-4 w-4" />
+                              <span className="text-foreground font-medium">
+                                {pickup}
+                              </span>
+                              <span className="text-muted-foreground">→</span>
+                              <span className="text-foreground font-medium">
+                                {destination}
+                              </span>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <Button
+                                className="w-full cursor-pointer font-semibold"
+                                variant="outline"
+                                onClick={() => {
+                                  setRideId(ride._id);
+                                  setActiveTab("tracking");
+                                }}
+                              >
+                                Track Ride
+                              </Button>
+                              {ride.rideStatus === RideStatus.REQUESTED && (
+                                <Button
+                                  className="w-full cursor-pointer font-semibold"
+                                  variant="destructive"
+                                  onClick={() => {
+                                    setRideIdToCancel(ride._id);
+                                    setCancelDialogOpen(true);
+                                  }}
+                                >
+                                  Cancel Ride
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         );
                       })}
