@@ -44,7 +44,7 @@ export function getRideDetails(ride: IRide, addressCache: AddressCacheState) {
   // Status
   const status = ride?.rideStatus ?? "--";
 
-  // Timeline: requested, accepted, completed (if present)
+  // Timeline: requested, accepted, started, completed (if present)
   const timeline: Array<{ event: string; time: string; status: string }> = [];
 
   // Requested
@@ -67,8 +67,17 @@ export function getRideDetails(ride: IRide, addressCache: AddressCacheState) {
     });
   }
 
+  // Started (picked up)
+  if (ride?.timestamps?.started) {
+    const startedDate = new Date(ride.timestamps.started);
+    timeline.push({
+      event: "Picked Up",
+      time: format(startedDate, "PPP, p"),
+      status: "completed",
+    });
+  }
+
   // Completed
-  // Try to use timestamps.completed, fallback to rideStatus === "COMPLETED" and updatedAt
   if (ride?.timestamps?.completed) {
     const completedDate = new Date(ride.timestamps.completed);
     timeline.push({
