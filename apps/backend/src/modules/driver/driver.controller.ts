@@ -81,6 +81,19 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getDriverDetails = catchAsync(async (req: Request, res: Response) => {
+  await mongoConnector(env.DB_URI);
+  const userId = req.params.id as string;
+  const driver = await DriverServices.findDriverByUserId(userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Your driver details retrieved successfully",
+    data: driver,
+  });
+});
+
 const getEarningHistory = async (req: Request, res: Response) => {
   await mongoConnector(env.DB_URI);
   const userId = req.user.id;
@@ -110,4 +123,5 @@ export const DriversControllers = {
   updateOnlineStatus,
   getMe,
   getEarningHistory,
+  getDriverDetails,
 };

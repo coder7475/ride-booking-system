@@ -22,6 +22,13 @@ driverRoutes.get(
   DriversControllers.getMe,
 );
 
+// | GET    | `/drivers/:id`         | Get Driver Details by Id          |
+driverRoutes.get(
+  `/:id`,
+  checkAuth(Role.ADMIN, Role.USER),
+  DriversControllers.getDriverDetails,
+);
+
 // update availability status (Online/Offline)
 driverRoutes.patch(
   "/me/status",

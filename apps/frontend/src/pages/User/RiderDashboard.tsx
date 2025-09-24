@@ -264,6 +264,12 @@ const RiderDashboard = () => {
                                   ${ride.fareEstimated}
                                 </span>
                               </div>
+                              <p className="text-muted-foreground text-sm">
+                                {format(
+                                  new Date(ride?.timestamps?.requested ?? ""),
+                                  "PPP",
+                                )}
+                              </p>
                             </div>
                             <div className="mb-4 flex items-center gap-3 text-sm">
                               <MapPin className="text-primary h-4 w-4" />
@@ -275,17 +281,20 @@ const RiderDashboard = () => {
                                 {destination}
                               </span>
                             </div>
+
                             <div className="flex flex-col gap-2">
-                              <Button
-                                className="w-full cursor-pointer font-semibold"
-                                variant="outline"
-                                onClick={() => {
-                                  setRideId(ride._id);
-                                  setActiveTab("tracking");
-                                }}
-                              >
-                                Track Ride
-                              </Button>
+                              {ride.rideStatus !== RideStatus.REQUESTED && (
+                                <Button
+                                  className="w-full cursor-pointer font-semibold"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setRideId(ride._id);
+                                    setActiveTab("tracking");
+                                  }}
+                                >
+                                  Track Ride
+                                </Button>
+                              )}
                               {ride.rideStatus === RideStatus.REQUESTED && (
                                 <Button
                                   className="w-full cursor-pointer font-semibold"
@@ -375,33 +384,57 @@ const RiderDashboard = () => {
                       return (
                         <div
                           key={ride._id}
-                          className="border-border rounded-lg border p-4"
+                          className="border-border bg-card/80 rounded-xl border p-5 shadow-sm transition-shadow hover:shadow-md"
                         >
-                          <div className="mb-2 flex items-start justify-between">
-                            <div>
-                              <p className="font-small">
-                                {pickup} → {destination}
+                          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="min-w-0 flex-1">
+                              <p className="text-primary truncate text-sm font-semibold">
+                                <span className="inline-block align-middle">
+                                  <MapPin className="text-muted-foreground mr-1 inline-block h-4 w-4" />
+                                </span>
+                                {pickup}
+                                <span className="text-muted-foreground mx-2">
+                                  →
+                                </span>
+                                <span className="inline-block align-middle">
+                                  <MapPin className="text-muted-foreground mr-1 inline-block h-4 w-4" />
+                                </span>
+                                {destination}
                               </p>
-                              <p className="text-muted-foreground text-sm">
+                              <p className="text-muted-foreground mt-1 text-xs">
                                 {format(
                                   new Date(ride?.timestamps?.requested ?? ""),
                                   "PPP",
                                 )}
                               </p>
                             </div>
-                            <div className="text-right">
-                              <p className="font-medium">
+                            <div className="flex min-w-[90px] flex-col items-end gap-1">
+                              <Badge
+                                variant={
+                                  ride.rideStatus === RideStatus.COMPLETED
+                                    ? "default"
+                                    : ride.rideStatus === RideStatus.CANCELLED
+                                      ? "destructive"
+                                      : "secondary"
+                                }
+                                className="px-3 py-1 text-xs capitalize"
+                              >
+                                {ride.rideStatus
+                                  .replace(/_/g, " ")
+                                  .toLowerCase()}
+                              </Badge>
+                              <span className="text-base font-bold text-green-700 dark:text-green-400">
                                 $
                                 {ride.fareFinal
                                   ? ride.fareFinal
                                   : ride.fareEstimated}
-                              </p>
+                              </span>
                             </div>
                           </div>
                           <Button
                             variant="outline"
                             size="sm"
-                            className="w-full cursor-pointer"
+                            className="border-primary hover:bg-primary/10 mt-2 w-full cursor-pointer rounded-md font-medium"
                             onClick={() => {
                               setRideId(ride._id);
                               setShowRideDetails(true);

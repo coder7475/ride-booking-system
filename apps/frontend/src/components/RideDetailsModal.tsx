@@ -8,18 +8,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { useDriverDetailsQuery } from "@/redux/features/driver/driver.api";
 import { useRideDetailsQuery } from "@/redux/features/rider/rides.api";
 import { useAppSelector } from "@/redux/hook";
 import { getRideDetails } from "@/utils/getRideDetails";
-import {
-  Car,
-  Clock,
-  CreditCard,
-  Download,
-  MapPin,
-  Phone,
-  Star,
-} from "lucide-react";
+import { Car, CreditCard, Download, Phone } from "lucide-react";
 
 interface RideDetailsModalProps {
   rideId: string;
@@ -35,6 +28,10 @@ const RideDetailsModal = ({
   const { data, isLoading, isError } = useRideDetailsQuery(rideId, {
     skip: !rideId,
   });
+  const { data: driverDetails } = useDriverDetailsQuery(data?.data?.driverId, {
+    skip: !data?.data?.driverId,
+  });
+
   // address of lng,lat
   const addressCache = useAppSelector((state) => state.addressCache);
 
@@ -141,17 +138,33 @@ const RideDetailsModal = ({
               <div className="mb-3 flex items-start gap-3">
                 <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-full">
                   <span className="text-primary-foreground font-semibold">
-                    ?
+                    {/* Show first letter of vehicle brand or "?" if not available */}
+                    {driverDetails?.data?.vehicleInfo?.brand
+                      ? driverDetails.data.vehicleInfo.brand[0]
+                      : "?"}
                   </span>
                 </div>
                 <div className="flex-1">
-                  <h5 className="font-medium">Not assigned</h5>
-                  <div className="mb-1 flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-current text-yellow-500" />
-                    <span className="text-sm">No rating</span>
-                  </div>
+                  <h5 className="font-medium">
+                    {/* Show vehicle brand and model if available */}
+                    {driverDetails?.data?.vehicleInfo
+                      ? `${driverDetails.data.vehicleInfo.brand} ${driverDetails.data.vehicleInfo.model} (${driverDetails.data.vehicleInfo.year})`
+                      : "No vehicle assigned"}
+                  </h5>
+
                   <p className="text-muted-foreground text-sm">
-                    No car assigned
+                    {/* Show plate number if available */}
+                    {driverDetails?.data?.vehicleInfo?.plateNumber
+                      ? `Plate: ${driverDetails.data.vehicleInfo.plateNumber}`
+                      : "No plate number"}
+                  </p>
+                  <p className="text-muted-foreground mt-1 text-xs">
+                    Status:{" "}
+                    <span className="capitalize">
+                      {driverDetails?.data?.onlineStatus
+                        ? driverDetails.data.onlineStatus.toLowerCase()
+                        : "unknown"}
+                    </span>
                   </p>
                 </div>
                 <Button variant="outline" size="sm" disabled>
@@ -159,22 +172,6 @@ const RideDetailsModal = ({
                   Contact
                 </Button>
               </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Trip Statistics */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-muted rounded-lg p-3 text-center">
-              <Clock className="text-primary mx-auto mb-1 h-5 w-5" />
-              <p className="text-muted-foreground text-sm">Duration</p>
-              <p className="font-semibold">--</p>
-            </div>
-            <div className="bg-muted rounded-lg p-3 text-center">
-              <MapPin className="text-primary mx-auto mb-1 h-5 w-5" />
-              <p className="text-muted-foreground text-sm">Distance</p>
-              <p className="font-semibold">--</p>
             </div>
           </div>
 
@@ -190,14 +187,14 @@ const RideDetailsModal = ({
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Estimated Fare</span>
                 <span>
-                  {typeof fareDisplay === "number" ? `৳${fareDisplay}` : "--"}
+                  {typeof fareDisplay === "number" ? `$${fareDisplay}` : "--"}
                 </span>
               </div>
               <Separator />
               <div className="flex justify-between font-semibold">
-                <span>Total</span>
+                <span>Final Fare</span>
                 <span className="text-primary">
-                  {typeof fareDisplay === "number" ? `৳${fareDisplay}` : "--"}
+                  {typeof fareDisplay === "number" ? `$${fareDisplay}` : "--"}
                 </span>
               </div>
               <p className="text-muted-foreground text-sm">

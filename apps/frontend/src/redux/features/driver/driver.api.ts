@@ -10,6 +10,13 @@ export const driverApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    //
+    driverDetails: builder.query({
+      query: (id: string) => ({
+        url: `/drivers/${id}`,
+        method: "GET",
+      }),
+    }),
     ///
     applyForDriver: builder.mutation({
       query: (driverInfo) => ({
@@ -34,4 +41,5 @@ export const {
   useDriverProfileQuery,
   useApplyForDriverMutation,
   useUpdateDriverStatusMutation,
+  useDriverDetailsQuery,
 } = driverApi;

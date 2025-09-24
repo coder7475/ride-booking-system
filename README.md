@@ -160,6 +160,7 @@ The backend provides a comprehensive REST API with the following endpoints:
 | GET    | `/drivers/me`          | Get driver profile                |
 | PATCH  | `/drivers/me/status`   | Update online/availability status |
 | GET    | `/drivers/me/earnings` | View earning history              |
+| GET    | `/drivers/:id`         | Get Driver Details by Id          |
 
 ### 🚕 Ride Management
 
