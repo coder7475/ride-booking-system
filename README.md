@@ -21,9 +21,11 @@ This monorepo contains the following apps and packages:
   - Driver and rider functionality
   - Admin panel APIs
   - Transaction processing
-- **`frontend`**: React application for the user interface
-  - Responsive design
+- **`frontend`**: React + Vite application for the user interface
+  - Modern Vite build system for fast development
+  - Responsive design with TailwindCSS
   - Role-based UI components
+  - Redux Toolkit for state management
   - Real-time updates
 
 ### 📦 Shared Packages
@@ -37,7 +39,7 @@ This monorepo contains the following apps and packages:
   - Transaction ID generation
   - URL slug utilities
 - **`@repo/math`**: Mathematical utilities for fare calculations and parsing
-- **`@repo/ui`**: Shared React component library
+- **`@repo/ui`**: Shared React component library (using Radix UI and TailwindCSS)
 
 ### ⚙️ Configuration Packages
 
@@ -80,21 +82,29 @@ Each package/app is 100% [TypeScript](https://www.typescriptlang.org/) with stri
 
 4. **Configure Environment Variables:**
 
-```env
+   **Backend (.env):**
+   ```env
    # Server Configuration
    PORT=3000
    HOST=localhost
    NODE_ENV=development
    DB_URI="mongodb://127.0.0.1:27017/practice"
-   # JWT ENVS
+   
+   # JWT Configuration
    JWT_ACCESS_SECRET="access"
    JWT_ACCESS_EXPIRES="15m"
    JWT_REFRESH_SECRET="refresh"
    JWT_REFRESH_EXPIRES="1d"
-
+   
    # Hash Salt
    PASSWORD_HASH_SALT=12
-```
+   ```
+
+   **Frontend (.env):**
+   ```env
+   VITE_BASE_URL="http://localhost:3001/api/v1"
+   VITE_GEOCODING_API_KEY="your_geocoding_api_key_here"
+   ```
 
 ### Development
 
@@ -205,10 +215,10 @@ ride-booking-system/
 │   │   │   ├── types/        # TypeScript type definitions
 │   │   │   └── configs/      # Configuration files
 │   │   └── dist/             # Compiled JavaScript
-│   └── frontend/             # Next.js application
+│   └── frontend/             # React + Vite application
 │       ├── src/
 │       ├── public/
-│       └── .next/
+│       └── dist/
 ├── packages/
 │   ├── db/                   # Database utilities
 │   ├── utils/                # Shared utilities
@@ -245,14 +255,17 @@ cd apps/backend && pnpm start
 
 ### Frontend Deployment
 
-The frontend can be deployed to Vercel, Netlify, or any static hosting service.
+The frontend can be deployed to Vercel, Netlify, Cloudflare Pages, or any static hosting service.
 
 ```bash
 # Build for production
 pnpm build --filter=frontend
 
-# Static export (if needed)
-pnpm export --filter=frontend
+# Preview production build locally
+pnpm preview --filter=frontend
+
+# Deploy to Cloudflare (if configured)
+pnpm deploy --filter=frontend
 ```
 
 ## 🛠️ Available Scripts

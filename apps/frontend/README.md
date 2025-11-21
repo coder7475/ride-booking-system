@@ -1,14 +1,5 @@
-# 🧩 Test_School Competency Assessment Platform Frontend
+# Ride Booking System Frontend
 
-A modern, scalable platform for assessing and certifying digital competencies (levels A1 to C2), built with a TypeScript monorepo architecture using Turborepo. The frontend leverages **React**, **TypeScript**, **Vite**, **Redux**, and **Tailwind CSS**, while the backend uses **Express.js** and **MongoDB**. This system supports a three-step assessment process, secure authentication, question management, and certificate generation.
-
----
-
-## ✨ Features
-
-- ⚡ **Vite** – Blazing-fast development and build tooling for the frontend.
-- ⚛️ **React** with **TypeScript** – Type-safe, modern UI development.
-- 🗃️ **Redux Toolkit** – Scalable state management for assessment and user data.
 - 🎨 **Tailwind CSS** – Customizable, responsive styling for a seamless UI.
 - 🔐 **JWT Authentication** – Secure token-based authentication with OTP support.
 - 📝 **Three-Step Assessment** – Progressive evaluation with timer, scoring, and certification.
